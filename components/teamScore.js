@@ -19,7 +19,6 @@ const TeamScore = ({
   setTimeoutCountdown,
 }) => {
   useEffect(() => {
-    console.log("team", team);
     let timeoutInterval;
 
     if (timeoutCountdown > 0) {
@@ -143,8 +142,8 @@ const TeamScore = ({
                       ? "sm:order-2 order-1"
                       : "sm:order-1 order-2"
                     : team === "homeTeam"
-                    ? "sm:order-2 order-1"
-                    : "sm:order-1 order-2"
+                    ? "order-1"
+                    : "order-1"
                 } flex flex-row gap-2 items-center`}
               >
                 {[...Array(2)].map((_, index) => (
