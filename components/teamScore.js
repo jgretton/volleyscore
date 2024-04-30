@@ -19,6 +19,7 @@ const TeamScore = ({
   setTimeoutCountdown,
 }) => {
   useEffect(() => {
+    console.log("team", team);
     let timeoutInterval;
 
     if (timeoutCountdown > 0) {
@@ -123,7 +124,7 @@ const TeamScore = ({
                   );
                 }}
                 disabled={
-                  gameData.game.sets[currentSet].timeouts.homeTeam >= 2 ||
+                  gameData.game.sets[currentSet].timeouts[team] >= 2 ||
                   (timeoutTeam === team && timeoutCountdown > 0)
                 }
               >
