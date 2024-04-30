@@ -1,4 +1,4 @@
-const TIMEOUT_DURATION = 1; // Timeout duration in seconds
+const TIMEOUT_DURATION = 30;
 const END_SET_DURATION = 180;
 let teamsHaveSwapped = false;
 import { initialGame, initialSetData } from "../lib/data";
@@ -19,8 +19,6 @@ export const checkIfSetComplete = (
   const awayTeamSets = gameData.game.awayTeamSetsWon;
 
   if (homeTeamSets >= 3 || awayTeamSets >= 3) {
-    console.log("called GameComplete : ", gameData);
-
     setGameComplete(true);
     return true;
   }
@@ -190,7 +188,8 @@ export const undoAction = (
   currentSet,
   setServingTeam,
   setGameComplete,
-  gameComplete
+  gameComplete,
+  setHasSetBeenProcessed
 ) => {
   const updatedGameData = { ...gameData };
   //remove last action
@@ -216,10 +215,10 @@ export const undoAction = (
     );
 
     if (gameComplete) {
-      console.log("called", updatedGameData.game[`${item.team}SetsWon`]);
       updatedGameData.game[`${item.team}SetsWon`] =
         updatedGameData.game[`${item.team}SetsWon`] - 1;
       setGameComplete((prevState) => !prevState);
+      setHasSetBeenProcessed(false);
     }
   }
 
@@ -280,4 +279,35 @@ export const EndOfSet = (
 
 export const EndOfSetTimer = (setEndOfSetCountdown, endOfSetCountdown) => {
   setEndOfSetCountdown(END_SET_DURATION);
+};
+
+export const undoSetPoint = (
+  gameData,
+  setGameData,
+  currentSet,
+  setServingTeam,
+  setHasSetBeenProcessed,
+  setIsOpen
+) => {
+  const updatedGameData = { ...gameData };
+  //remove last action
+  const lastAction = updatedGameData.game.sets[currentSet].actions.pop();
+
+  updatedGameData.game.sets[currentSet].score[lastAction.team] =
+    updatedGameData.game.sets[currentSet].score[lastAction.team] - 1;
+
+  const lastServingTeam = gameData.game.sets[currentSet].actions
+    .filter((item) => item.type === "score") // Filter only items with type "score"
+    .pop();
+  //set to last serving team, If no previous action then set to team who chose to serve first
+  setServingTeam(
+    lastServingTeam?.team || updatedGameData.game.firstServingTeam
+  );
+
+  updatedGameData.game[`${lastAction.team}SetsWon`] =
+    updatedGameData.game[`${lastAction.team}SetsWon`] - 1;
+  setHasSetBeenProcessed(false);
+
+  setGameData(updatedGameData);
+  setIsOpen(false);
 };

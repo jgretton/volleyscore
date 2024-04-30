@@ -10,6 +10,7 @@ const HistoryCard = ({
   setServingTeam,
   setGameComplete,
   gameComplete,
+  setHasSetBeenProcessed,
 }) => {
   const team = {
     homeTeam: gameData.game.homeTeamName,
@@ -23,11 +24,9 @@ const HistoryCard = ({
   };
 
   return (
-    <div className="flex flex-col flex-shrink-0 px-8  items-center gap-4 bg-sky-100 dark:bg-slate-900 rounded-lg py-4 last:bg-red-100 last:dark:bg-slate-800 [&:last-child>button]:inline-flex fadeIn">
+    <div className="flex flex-col flex-shrink-0 px-8 items-center gap-4 bg-sky-100 dark:bg-gradient-to-r dark:from-[#15202B] dark:to-[#495A62]  rounded-lg py-4 last:bg-red-100 last:dark:bg-slate-800 [&:last-child>button]:inline-flex fadeIn">
+      {/* <div className="flex flex-col flex-shrink-0 px-8 items-center gap-4 bg-sky-100 dark:bg-slate-900 rounded-lg py-4 last:bg-red-100 last:dark:bg-slate-800 [&:last-child>button]:inline-flex fadeIn"> */}
       <span> {team[item.team]}</span>
-      {/* {item.type === "timeout" && (
-        <ClockIcon className="size-6 text-gray-800" />
-      )} */}
       {Icon[item.type]}
       {item.type === "score" && (
         <span>
@@ -45,7 +44,8 @@ const HistoryCard = ({
             currentSet,
             setServingTeam,
             setGameComplete,
-            gameComplete
+            gameComplete,
+            setHasSetBeenProcessed
           )
         }
         className="hidden  items-center gap-3 px-2 py-1 border-slate-800 dark:border-slate-100 border-2 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-700"

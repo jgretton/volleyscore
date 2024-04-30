@@ -41,7 +41,6 @@ const GameReview = ({ gameData }) => {
             <tr className="">
               <td className="pr-10">{homeTeamName}</td>
               {Object.entries(sets).map((item, index) => {
-                console.log(item[1].score);
                 const { homeTeam: setScore } = item[1].score;
                 return (
                   <td className="px-3" key={index}>
@@ -53,7 +52,6 @@ const GameReview = ({ gameData }) => {
             <tr className=" divide-y">
               <td className="pr-10">{awayTeamName}</td>
               {Object.entries(sets).map((item, index) => {
-                console.log(item[1].score);
                 const { awayTeam: setScore } = item[1].score;
                 return (
                   <td className="px-3" key={index}>

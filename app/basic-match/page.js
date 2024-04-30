@@ -5,7 +5,13 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState, useEffect, useRef } from "react";
 
 import { initialGame } from "@/lib/data";
-import { checkIfSetComplete, resetGame, EndOfSet } from "@/utils/gameLogic";
+import {
+  checkIfSetComplete,
+  resetGame,
+  EndOfSet,
+  undoAction,
+  undoSetPoint,
+} from "@/utils/gameLogic";
 import HistoryCard from "@/components/historyCard";
 import GameReview from "@/components/gameReview";
 import TeamScore from "@/components/teamScore";
@@ -46,7 +52,6 @@ const Page = () => {
     // Add 1 Set point to the winning team.
     //Set process to complete
     if (!hasSetBeenProcessed && winningTeam) {
-      console.log("set proces, winning ___ called");
       setGameData((prevState) => ({
         ...prevState,
         game: {
@@ -77,9 +82,9 @@ const Page = () => {
   }, [currentSet]);
 
   return (
-    <div className="flex flex-col gap-7 bg-white dark:bg-[#15202b] text-gray-800 dark:text-white min-h-screen">
+    <div className="flex flex-col gap-7 text-gray-800 dark:text-white min-h-screen">
       <h2 className="text-center text-3xl">Set {currentSet}</h2>
-      <div className="flex flex-row w-full gap-3">
+      <div className="flex flex-row w-full flex-wrap gap-3">
         <button
           onClick={() => swapSides()}
           className="inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto"
@@ -110,7 +115,8 @@ const Page = () => {
           game
         </button>
       </div>
-      <div className=" grid grid-rows-3 gap-4 sm:grid-rows-1 sm:grid-cols-2 min-h-[50vh] px-10 ">
+      <div className=" grid grid-cols-2 gap-4 gap-y-10 px-10 h-full flex-1">
+        {/* <div className=" grid grid-rows-2 grid-cols-1 sm:grid-cols-2 gap-4 gap-y-10 px-10 h-full flex-1"> */}
         <div
           className={`${
             !teamSwapped ? "col-start-1" : "col-start-2"
@@ -133,8 +139,8 @@ const Page = () => {
         </div>
         <div
           className={`${
-            !teamSwapped ? "col-start-2" : "col-start-1"
-          } w-full h-full row-span-1 col-span-1 row-start-1`}
+            !teamSwapped ? "sm:col-start-2" : "sm:col-start-1"
+          } w-full h-full sm:row-span-1 sm:col-span-1 sm:row-start-1`}
         >
           <TeamScore
             teamSwapped={teamSwapped}
@@ -151,25 +157,27 @@ const Page = () => {
             setTimeoutCountdown={setTimeoutCountdown}
           />
         </div>
-      </div>
-      <div className="text-center mt-10">
-        <p>History</p>
-        <div
-          className="flex flex-row w-full overflow-x-auto py-4 items-center gap-2 px-10"
-          ref={containerRef}
-        >
-          {gameData.game.sets[currentSet].actions.map((item, index) => (
-            <HistoryCard
-              item={item}
-              key={index}
-              gameData={gameData}
-              setGameData={setGameData}
-              currentSet={currentSet}
-              setServingTeam={setServingTeam}
-              setGameComplete={setGameComplete}
-              gameComplete={gameComplete}
-            />
-          ))}
+        <div className="text-center col-span-2 h-full">
+          {/* <div className="text-center sm:col-span-2 h-full"> */}
+          <p className="">History</p>
+          <div
+            className="flex flex-row w-full overflow-x-auto py-4 items-center gap-2 px-10"
+            ref={containerRef}
+          >
+            {gameData.game.sets[currentSet].actions.map((item, index) => (
+              <HistoryCard
+                item={item}
+                key={index}
+                gameData={gameData}
+                setGameData={setGameData}
+                currentSet={currentSet}
+                setServingTeam={setServingTeam}
+                setGameComplete={setGameComplete}
+                gameComplete={gameComplete}
+                setHasSetBeenProcessed={setHasSetBeenProcessed}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
@@ -250,22 +258,42 @@ const Page = () => {
                         </button>
                       </div>
                     ) : (
-                      <button
-                        type="button"
-                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                        onClick={() => {
-                          EndOfSet(
-                            closeModal,
-                            setCurrentSet,
-                            currentSet,
-                            setHasSetBeenProcessed,
-                            swapSides,
-                            setGameData
-                          );
-                        }}
-                      >
-                        Start next set
-                      </button>
+                      <div className="grid gap-3">
+                        <button
+                          type="button"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          onClick={() => {
+                            EndOfSet(
+                              closeModal,
+                              setCurrentSet,
+                              currentSet,
+                              setHasSetBeenProcessed,
+                              swapSides,
+                              setGameData
+                            );
+                          }}
+                        >
+                          Start next set
+                        </button>
+                        <button
+                          type="button"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          onClick={() => {
+                            undoSetPoint(
+                              gameData,
+                              setGameData,
+                              currentSet,
+                              setServingTeam,
+                              setGameComplete,
+                              gameComplete,
+                              setHasSetBeenProcessed,
+                              setIsOpen
+                            );
+                          }}
+                        >
+                          Undo set point
+                        </button>
+                      </div>
                     )}
                   </div>
                 </Dialog.Panel>
