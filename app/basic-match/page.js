@@ -9,7 +9,6 @@ import {
   checkIfSetComplete,
   resetGame,
   EndOfSet,
-  undoAction,
   undoSetPoint,
 } from "@/utils/gameLogic";
 import HistoryCard from "@/components/historyCard";
@@ -115,7 +114,7 @@ const Page = () => {
           game
         </button>
       </div>
-      <div className=" grid grid-cols-2 gap-4 gap-y-10 px-10 h-full flex-1">
+      <div className=" grid grid-cols-2 grid-flow-row gap-4 gap-y-10 px-10 h-full">
         {/* <div className=" grid grid-rows-2 grid-cols-1 sm:grid-cols-2 gap-4 gap-y-10 px-10 h-full flex-1"> */}
         <div
           className={`${
