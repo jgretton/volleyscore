@@ -284,8 +284,6 @@ const Page = () => {
                               setGameData,
                               currentSet,
                               setServingTeam,
-                              setGameComplete,
-                              gameComplete,
                               setHasSetBeenProcessed,
                               setIsOpen
                             );
