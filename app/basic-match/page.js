@@ -28,14 +28,13 @@ const Page = () => {
     if (typeof window !== "undefined") {
       const savedGame = localStorage.getItem("volleyballGameData");
       const parsedGame = JSON.parse(savedGame);
-      const loadedCurrentSet =
-        parsedGame.game.homeTeamSetsWon + parsedGame.game.awayTeamSetsWon + 1;
-      if (loadedCurrentSet >= 6) {
-        return 5;
+      if (parsedGame && parsedGame.game) {
+        const loadedCurrentSet =
+          parsedGame.game.homeTeamSetsWon + parsedGame.game.awayTeamSetsWon + 1;
+        return loadCurrentSet >= 6 ? 5 : loadedCurrentSet;
       }
-      return savedGame ? loadedCurrentSet : 1;
+      return 1;
     }
-    return initialGame;
   };
 
   const [currentSet, setCurrentSet] = useState(loadCurrentSet);
@@ -157,7 +156,7 @@ const Page = () => {
           onClick={() => swapSides()}
           className="inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto"
         >
-          <ArrowPathIcon className="size-5 text-gray-800 dark:text-white" />{" "}
+          <ArrowPathIcon className="size-5 text-gray-800 dark:text-white" />
           Swap sides
         </button>
         <Timer
