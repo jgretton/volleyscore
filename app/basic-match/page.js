@@ -122,7 +122,7 @@ const Page = () => {
     if (isClient) {
       localStorage.setItem("volleyballGameData", JSON.stringify(gameData));
     }
-  }, [gameData, isClient]);
+  }, [gameData, isClient, currentSet]);
 
   if (!isClient) {
     // Render a placeholder or loading state until client-side code runs
