@@ -23,10 +23,10 @@ const Timer = ({ endOfSet, state, setState }) => {
   };
 
   return (
-    <div className="flex flex-row gap-5 items-center">
+    <div className="flex flex-row items-center justify-center gap-4 max-w-sm w-full">
       <button
         onClick={() => EndOfSetTimer(setState, state)}
-        className="inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto tabular-nums"
+        className="inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start tabular-nums"
       >
         <ClockIcon className="size-5 text-gray-800 dark:text-white flex-shrink-0" />
         {state > 0 ? (
@@ -37,13 +37,11 @@ const Timer = ({ endOfSet, state, setState }) => {
         )}
       </button>
 
-      <div className="">
-        {state > 0 && (
-          <button type="button" onClick={() => setState(0)}>
-            <StopCircleIcon className="size-10 text-gray-800 dark:text-white flex-shrink-0" />{" "}
-          </button>
-        )}
-      </div>
+      {state > 0 && (
+        <button type="button" onClick={() => setState(0)}>
+          <StopCircleIcon className="size-10 text-gray-800 dark:text-white flex-shrink-0" />
+        </button>
+      )}
     </div>
   );
 };
