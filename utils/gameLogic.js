@@ -99,7 +99,7 @@ export const increaseScore = (
                 type: "score",
                 team: team,
                 overallScore: { [team]: (currentSetData.score[team] || 0) + 1 },
-                timestamp: "2024-04-16T12:05:00Z",
+                timestamp: new Date().toISOString(),
               },
             ],
           },
