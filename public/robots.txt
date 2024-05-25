@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.volleyscore.co.uk
+
+# Sitemaps
+Sitemap: https://www.volleyscore.co.uk/sitemap.xml
