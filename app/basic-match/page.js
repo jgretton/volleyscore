@@ -1,6 +1,10 @@
 "use client";
 
-import { ArrowPathIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowPathIcon,
+  ArrowsRightLeftIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/outline";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState, useEffect, useRef } from "react";
 
@@ -151,18 +155,20 @@ const Page = () => {
   return (
     <div className="flex flex-col gap-7 text-gray-800 dark:text-white min-h-screen">
       <h2 className="text-center text-3xl">Set {currentSet}</h2>
-      <div className="flex flex-row w-full flex-wrap gap-3">
+      <div className="grid grid-flow-col sm:flex gap-3 grid-rows-2 place-items-center">
+        {/* <div className="flex flex-row w-full flex-wrap gap-3"> */}
         <button
           onClick={() => swapSides()}
-          className="inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto"
+          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto flex-shrink-0"
         >
-          <ArrowPathIcon className="size-5 text-gray-800 dark:text-white" />
+          <ArrowsRightLeftIcon className="size-5 text-gray-800 dark:text-white" />
           Swap sides
         </button>
         <Timer
           state={endOfSetCountdown}
           setState={setEndOfSetCountdown}
           endOfSet
+          className={"col-span-2"}
         />
         <button
           onClick={() =>
@@ -176,17 +182,17 @@ const Page = () => {
               setTimeoutCountdown
             )
           }
-          className="inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto"
+          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto flex-shrink-0"
         >
           <XCircleIcon className="size-5 text-gray-800 dark:text-white" /> Reset
           game
         </button>
       </div>
-      <div className=" grid grid-cols-2 grid-flow-row gap-4 gap-y-10 px-10 h-full">
+      <div className=" grid grid-cols-2 grid-flow-row gap-4 gap-y-10 sm:px-10 sm:h-full h-1">
         {/* <div className=" grid grid-rows-2 grid-cols-1 sm:grid-cols-2 gap-4 gap-y-10 px-10 h-full flex-1"> */}
         <div
           className={`${
-            !teamSwapped ? "col-start-1" : "col-start-2"
+            !teamSwapped ? "col-start-1 pl-2" : "col-start-2 pr-2"
           } w-full h-full row-span-1 col-span-1 row-start-1`}
         >
           <TeamScore
@@ -206,7 +212,7 @@ const Page = () => {
         </div>
         <div
           className={`${
-            !teamSwapped ? "sm:col-start-2" : "sm:col-start-1"
+            !teamSwapped ? "sm:col-start-2 pr-2" : "sm:col-start-1 pl-2"
           } w-full h-full sm:row-span-1 sm:col-span-1 sm:row-start-1`}
         >
           <TeamScore

@@ -30,7 +30,7 @@ const TeamScore = ({
   }, [timeoutCountdown]);
 
   return (
-    <div className="flex flex-col min-h-[50vh] h-full ">
+    <div className="flex flex-col min-h-[33dvh] sm:min-h-[50dvh] h-full ">
       <div className="flex flex-row justify-between items-center">
         <span
           className={`${
@@ -77,16 +77,16 @@ const TeamScore = ({
             currentSet={currentSet}
             setServingTeam={setServingTeam}
           />
-          <div className="flex sm:flex-row flex-col justify-between">
+          <div className="flex flex-row justify-between">
             <span
               className={`${
                 !teamSwapped
                   ? team === "homeTeam"
-                    ? "sm:order-2 self-end"
-                    : "sm:order-1 self-start"
+                    ? "order-2 self-start"
+                    : "order-1 self-start"
                   : team === "homeTeam"
-                  ? "sm:order-1 self-start"
-                  : "sm:order-2 self-end"
+                  ? "order-1 self-start"
+                  : "order-2 self-start"
               } border-sky-200 border rounded-md px-4 py-2 text-lg font-light tabular-nums sm:self-center`}
             >
               {gameData.game[`${team}SetsWon`]}
@@ -96,12 +96,12 @@ const TeamScore = ({
               className={`${
                 !teamSwapped
                   ? team === "homeTeam"
-                    ? "sm:order-1 self-end"
-                    : "sm:order-2 self-start"
+                    ? "order-1 self-end"
+                    : "order-2 self-start"
                   : team === "homeTeam"
-                  ? "sm:order-2 self-start"
-                  : "sm:order-1 self-end"
-              } flex flex-row items-center gap-3 sm:self-center `}
+                  ? "order-2 self-start"
+                  : "order-1 self-end"
+              } flex flex-col sm:flex-row items-center gap-3 sm:self-center `}
             >
               <button
                 className={`${
@@ -112,7 +112,7 @@ const TeamScore = ({
                     : team === "homeTeam"
                     ? "sm:order-2 order-1"
                     : "sm:order-1 order-2"
-                } border rounded-lg px-4 py-2 mt-2 inline-flex gap-3 items-center  disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-slate-700 flex-shrink-0 tabular-nums`}
+                } border rounded-lg px-4 py-2 sm:mt-2 inline-flex gap-3 items-center  disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-slate-700 flex-shrink-0 tabular-nums`}
                 onClick={() => {
                   timeOut(
                     team,
@@ -139,11 +139,11 @@ const TeamScore = ({
                 className={`${
                   !teamSwapped
                     ? team === "homeTeam"
-                      ? "sm:order-2 order-1"
+                      ? "order-2"
                       : "sm:order-1 order-2"
                     : team === "homeTeam"
                     ? "order-1"
-                    : "order-1"
+                    : "order-2"
                 } flex flex-row gap-2 items-center`}
               >
                 {[...Array(2)].map((_, index) => (

@@ -3,7 +3,7 @@ import { StopCircleIcon } from "@heroicons/react/20/solid";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import React, { useEffect } from "react";
 
-const Timer = ({ endOfSet, state, setState }) => {
+const Timer = ({ endOfSet, state, setState, props }) => {
   useEffect(() => {
     let timeoutInterval;
 
@@ -23,10 +23,13 @@ const Timer = ({ endOfSet, state, setState }) => {
   };
 
   return (
-    <div className="flex flex-row items-center justify-center gap-4 max-w-sm w-full">
+    <div
+      className="flex flex-row items-center justify-center gap-4 max-w-sm w-full col-span-2 sm:col-span-1"
+      {...props}
+    >
       <button
         onClick={() => EndOfSetTimer(setState, state)}
-        className="inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start tabular-nums"
+        className="sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start tabular-nums"
       >
         <ClockIcon className="size-5 text-gray-800 dark:text-white flex-shrink-0" />
         {state > 0 ? (
