@@ -31,7 +31,7 @@ const TeamScore = ({
 
   return (
     <div className="flex flex-col min-h-[33dvh] sm:min-h-[50dvh] h-full ">
-      <div className="flex flex-row justify-between items-center">
+      <div className="flex flex-row justify-between items-center flex-shrink-0">
         <span
           className={`${
             !teamSwapped
@@ -41,7 +41,7 @@ const TeamScore = ({
               : team === "homeTeam" // If team is swapped and is home team
               ? "order-2" //apply this
               : "order-1" // if not hometeam apply this
-          }`}
+          } truncate`}
         >
           {gameData?.game[`${team}Name`]}
         </span>
@@ -59,7 +59,7 @@ const TeamScore = ({
               ? "order-1"
               : "order-2"
           }
-           size-4 rounded-full`}
+           size-4 rounded-full flex-shrink-0`}
         />
       </div>
       <div

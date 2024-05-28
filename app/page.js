@@ -4,14 +4,7 @@ import { initialGame } from "@/lib/data";
 import { useState, useEffect } from "react";
 
 export default function Home() {
-  const loadInitialGame = () => {
-    if (typeof window !== "undefined") {
-      const savedGame = localStorage.getItem("volleyballGameData");
-      return savedGame ? JSON.parse(savedGame) : initialGame;
-    }
-    return initialGame;
-  };
-  const [gameData, setGameData] = useState(loadInitialGame);
+  const [gameData, setGameData] = useState(initialGame);
 
   const changeName = (e) => {
     setGameData((prevState) => {
@@ -75,7 +68,7 @@ export default function Home() {
         className=" bg-blue-600 px-4 py-3 rounded-full text-white"
         onClick={() => saveToLocalStorage()}
       >
-        Start Basic Match
+        Start New Match
       </Link>
     </main>
   );
