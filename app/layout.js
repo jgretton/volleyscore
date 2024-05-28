@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
+import DarkModeToggle from "@/components/darkModeToggle";
 // import Navbar from "@/components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -22,11 +23,13 @@ export const metadata = {
     type: "website",
   },
 };
-
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="">
       <body className={`${inter.className} dark:bg-[#15202b] bg-white`}>
+        <div className=" relative flex justify-end p-2 ">
+          <DarkModeToggle />
+        </div>
         {/* <Navbar /> */}
         {children}
       </body>
