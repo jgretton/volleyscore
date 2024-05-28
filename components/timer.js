@@ -29,7 +29,7 @@ const Timer = ({ endOfSet, state, setState, props }) => {
     >
       <button
         onClick={() => EndOfSetTimer(setState, state)}
-        className="sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start tabular-nums"
+        className="sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 dark:hover:bg-gray-900 hover:bg-gray-100 self-start tabular-nums"
       >
         <ClockIcon className="size-5 text-gray-800 dark:text-white flex-shrink-0" />
         {state > 0 ? (

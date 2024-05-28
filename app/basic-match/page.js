@@ -19,6 +19,7 @@ import HistoryCard from "@/components/historyCard";
 import GameReview from "@/components/gameReview";
 import TeamScore from "@/components/teamScore";
 import Timer from "@/components/timer";
+import Link from "next/link";
 
 const Page = () => {
   const loadInitialGame = () => {
@@ -153,23 +154,23 @@ const Page = () => {
   }
 
   return (
-    <div className="flex flex-col gap-7 text-gray-800 dark:text-white min-h-screen">
+    <div className="flex flex-col gap-7 text-gray-800 dark:text-white pt-5">
       <h2 className="text-center text-3xl">Set {currentSet}</h2>
-      <div className="grid grid-flow-col sm:flex gap-3 grid-rows-2 place-items-center">
-        {/* <div className="flex flex-row w-full flex-wrap gap-3"> */}
+      {/* <div className="grid grid-flow-col sm:flex gap-3 grid-rows-2 place-items-center"> */}
+      <div className="flex flex-row w-full flex-wrap gap-3">
         <button
           onClick={() => swapSides()}
-          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto flex-shrink-0"
+          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 dark:hover:bg-gray-900 hover:bg-gray-100 self-start mx-auto flex-shrink-0"
         >
           <ArrowsRightLeftIcon className="size-5 text-gray-800 dark:text-white" />
-          Swap sides
+          <span className="">Swap sides</span>
         </button>
-        <Timer
+        {/* <Timer
           state={endOfSetCountdown}
           setState={setEndOfSetCountdown}
           endOfSet
           className={"col-span-2"}
-        />
+        /> */}
         <button
           onClick={() =>
             resetGame(
@@ -179,10 +180,11 @@ const Page = () => {
               setTeamSwapped,
               setGameComplete,
               setEndOfSetCountdown,
-              setTimeoutCountdown
+              setTimeoutCountdown,
+              gameData
             )
           }
-          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto flex-shrink-0"
+          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 dark:hover:bg-gray-900 hover:bg-gray-100 self-start mx-auto flex-shrink-0"
         >
           <XCircleIcon className="size-5 text-gray-800 dark:text-white" /> Reset
           game

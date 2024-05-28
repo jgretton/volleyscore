@@ -9,5 +9,5 @@ module.exports = {
   ],
   prefix: "",
   theme: {},
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };

@@ -27,7 +27,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="">
       <body className={`${inter.className} dark:bg-[#15202b] bg-white`}>
-        <div className=" relative flex justify-end p-2 ">
+        <div className=" absolute flex justify-end p-2 ">
           <DarkModeToggle />
         </div>
         {/* <Navbar /> */}

@@ -232,10 +232,18 @@ export const resetGame = (
   setTeamSwapped,
   setGameComplete,
   setEndOfSetCountdown,
-  setTimeoutCountdown
+  setTimeoutCountdown,
+  gameData
 ) => {
+  const newGame = {
+    game: {
+      ...initialGame.game,
+      homeTeamName: gameData.game.homeTeamName,
+      awayTeamName: gameData.game.awayTeamName,
+    },
+  };
   setCurrentSet(1);
-  setGameData(initialGame);
+  setGameData(newGame);
   setServingTeam("");
   setTeamSwapped(false);
   setGameComplete(false);

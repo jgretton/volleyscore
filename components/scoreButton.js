@@ -18,7 +18,7 @@ const ScoreButton = ({
       }
       disabled={disabled}
     >
-      <span className="text-7xl font-light ">{score}</span>
+      <span className="text-7xl md:text-9xl font-light ">{score}</span>
     </button>
   );
 };
