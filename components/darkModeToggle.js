@@ -7,46 +7,31 @@ import {
   MoonIcon,
   SunIcon,
 } from "@heroicons/react/24/outline";
+import { useTheme } from "next-themes";
 
 const darkMode = [
-  { id: 1, name: "Light", icon: <SunIcon className="size-5" /> },
-  { id: 2, name: "Dark", icon: <MoonIcon className="size-5" /> },
+  { id: 1, name: "light", icon: <SunIcon className="size-5" /> },
+  { id: 2, name: "dark", icon: <MoonIcon className="size-5" /> },
 ];
 
 const DarkModeToggle = () => {
-  const [selected, setSelected] = useState(darkMode[1]);
+  const { theme, setTheme } = useTheme();
+  const checkWhichTheme = () => {
+    return darkMode.find((mode) => mode.name === theme) || darkMode[0];
+  };
+  const [selected, setSelected] = useState(checkWhichTheme());
 
   useEffect(() => {
-    if (
-      localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      setSelected(darkMode[1]);
-      document.documentElement.classList.add("dark");
-    } else {
-      setSelected(darkMode[0]);
-      document.documentElement.classList.remove("dark");
-    }
-  }, [selected]);
-
-  const handleThemeChange = (mode) => {
-    setSelected(mode);
-    if (mode.name === "Dark") {
-      localStorage.setItem("theme", "dark");
-      document.documentElement.classList.add("dark");
-    } else {
-      localStorage.setItem("theme", "light");
-      document.documentElement.classList.remove("dark");
-    }
-  };
+    setSelected(checkWhichTheme());
+  }, [theme]);
 
   return (
-    <Listbox value={selected} onChange={handleThemeChange}>
+    <Listbox value={selected} onChange={setSelected}>
       <div className=" relative w-full">
         <Listbox.Button className=" w-full rounded-lg bg-gray-100 dark:bg-white/5 py-3 pr-8 pl-3 text-left text-sm dark:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-opacity-75">
-          <span className=" inline-flex items-center gap-3">
+          <span className=" inline-flex items-center gap-3 capitalize">
             {selected.icon} {selected.name}
+            {/* {theme} */}
           </span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <ChevronDownIcon className="h-5 w-5 " aria-hidden="true" />
@@ -62,7 +47,10 @@ const DarkModeToggle = () => {
             {darkMode.map((person, key) => (
               <Listbox.Option
                 key={person.id}
-                onClick={() => setSelected(darkMode[key])}
+                onClick={() => {
+                  setTheme(person.name);
+                  setSelected(darkMode[key]);
+                }}
                 className={({ active }) =>
                   `relative cursor-pointer select-none py-2 flex flex-col px-3 hover:bg-gray-200 dark:hover:bg-slate-900 ${
                     active
@@ -75,7 +63,7 @@ const DarkModeToggle = () => {
                 {({ selected }) => (
                   <>
                     <span
-                      className={`inline-flex items-center gap-3 truncate  ${
+                      className={`inline-flex items-center gap-3 truncate capitalize ${
                         selected ? "font-medium text-blue-300" : "font-normal"
                       }`}
                     >

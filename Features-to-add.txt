@@ -1,0 +1,7 @@
+[] - system dark mode only happens when settings it opened as thats whent the component is being rendered.
+[] - add Timed games
+[] - Have infinite points per set 
+[] - start end of set timer from the modal at end of set?
+[x] - light and dark mode button
+[x] - button for full screen mode
+[x] - change team names

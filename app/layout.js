@@ -1,8 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/react";
-import DarkModeToggle from "@/components/darkModeToggle";
-import FullScreen from "@/components/fullScreen";
+import { ThemeProvider } from "next-themes";
 // import Navbar from "@/components/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -26,10 +25,12 @@ export const metadata = {
 };
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className="">
+    <html lang="en">
       <body className={`${inter.className} dark:bg-[#15202b] bg-white`}>
-        {/* <Navbar /> */}
-        {children}
+        <ThemeProvider attribute="class">
+          {/* <Navbar /> */}
+          {children}
+        </ThemeProvider>
       </body>
       <Analytics />
     </html>

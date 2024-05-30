@@ -75,7 +75,7 @@ const Page = () => {
       setGameComplete
     );
 
-    // If set is complete and the set hasn't already been processed.
+    // If set is complete and the set hasn't already been proceπssed.
     // Add 1 Set point to the winning team.
     //Set process to complete
     if (!hasSetBeenProcessed && winningTeam) {
