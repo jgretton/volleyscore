@@ -23,14 +23,14 @@ const Timer = ({ endOfSet, state, setState, props }) => {
 
   return (
     <div
-      className="flex flex-row items-center justify-center gap-4 max-w-sm w-full col-span-2 sm:col-span-1"
+      className="flex flex-row items-center justify-center gap-4 max-w-sm w-full col-span-2 sm:col-span-1 text-gray-800 "
       {...props}
     >
       {!state > 0 ? (
         <button
           onClick={() => EndOfSetTimer(setState, state)}
           disabled={state}
-          className="disabled:cursor-not-allowed sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2  hover:bg-gray-100 self-start tabular-nums"
+          className="disabled:cursor-not-allowed  sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2  hover:bg-gray-100 self-start tabular-nums"
         >
           <ClockIcon className="size-5 text-gray-800 flex-shrink-0" />
           <span className="block">Start end of set timer</span>
