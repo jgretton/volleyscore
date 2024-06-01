@@ -1,6 +1,6 @@
 const TIMEOUT_DURATION = 30;
-// const END_SET_DURATION = 180;
-const END_SET_DURATION = 10;
+const END_SET_DURATION = 180;
+// const END_SET_DURATION = 10;
 let teamsHaveSwapped = false;
 import { initialGame, initialSetData } from "../lib/data";
 
