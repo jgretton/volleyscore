@@ -6,7 +6,7 @@ import {
   XCircleIcon,
 } from "@heroicons/react/24/outline";
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState, useEffect, useRef } from "react";
+import { Fragment, useState, useEffect, useRef, forwardRef } from "react";
 
 import { initialGame } from "@/lib/data";
 import {
@@ -19,6 +19,9 @@ import HistoryCard from "@/components/historyCard";
 import GameReview from "@/components/gameReview";
 import TeamScore from "@/components/teamScore";
 import Timer from "@/components/timer";
+import Link from "next/link";
+import FullScreen from "@/components/fullScreen";
+import Settings from "@/components/settings";
 
 const Page = () => {
   const loadInitialGame = () => {
@@ -72,7 +75,7 @@ const Page = () => {
       setGameComplete
     );
 
-    // If set is complete and the set hasn't already been processed.
+    // If set is complete and the set hasn't already been proceπssed.
     // Add 1 Set point to the winning team.
     //Set process to complete
     if (!hasSetBeenProcessed && winningTeam) {
@@ -153,23 +156,27 @@ const Page = () => {
   }
 
   return (
-    <div className="flex flex-col gap-7 text-gray-800 dark:text-white min-h-screen">
+    <div className="flex flex-col gap-7 text-gray-800 dark:text-white pt-5">
+      <div className=" absolute flex gap-3 justify-end top-2 right-2">
+        <Settings gameData={gameData} setGameData={setGameData} />
+        <FullScreen />
+      </div>
       <h2 className="text-center text-3xl">Set {currentSet}</h2>
-      <div className="grid grid-flow-col sm:flex gap-3 grid-rows-2 place-items-center">
-        {/* <div className="flex flex-row w-full flex-wrap gap-3"> */}
+      {/* <div className="grid grid-flow-col sm:flex gap-3 grid-rows-2 place-items-center"> */}
+      <div className="flex flex-row w-full flex-wrap gap-3">
         <button
           onClick={() => swapSides()}
-          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto flex-shrink-0"
+          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 dark:hover:bg-gray-900 hover:bg-gray-100 self-start mx-auto flex-shrink-0"
         >
           <ArrowsRightLeftIcon className="size-5 text-gray-800 dark:text-white" />
-          Swap sides
+          <span className="">Swap sides</span>
         </button>
-        <Timer
+        {/* <Timer
           state={endOfSetCountdown}
           setState={setEndOfSetCountdown}
           endOfSet
           className={"col-span-2"}
-        />
+        /> */}
         <button
           onClick={() =>
             resetGame(
@@ -179,10 +186,11 @@ const Page = () => {
               setTeamSwapped,
               setGameComplete,
               setEndOfSetCountdown,
-              setTimeoutCountdown
+              setTimeoutCountdown,
+              gameData
             )
           }
-          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 hover:bg-gray-900 self-start mx-auto flex-shrink-0"
+          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 dark:hover:bg-gray-900 hover:bg-gray-100 self-start mx-auto flex-shrink-0"
         >
           <XCircleIcon className="size-5 text-gray-800 dark:text-white" /> Reset
           game
@@ -231,7 +239,6 @@ const Page = () => {
           />
         </div>
         <div className="text-center col-span-2 h-full">
-          {/* <div className="text-center sm:col-span-2 h-full"> */}
           <p className="">History</p>
           <div
             className="flex flex-row w-full overflow-x-auto py-4 items-center gap-2 px-10"
@@ -322,7 +329,8 @@ const Page = () => {
                               setTeamSwapped,
                               setGameComplete,
                               setEndOfSetCountdown,
-                              setTimeoutCountdown
+                              setTimeoutCountdown,
+                              gameData
                             );
                             setIsOpen(false);
                           }}
@@ -332,6 +340,20 @@ const Page = () => {
                       </div>
                     ) : (
                       <div className="grid gap-3">
+                        <Timer
+                          state={endOfSetCountdown}
+                          setState={setEndOfSetCountdown}
+                          endOfSet={() =>
+                            EndOfSet(
+                              closeModal,
+                              setCurrentSet,
+                              currentSet,
+                              setHasSetBeenProcessed,
+                              swapSides,
+                              setGameData
+                            )
+                          }
+                        />
                         <button
                           type="button"
                           className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
@@ -344,6 +366,7 @@ const Page = () => {
                               swapSides,
                               setGameData
                             );
+                            setEndOfSetCountdown(0);
                           }}
                         >
                           Start next set
@@ -360,6 +383,7 @@ const Page = () => {
                               setHasSetBeenProcessed,
                               setIsOpen
                             );
+                            setEndOfSetCountdown(0);
                           }}
                         >
                           Undo set point
@@ -373,76 +397,6 @@ const Page = () => {
           </div>
         </Dialog>
       </Transition>
-
-      {/* <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
-          <Transition.Child
-            as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            <div className="fixed inset-0 bg-black/25" />
-          </Transition.Child>
-
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
-              <Transition.Child
-                as={Fragment}
-                enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
-                leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
-              >
-                <Dialog.Panel className="w-full max-w-xl transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
-                  >
-                    Set {currentSet} Finished.
-                  </Dialog.Title>
-                  <div className="mt-2">
-                    <GameReview gameData={gameData} />
-                  </div>
-
-                  <div className="mt-4">
-                    <div className="grid gap-3">
-                      <button
-                        type="button"
-                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                        onClick={() => {}}
-                      >
-                        End of{" "}
-                      </button>
-                      <button
-                        type="button"
-                        className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                        onClick={() => {
-                          resetGame(
-                            setGameData,
-                            setServingTeam,
-                            setCurrentSet,
-                            setTeamSwapped,
-                            setGameComplete
-                          );
-                          setIsOpen(false);
-                        }}
-                      >
-                        Reset Game
-                      </button>
-                    </div>
-                  </div>
-                </Dialog.Panel>
-              </Transition.Child>
-            </div>
-          </div>
-        </Dialog>
-      </Transition> */}
     </div>
   );
 };
