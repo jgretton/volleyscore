@@ -12,13 +12,14 @@ const ScoreButton = ({
 }) => {
   return (
     <button
-      className="w-full p-10 flex-grow h-1/3 bg-sky-100 dark:bg-[#3E5B64] rounded-xl mt-2 disabled:opacity-30 tabular-nums"
-      onMouseDown={() =>
+      className="w-full flex-grow bg-sky-100 dark:bg-[#3E5B64] rounded-xl mt-2 disabled:opacity-30 tabular-nums ring-2 ring-sky-200/30 dark:ring-slate-800/30 ring-inset"
+      onClick={() =>
         increaseScore(team, setGameData, currentSet, setServingTeam)
       }
       disabled={disabled}
     >
-      <span className="text-7xl md:text-9xl font-light ">{score}</span>
+      <span className="text-[min(25vw,20rem)] font-light">{score}</span>
+      {/* <span className="text-7xl md:text-9xl font-light">{score}</span> */}
     </button>
   );
 };

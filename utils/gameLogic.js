@@ -2,6 +2,7 @@ const TIMEOUT_DURATION = 30;
 const END_SET_DURATION = 180;
 // const END_SET_DURATION = 10;
 let teamsHaveSwapped = false;
+const POINTS_PER_SET = 25;
 import { initialGame, initialSetData } from "../lib/data";
 
 export const checkIfSetComplete = (
@@ -49,7 +50,7 @@ export const checkIfSetComplete = (
 
   // Logic for sets 1-4
   if (
-    (homeScore >= 25 || awayScore >= 25) &&
+    (homeScore >= POINTS_PER_SET || awayScore >= POINTS_PER_SET) &&
     Math.abs(homeScore - awayScore) >= 2
   ) {
     if (homeScore > awayScore) {
