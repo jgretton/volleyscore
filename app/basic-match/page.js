@@ -2,6 +2,7 @@
 
 import {
   ArrowPathIcon,
+  ArrowUturnLeftIcon,
   ArrowsRightLeftIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
@@ -14,6 +15,7 @@ import {
   resetGame,
   EndOfSet,
   undoSetPoint,
+  undoAction,
 } from "@/utils/gameLogic";
 import HistoryCard from "@/components/historyCard";
 import GameReview from "@/components/gameReview";
@@ -22,6 +24,7 @@ import Timer from "@/components/timer";
 import Link from "next/link";
 import FullScreen from "@/components/fullScreen";
 import Settings from "@/components/settings";
+import History from "@/components/history";
 
 const Page = () => {
   const loadInitialGame = () => {
@@ -72,7 +75,7 @@ const Page = () => {
       currentSet,
       setTeamSwapped,
       setServingTeam,
-      setGameComplete
+      setGameComplete,
     );
 
     // If set is complete and the set hasn't already been proceπssed.
@@ -99,8 +102,9 @@ const Page = () => {
   // everytime container gains children, scroll left.
   useEffect(() => {
     if (containerRef.current) {
-      containerRef.current.scrollLeft = containerRef.current.scrollWidth;
+      containerRef.current.scrollTop = -containerRef.current.scrollHeight;
     }
+    console.log(containerRef);
   }, [gameData]);
 
   //When current set is updated, new set is unprocessed
@@ -133,10 +137,10 @@ const Page = () => {
   if (!isClient) {
     // Render a placeholder or loading state until client-side code runs
     return (
-      <div role="status" className="grid place-items-center h-dvh w-dvw">
+      <div role="status" className="grid h-dvh w-dvw place-items-center">
         <svg
           aria-hidden="true"
-          className="w-8 h-8 text-gray-200 animate-spin dark:text-gray-600 fill-white"
+          className="h-8 w-8 animate-spin fill-white text-gray-200 dark:text-gray-600"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -154,29 +158,16 @@ const Page = () => {
       </div>
     );
   }
-
   return (
-    <div className="flex flex-col gap-7 text-gray-800 dark:text-white pt-5">
-      <div className=" absolute flex gap-3 justify-end top-2 right-2">
-        <Settings gameData={gameData} setGameData={setGameData} />
-        <FullScreen />
-      </div>
-      <h2 className="text-center text-3xl">Set {currentSet}</h2>
-      {/* <div className="grid grid-flow-col sm:flex gap-3 grid-rows-2 place-items-center"> */}
-      <div className="flex flex-row w-full flex-wrap gap-3">
+    <div className="flex h-full flex-col gap-4 text-gray-800 dark:text-white">
+      <div className="flex flex-row items-center justify-end gap-3 pr-2 pt-5">
         <button
           onClick={() => swapSides()}
-          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 dark:hover:bg-gray-900 hover:bg-gray-100 self-start mx-auto flex-shrink-0"
+          className="inline-flex flex-shrink-0 items-center gap-3 self-start rounded-lg border px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-900 sm:text-base"
         >
           <ArrowsRightLeftIcon className="size-5 text-gray-800 dark:text-white" />
-          <span className="">Swap sides</span>
+          <span className="hidden md:block">Swap sides</span>
         </button>
-        {/* <Timer
-          state={endOfSetCountdown}
-          setState={setEndOfSetCountdown}
-          endOfSet
-          className={"col-span-2"}
-        /> */}
         <button
           onClick={() =>
             resetGame(
@@ -187,21 +178,24 @@ const Page = () => {
               setGameComplete,
               setEndOfSetCountdown,
               setTimeoutCountdown,
-              gameData
+              gameData,
             )
           }
-          className=" sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2 dark:hover:bg-gray-900 hover:bg-gray-100 self-start mx-auto flex-shrink-0"
+          className="inline-flex flex-shrink-0 items-center gap-3 self-start rounded-lg border px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-900 sm:text-base"
         >
-          <XCircleIcon className="size-5 text-gray-800 dark:text-white" /> Reset
-          game
+          <XCircleIcon className="size-5 text-gray-800 dark:text-white" />{" "}
+          <span className="hidden md:block"> Reset game</span>
         </button>
+
+        <Settings gameData={gameData} setGameData={setGameData} />
+        <FullScreen />
       </div>
-      <div className=" grid grid-cols-2 grid-flow-row gap-4 gap-y-10 sm:px-10 sm:h-full h-1">
-        {/* <div className=" grid grid-rows-2 grid-cols-1 sm:grid-cols-2 gap-4 gap-y-10 px-10 h-full flex-1"> */}
+
+      <div className="grid h-[calc(100dvh-5rem)] max-h-full grid-cols-2 grid-rows-[2fr_auto_1fr] gap-4">
         <div
           className={`${
             !teamSwapped ? "col-start-1 pl-2" : "col-start-2 pr-2"
-          } w-full h-full row-span-1 col-span-1 row-start-1`}
+          } col-span-1 row-span-1 row-start-1`}
         >
           <TeamScore
             teamSwapped={teamSwapped}
@@ -220,8 +214,8 @@ const Page = () => {
         </div>
         <div
           className={`${
-            !teamSwapped ? "sm:col-start-2 pr-2" : "sm:col-start-1 pl-2"
-          } w-full h-full sm:row-span-1 sm:col-span-1 sm:row-start-1`}
+            !teamSwapped ? "pr-2 sm:col-start-2" : "pl-2 sm:col-start-1"
+          } sm:col-span-1 sm:row-span-1 sm:row-start-1`}
         >
           <TeamScore
             teamSwapped={teamSwapped}
@@ -238,8 +232,43 @@ const Page = () => {
             setTimeoutCountdown={setTimeoutCountdown}
           />
         </div>
-        <div className="text-center col-span-2 h-full">
-          <p className="">History</p>
+
+        <h2 className="col-span-2 text-center text-3xl">Set {currentSet}</h2>
+        <div
+          ref={containerRef}
+          className="col-span-2 flex h-full flex-col-reverse gap-2 overflow-y-scroll py-2 sm:py-10"
+        >
+          {gameData.game.sets[currentSet].actions.map((item, index) => (
+            <div
+              key={index}
+              className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 last:dark:text-gray-100 md:last:text-3xl [&:last-child>div>div>button]:inline-flex"
+            >
+              <History
+                item={item}
+                gameData={gameData}
+                setGameData={setGameData}
+                currentSet={currentSet}
+                setServingTeam={setServingTeam}
+                setGameComplete={setGameComplete}
+                gameComplete={gameComplete}
+                setHasSetBeenProcessed={setHasSetBeenProcessed}
+                teamSwapped={teamSwapped}
+              />
+            </div>
+          ))}
+          {/* <History
+            gameData={gameData}
+            setGameData={setGameData}
+            currentSet={currentSet}
+            setServingTeam={setServingTeam}
+            setGameComplete={setGameComplete}
+            gameComplete={gameComplete}
+            setHasSetBeenProcessed={setHasSetBeenProcessed}
+            teamSwapped={teamSwapped}
+          /> */}
+        </div>
+
+        {/* <div className="text-center col-span-2 h-full">
           <div
             className="flex flex-row w-full overflow-x-auto py-4 items-center gap-2 px-10"
             ref={containerRef}
@@ -258,7 +287,7 @@ const Page = () => {
               />
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
 
       <Transition appear show={isOpen} as={Fragment}>
@@ -330,7 +359,7 @@ const Page = () => {
                               setGameComplete,
                               setEndOfSetCountdown,
                               setTimeoutCountdown,
-                              gameData
+                              gameData,
                             );
                             setIsOpen(false);
                           }}
@@ -350,7 +379,7 @@ const Page = () => {
                               currentSet,
                               setHasSetBeenProcessed,
                               swapSides,
-                              setGameData
+                              setGameData,
                             )
                           }
                         />
@@ -364,7 +393,7 @@ const Page = () => {
                               currentSet,
                               setHasSetBeenProcessed,
                               swapSides,
-                              setGameData
+                              setGameData,
                             );
                             setEndOfSetCountdown(0);
                           }}
@@ -381,7 +410,7 @@ const Page = () => {
                               currentSet,
                               setServingTeam,
                               setHasSetBeenProcessed,
-                              setIsOpen
+                              setIsOpen,
                             );
                             setEndOfSetCountdown(0);
                           }}

@@ -29,10 +29,10 @@ export default function RootLayout({ children }) {
       <body className={`${inter.className} dark:bg-[#15202b] bg-white`}>
         <ThemeProvider attribute="class">
           {/* <Navbar /> */}
-          {children}
+          <main className="h-dvh">{children}</main>
         </ThemeProvider>
+        <Analytics />
       </body>
-      <Analytics />
     </html>
   );
 }
