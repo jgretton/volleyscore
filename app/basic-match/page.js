@@ -104,7 +104,6 @@ const Page = () => {
     if (containerRef.current) {
       containerRef.current.scrollTop = -containerRef.current.scrollHeight;
     }
-    console.log(containerRef);
   }, [gameData]);
 
   //When current set is updated, new set is unprocessed
