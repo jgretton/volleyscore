@@ -1,3 +1,4 @@
+"use client";
 import { ClockIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState, useRef } from "react";
 import ScoreButton from "./scoreButton";
@@ -15,9 +16,8 @@ const TeamScore = ({
   timeoutTeam,
   setTimeoutTeam,
   team,
-  timeoutCountdown,
-  setTimeoutCountdown,
 }) => {
+  const [timeoutCountdown, setTimeoutCountdown] = useState(0);
   useEffect(() => {
     let timeoutInterval;
 
