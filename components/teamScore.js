@@ -107,7 +107,7 @@ const TeamScore = ({
                   : team === "homeTeam"
                     ? "order-1 self-start"
                     : "order-2 self-start"
-              } rounded-md border border-sky-200 px-4 py-2 text-lg font-light tabular-nums sm:self-center`}
+              } rounded-md border border-[#3E5B64] px-4 py-2 text-lg font-light tabular-nums sm:self-center`}
             >
               {gameData.game[`${team}SetsWon`]}
             </span>
@@ -132,7 +132,7 @@ const TeamScore = ({
                     : team === "homeTeam"
                       ? "order-1 sm:order-2"
                       : "order-2 sm:order-1"
-                } inline-flex flex-shrink-0 items-center gap-3 rounded-lg border px-4 py-2 tabular-nums hover:bg-gray-100 disabled:cursor-not-allowed dark:hover:bg-slate-700`}
+                } inline-flex flex-shrink-0 items-center gap-3 rounded-lg border border-[#3E5B64] px-4 py-2 tabular-nums hover:bg-gray-100 disabled:cursor-not-allowed dark:border-gray-200 dark:hover:bg-slate-700`}
                 onClick={() => {
                   timeOut(
                     team,
@@ -175,7 +175,7 @@ const TeamScore = ({
                       !teamSwapped ? "first:order-0" : "first:order-2"
                     } size-5 flex-shrink-0 rounded-md border border-slate-800 dark:border-white ${
                       index < gameData.game.sets[currentSet].timeouts[`${team}`]
-                        ? "bg-sky-800"
+                        ? "bg-[#3E5B64]"
                         : "border-slate-800"
                     }`}
                   ></span>

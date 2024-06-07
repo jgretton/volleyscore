@@ -12,7 +12,7 @@ const ScoreButton = ({
 }) => {
   return (
     <button
-      className="w-full flex-grow bg-sky-100 dark:bg-[#3E5B64] rounded-xl mt-2 disabled:opacity-30 tabular-nums ring-2 ring-sky-200/30 dark:ring-slate-800/30 ring-inset"
+      className="bg-sky-100_ mt-2 w-full flex-grow rounded-xl bg-[#3E5B64] tabular-nums text-gray-50 ring-2 ring-inset ring-slate-800/30 disabled:opacity-30"
       onClick={() =>
         increaseScore(team, setGameData, currentSet, setServingTeam)
       }
