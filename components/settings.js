@@ -25,15 +25,22 @@ const Settings = ({ gameData, setGameData }) => {
   return (
     <>
       <button
-        className="inline-flex transition-all  items-center gap-3 rounded-lg px-4 py-2 dark:bg-slate-800 dark:hover:bg-slate-900 dark:text-white bg-gray-100 hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-opacity-50"
+        className="inline-flex items-center gap-3 rounded-lg bg-gray-100 px-4 py-2 transition-all hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-opacity-50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
         type="button"
         onClick={() => setIsOpen(!isOpen)}
       >
         <Cog6ToothIcon className="size-6" />
       </button>
 
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={() => {}}>
+      <Transition
+        appear
+        show={isOpen}
+        as={Fragment}
+        onClose={() => {
+          setIsOpen(!false);
+        }}
+      >
+        <Dialog as="div" className="relative z-10">
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -47,7 +54,7 @@ const Settings = ({ gameData, setGameData }) => {
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex min-h-full max-w-md items-center justify-center p-4 text-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -57,8 +64,8 @@ const Settings = ({ gameData, setGameData }) => {
                 leaveFrom="opacity-100 right-0 "
                 leaveTo="opacity-0 -right-full"
               >
-                <Dialog.Panel className="fixed inset-y-0 right-0 overflow-hidden md:rounded-l-3xl bg-white dark:bg-[#15202b] dark:text-white p-6 text-left align-middle shadow-xl transition-all">
-                  <div className="flex flex-row w-full justify-between items-center ">
+                <Dialog.Panel className="fixed inset-y-0 right-0 w-full max-w-sm overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-[#15202b] dark:text-white md:rounded-l-3xl">
+                  <div className="flex w-full flex-row items-center justify-between">
                     <Dialog.Title
                       as="h3"
                       className="text-lg font-medium leading-6 text-gray-900 dark:text-white"
@@ -71,7 +78,7 @@ const Settings = ({ gameData, setGameData }) => {
                   </div>
                   <div className="mt-4">
                     <div className="flex flex-col gap-4">
-                      <div className="flex flex-col gap-3 ">
+                      <div className="flex flex-col gap-3">
                         <label> Home team name</label>
                         <input
                           type="text"
@@ -79,10 +86,10 @@ const Settings = ({ gameData, setGameData }) => {
                           name="homeTeamName"
                           onChange={changeName}
                           value={gameData.game.homeTeamName}
-                          className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white "
+                          className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
                         />
                       </div>
-                      <div className="flex flex-col gap-3 ">
+                      <div className="flex flex-col gap-3">
                         <label> Away team name</label>
                         <input
                           type="text"
@@ -90,10 +97,10 @@ const Settings = ({ gameData, setGameData }) => {
                           name="awayTeamName"
                           onChange={changeName}
                           value={gameData.game.awayTeamName}
-                          className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white "
+                          className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
                         />
                       </div>
-                      <div className=" mt-10">
+                      <div className="mt-10">
                         <DarkModeToggle />
                       </div>
                     </div>
