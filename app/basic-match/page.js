@@ -1,6 +1,4 @@
 "use client";
-
-import { ArrowsRightLeftIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState, useEffect, useRef, forwardRef } from "react";
 
@@ -10,18 +8,16 @@ import {
   resetGame,
   EndOfSet,
   undoSetPoint,
-  undoAction,
 } from "@/utils/gameLogic";
-import HistoryCard from "@/components/historyCard";
 import GameReview from "@/components/gameReview";
 import TeamScore from "@/components/teamScore";
 import Timer from "@/components/timer";
-import Link from "next/link";
-import FullScreen from "@/components/fullScreen";
-import Settings from "@/components/settings";
 import History from "@/components/history";
+import GameHeader from "@/components/game/layout/GameHeader";
+import { useGameStore } from "@/store";
 
 const Page = () => {
+  const { teamSwappedSides: teamSwapped } = useGameStore();
   const loadInitialGame = () => {
     if (typeof window !== "undefined") {
       const savedGame = localStorage.getItem("volleyballGameData");
@@ -50,7 +46,7 @@ const Page = () => {
   const [endOfSetCountdown, setEndOfSetCountdown] = useState(0);
   const [timeoutCountdown, setTimeoutCountdown] = useState(0);
   const [timeoutTeam, setTimeoutTeam] = useState("");
-  const [teamSwapped, setTeamSwapped] = useState(false);
+
   const [hasSetBeenProcessed, setHasSetBeenProcessed] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
@@ -60,15 +56,10 @@ const Page = () => {
     setIsOpen(false);
   }
 
-  const swapSides = () => {
-    setTeamSwapped((prevState) => !prevState);
-  };
-
   useEffect(() => {
     const winningTeam = checkIfSetComplete(
       gameData,
       currentSet,
-      setTeamSwapped,
       setServingTeam,
       setGameComplete,
     );
@@ -154,36 +145,7 @@ const Page = () => {
   }
   return (
     <div className="flex h-full flex-col gap-4 text-gray-800 dark:text-white">
-      <div className="flex flex-row items-center justify-end gap-3 pr-2 pt-5">
-        <button
-          onClick={() => swapSides()}
-          className="inline-flex shrink-0 items-center gap-3 self-start rounded-lg border px-4 py-2 text-sm hover:bg-gray-100 sm:text-base dark:hover:bg-gray-900"
-        >
-          <ArrowsRightLeftIcon className="size-5 text-gray-800 dark:text-white" />
-          <span className="hidden md:block">Swap sides</span>
-        </button>
-        <button
-          onClick={() =>
-            resetGame(
-              setGameData,
-              setServingTeam,
-              setCurrentSet,
-              setTeamSwapped,
-              setGameComplete,
-              setEndOfSetCountdown,
-              setTimeoutCountdown,
-              gameData,
-            )
-          }
-          className="inline-flex shrink-0 items-center gap-3 self-start rounded-lg border px-4 py-2 text-sm hover:bg-gray-100 sm:text-base dark:hover:bg-gray-900"
-        >
-          <XCircleIcon className="size-5 text-gray-800 dark:text-white" />{" "}
-          <span className="hidden md:block"> Reset game</span>
-        </button>
-
-        <Settings />
-        <FullScreen />
-      </div>
+      <GameHeader />
 
       <div className="grid h-[calc(100dvh-5rem)] max-h-full grid-cols-2 grid-rows-[2fr_auto_1fr] gap-4">
         <div
@@ -250,38 +212,7 @@ const Page = () => {
               />
             </div>
           ))}
-          {/* <History
-            gameData={gameData}
-            setGameData={setGameData}
-            currentSet={currentSet}
-            setServingTeam={setServingTeam}
-            setGameComplete={setGameComplete}
-            gameComplete={gameComplete}
-            setHasSetBeenProcessed={setHasSetBeenProcessed}
-            teamSwapped={teamSwapped}
-          /> */}
         </div>
-
-        {/* <div className="text-center col-span-2 h-full">
-          <div
-            className="flex flex-row w-full overflow-x-auto py-4 items-center gap-2 px-10"
-            ref={containerRef}
-          >
-            {gameData.game.sets[currentSet].actions.map((item, index) => (
-              <HistoryCard
-                item={item}
-                key={index}
-                gameData={gameData}
-                setGameData={setGameData}
-                currentSet={currentSet}
-                setServingTeam={setServingTeam}
-                setGameComplete={setGameComplete}
-                gameComplete={gameComplete}
-                setHasSetBeenProcessed={setHasSetBeenProcessed}
-              />
-            ))}
-          </div>
-        </div> */}
       </div>
 
       <Transition appear show={isOpen} as={Fragment}>
@@ -312,7 +243,7 @@ const Page = () => {
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
-                    className="text-lg font-medium leading-6 text-gray-900"
+                    className="text-lg leading-6 font-medium text-gray-900"
                   >
                     Set {currentSet} Finished.
                   </Dialog.Title>
@@ -334,7 +265,7 @@ const Page = () => {
                       <div className="grid gap-3">
                         <button
                           type="button"
-                          className="focus:outline-hidden inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           onClick={() => {
                             closeModal();
                           }}
@@ -343,13 +274,12 @@ const Page = () => {
                         </button>
                         <button
                           type="button"
-                          className="focus:outline-hidden inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           onClick={() => {
                             resetGame(
                               setGameData,
                               setServingTeam,
                               setCurrentSet,
-                              setTeamSwapped,
                               setGameComplete,
                               setEndOfSetCountdown,
                               setTimeoutCountdown,
@@ -379,7 +309,7 @@ const Page = () => {
                         />
                         <button
                           type="button"
-                          className="focus:outline-hidden inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           onClick={() => {
                             EndOfSet(
                               closeModal,
@@ -396,7 +326,7 @@ const Page = () => {
                         </button>
                         <button
                           type="button"
-                          className="focus:outline-hidden inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           onClick={() => {
                             undoSetPoint(
                               gameData,

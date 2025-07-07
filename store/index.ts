@@ -7,6 +7,12 @@ export const useGameStore = create<MatchStore>()(
   persist(
     (set, get) => ({
       match: initialGame,
+      teamSwappedSides: false,
+      swapSides: () => {
+        set((state) => ({
+          teamSwappedSides: !state.teamSwappedSides,
+        }));
+      },
       updateTeamName: (teamNames: TeamNames) => {
         set((state) => ({
           match: {
@@ -14,6 +20,16 @@ export const useGameStore = create<MatchStore>()(
             homeTeamName: teamNames.homeTeamName,
             awayTeamName: teamNames.awayTeamName,
           },
+        }));
+      },
+      resetMatchData: () => {
+        set((state) => ({
+          match: {
+            ...initialGame,
+            homeTeamName: state.match.homeTeamName,
+            awayTeamName: state.match.awayTeamName,
+          },
+          teamSwappedSides: false,
         }));
       },
     }),

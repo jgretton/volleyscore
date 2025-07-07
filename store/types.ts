@@ -37,5 +37,9 @@ export interface TeamNames {
 
 export interface MatchStore {
   match: Match;
+  teamSwappedSides: boolean;
+  swapSides: () => void;
   updateTeamName: (teamNames: TeamNames) => void;
+
+  resetMatchData: () => void;
 }
