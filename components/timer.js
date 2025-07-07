@@ -32,13 +32,13 @@ const Timer = ({ endOfSet, state, setState, props }) => {
           disabled={state}
           className="disabled:cursor-not-allowed  sm:text-base text-sm inline-flex items-center gap-3 border rounded-lg px-4 py-2  hover:bg-gray-100 self-start tabular-nums"
         >
-          <ClockIcon className="size-5 text-gray-800 flex-shrink-0" />
+          <ClockIcon className="size-5 text-gray-800 shrink-0" />
           <span className="block">Start end of set timer</span>
         </button>
       ) : (
         <div className="inline-flex items-center gap-3">
           <button type="button" onClick={() => setState(0)}>
-            <StopCircleIcon className="size-10 text-red-600  flex-shrink-0" />
+            <StopCircleIcon className="size-10 text-red-600  shrink-0" />
           </button>
           <span className="w-full tabular-nums">{formatTime(state)}</span>
         </div>

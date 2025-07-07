@@ -70,7 +70,7 @@ const FullScreen = () => {
   return (
     <button
       onClick={toggleFullscreen}
-      className="hidden relative group sm:inline-flex transition-all  items-center gap-3 rounded-lg px-4 py-2 dark:bg-slate-800 dark:hover:bg-slate-900 dark:text-white bg-gray-100 hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-opacity-50"
+      className="hidden relative group sm:inline-flex transition-all  items-center gap-3 rounded-lg px-4 py-2 dark:bg-slate-800 dark:hover:bg-slate-900 dark:text-white bg-gray-100 hover:bg-gray-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-opacity-50"
     >
       {isFullscreen ? (
         <div className="">

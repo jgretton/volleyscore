@@ -68,7 +68,7 @@ const History = ({
   };
 
   return (
-    <div className="flex gap-3 min-h-12 flex-1 justify-center flex-shrink-0 fadeIn">
+    <div className="flex gap-3 min-h-12 flex-1 justify-center shrink-0 fadeIn">
       <div
         className={`${
           teamSwapped
@@ -83,7 +83,7 @@ const History = ({
         {item.team === "homeTeam" && <Card item={item} />}
         {item.team !== "homeTeam" && <UndoButton />}
       </div>
-      <div className="inline-flex items-center justify-center flex-shrink-0 order-2 px-1">
+      <div className="inline-flex items-center justify-center shrink-0 order-2 px-1">
         {Icon[item.type]}
       </div>
       <div

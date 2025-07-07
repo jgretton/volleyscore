@@ -24,8 +24,8 @@ const HistoryCard = ({
   };
 
   return (
-    <div className="flex flex-col flex-shrink-0 px-8 items-center gap-4 bg-sky-50 dark:bg-gradient-to-r dark:from-[#15202B] dark:to-[#495A62]  rounded-lg py-4 last:bg-blue-100 last:dark:bg-slate-800 [&:last-child>button]:inline-flex fadeIn">
-      {/* <div className="flex flex-col flex-shrink-0 px-8 items-center gap-4 bg-sky-100 dark:bg-slate-900 rounded-lg py-4 last:bg-red-100 last:dark:bg-slate-800 [&:last-child>button]:inline-flex fadeIn"> */}
+    <div className="flex flex-col shrink-0 px-8 items-center gap-4 bg-sky-50 dark:bg-linear-to-r dark:from-[#15202B] dark:to-[#495A62]  rounded-lg py-4 last:bg-blue-100 dark:last:bg-slate-800 [&:last-child>button]:inline-flex fadeIn">
+      {/* <div className="flex flex-col shrink-0 px-8 items-center gap-4 bg-sky-100 dark:bg-slate-900 rounded-lg py-4 last:bg-red-100 dark:last:bg-slate-800 [&:last-child>button]:inline-flex fadeIn"> */}
       <span> {team[item.team]}</span>
       {Icon[item.type]}
       {item.type === "score" && (

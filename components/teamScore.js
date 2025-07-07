@@ -31,7 +31,7 @@ const TeamScore = ({
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex flex-shrink-0 flex-row items-center justify-between">
+      <div className="flex shrink-0 flex-row items-center justify-between">
         <span
           className={`${
             !teamSwapped
@@ -58,7 +58,7 @@ const TeamScore = ({
               : team === "homeTeam"
                 ? "order-1"
                 : "order-2"
-          } size-6rounded-full flex-shrink-0`}
+          } size-6rounded-full shrink-0`}
         >
           <svg className="size-6" viewBox="0 0 58 58">
             <path
@@ -132,7 +132,7 @@ const TeamScore = ({
                     : team === "homeTeam"
                       ? "order-1 sm:order-2"
                       : "order-2 sm:order-1"
-                } inline-flex flex-shrink-0 items-center gap-3 rounded-lg border border-[#3E5B64] px-4 py-2 tabular-nums hover:bg-gray-100 disabled:cursor-not-allowed dark:border-gray-200 dark:hover:bg-slate-700`}
+                } inline-flex shrink-0 items-center gap-3 rounded-lg border border-[#3E5B64] px-4 py-2 tabular-nums hover:bg-gray-100 disabled:cursor-not-allowed dark:border-gray-200 dark:hover:bg-slate-700`}
                 onClick={() => {
                   timeOut(
                     team,
@@ -173,7 +173,7 @@ const TeamScore = ({
                     key={`timeout-${index}`}
                     className={`${
                       !teamSwapped ? "first:order-0" : "first:order-2"
-                    } size-5 flex-shrink-0 rounded-md border border-slate-800 dark:border-white ${
+                    } size-5 shrink-0 rounded-md border border-slate-800 dark:border-white ${
                       index < gameData.game.sets[currentSet].timeouts[`${team}`]
                         ? "bg-[#3E5B64]"
                         : "border-slate-800"

@@ -25,7 +25,7 @@ const Settings = ({ gameData, setGameData }) => {
   return (
     <>
       <button
-        className="inline-flex items-center gap-3 rounded-lg bg-gray-100 px-4 py-2 transition-all hover:bg-gray-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-opacity-50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
+        className="inline-flex items-center gap-3 rounded-lg bg-gray-100 px-4 py-2 transition-all hover:bg-gray-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-opacity-50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
         type="button"
         onClick={() => setIsOpen(!isOpen)}
       >

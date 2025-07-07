@@ -162,7 +162,7 @@ const Page = () => {
       <div className="flex flex-row items-center justify-end gap-3 pr-2 pt-5">
         <button
           onClick={() => swapSides()}
-          className="inline-flex flex-shrink-0 items-center gap-3 self-start rounded-lg border px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-900 sm:text-base"
+          className="inline-flex shrink-0 items-center gap-3 self-start rounded-lg border px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-900 sm:text-base"
         >
           <ArrowsRightLeftIcon className="size-5 text-gray-800 dark:text-white" />
           <span className="hidden md:block">Swap sides</span>
@@ -180,7 +180,7 @@ const Page = () => {
               gameData,
             )
           }
-          className="inline-flex flex-shrink-0 items-center gap-3 self-start rounded-lg border px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-900 sm:text-base"
+          className="inline-flex shrink-0 items-center gap-3 self-start rounded-lg border px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-900 sm:text-base"
         >
           <XCircleIcon className="size-5 text-gray-800 dark:text-white" />{" "}
           <span className="hidden md:block"> Reset game</span>
@@ -240,7 +240,7 @@ const Page = () => {
           {gameData.game.sets[currentSet].actions.map((item, index) => (
             <div
               key={index}
-              className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 last:dark:text-gray-100 md:last:text-3xl [&:last-child>div>div>button]:inline-flex"
+              className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 dark:last:text-gray-100 md:last:text-3xl [&:last-child>div>div>button]:inline-flex"
             >
               <History
                 item={item}
@@ -339,7 +339,7 @@ const Page = () => {
                       <div className="grid gap-3">
                         <button
                           type="button"
-                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           onClick={() => {
                             closeModal();
                           }}
@@ -348,7 +348,7 @@ const Page = () => {
                         </button>
                         <button
                           type="button"
-                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           onClick={() => {
                             resetGame(
                               setGameData,
@@ -384,7 +384,7 @@ const Page = () => {
                         />
                         <button
                           type="button"
-                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           onClick={() => {
                             EndOfSet(
                               closeModal,
@@ -401,7 +401,7 @@ const Page = () => {
                         </button>
                         <button
                           type="button"
-                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                           onClick={() => {
                             undoSetPoint(
                               gameData,
