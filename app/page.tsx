@@ -2,18 +2,19 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useGameStore } from "@/store";
+import { TeamNames } from "@/store/types";
 
 export default function Home() {
-  const [selected, setSelected] = useState(false);
-  const [gameTime, setGameTime] = useState(15);
+  const [selected, setSelected] = useState<boolean>(false);
+  const [gameTime, setGameTime] = useState<number>(15);
 
   const { updateTeamName } = useGameStore();
-  const [teamNames, setTeamNames] = useState({
+  const [teamNames, setTeamNames] = useState<TeamNames>({
     homeTeamName: "Home",
     awayTeamName: "Away",
   });
 
-  const changeName = (e) => {
+  const changeName = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTeamNames((prevState) => {
       return {
         ...prevState,
@@ -22,9 +23,9 @@ export default function Home() {
     });
   };
 
-  const onChangeTime = (e) => {
-    setGameTime(e.target.value);
-  };
+  //   const onChangeTime = (e:) => {
+  //     setGameTime(e.target.value);
+  //   };
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 p-24 dark:text-white">
