@@ -10,7 +10,7 @@ import {
   undoSetPoint,
 } from "@/utils/gameLogic";
 import GameReview from "@/components/gameReview";
-import TeamScore from "@/components/teamScore";
+import TeamScore from "@/components/game/scoring/TeamScore";
 import Timer from "@/components/timer";
 import History from "@/components/history";
 import GameHeader from "@/components/game/layout/GameHeader";
@@ -153,7 +153,8 @@ const Page = () => {
             !teamSwapped ? "col-start-1 pl-2" : "col-start-2 pr-2"
           } col-span-1 row-span-1 row-start-1`}
         >
-          <TeamScore
+          <TeamScore team="homeTeam" />
+          {/* <TeamScore
             teamSwapped={teamSwapped}
             servingTeam={servingTeam}
             gameData={gameData}
@@ -166,27 +167,14 @@ const Page = () => {
             team="homeTeam"
             timeoutCountdown={timeoutCountdown}
             setTimeoutCountdown={setTimeoutCountdown}
-          />
+          /> */}
         </div>
         <div
           className={`${
             !teamSwapped ? "pr-2 sm:col-start-2" : "pl-2 sm:col-start-1"
           } sm:col-span-1 sm:row-span-1 sm:row-start-1`}
         >
-          <TeamScore
-            teamSwapped={teamSwapped}
-            servingTeam={servingTeam}
-            gameData={gameData}
-            gameComplete={gameComplete}
-            setGameData={setGameData}
-            currentSet={currentSet}
-            setServingTeam={setServingTeam}
-            timeoutTeam={timeoutTeam}
-            setTimeoutTeam={setTimeoutTeam}
-            team="awayTeam"
-            timeoutCountdown={timeoutCountdown}
-            setTimeoutCountdown={setTimeoutCountdown}
-          />
+          <TeamScore team="awayTeam" />
         </div>
 
         <h2 className="col-span-2 text-center text-3xl">Set {currentSet}</h2>

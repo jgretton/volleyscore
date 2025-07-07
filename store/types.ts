@@ -6,6 +6,7 @@ export interface Match {
   awayTeamSetsWon: number;
   pointsPerSet: number;
   timedGame: boolean;
+  gameComplete: boolean;
   sets: Sets;
 }
 export interface Sets {
@@ -38,8 +39,13 @@ export interface TeamNames {
 export interface MatchStore {
   match: Match;
   teamSwappedSides: boolean;
+  currentSet: number;
   swapSides: () => void;
   updateTeamName: (teamNames: TeamNames) => void;
+  increaseTeamScore: (
+    teamKey: "awayTeam" | "homeTeam",
+    currentSet: number,
+  ) => void;
 
   resetMatchData: () => void;
 }

@@ -8,6 +8,7 @@ export const useGameStore = create<MatchStore>()(
     (set, get) => ({
       match: initialGame,
       teamSwappedSides: false,
+      currentSet: 1,
       swapSides: () => {
         set((state) => ({
           teamSwappedSides: !state.teamSwappedSides,
@@ -19,6 +20,26 @@ export const useGameStore = create<MatchStore>()(
             ...state.match,
             homeTeamName: teamNames.homeTeamName,
             awayTeamName: teamNames.awayTeamName,
+          },
+        }));
+      },
+      increaseTeamScore: (
+        teamKey: "awayTeam" | "homeTeam",
+        currentSet: number,
+      ) => {
+        set((state) => ({
+          match: {
+            ...state.match,
+            sets: {
+              ...state.match.sets,
+              [currentSet]: {
+                ...state.match.sets[currentSet],
+                score: {
+                  ...state.match.sets[currentSet].score,
+                  [teamKey]: state.match.sets[currentSet].score[teamKey] + 1,
+                },
+              },
+            },
           },
         }));
       },
