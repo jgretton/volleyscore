@@ -1,15 +1,13 @@
 "use client";
 import Link from "next/link";
-import { initialGame } from "@/lib/data";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useGameStore } from "@/store";
 
 export default function Home() {
-  const [gameData, setGameData] = useState(initialGame);
   const [selected, setSelected] = useState(false);
   const [gameTime, setGameTime] = useState(15);
 
-  const { updateTeamName, match } = useGameStore();
+  const { updateTeamName } = useGameStore();
   const [teamNames, setTeamNames] = useState({
     homeTeamName: "Home",
     awayTeamName: "Away",
