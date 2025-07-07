@@ -1,35 +1,51 @@
 "use client";
-import { Dialog, Transition } from "@headlessui/react";
+import {
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
 import { Cog6ToothIcon, CogIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import React, { useState, Fragment } from "react";
 import DarkModeToggle from "./darkModeToggle";
+import { useGameStore } from "@/store";
 
-const Settings = ({ gameData, setGameData }) => {
+const Settings = () => {
+  const { match, updateTeamName } = useGameStore();
   const [isOpen, setIsOpen] = useState(false);
+  const [teamNames, setTeamNames] = useState({
+    homeTeamName: match.homeTeamName,
+    awayTeamName: match.awayTeamName,
+  });
 
   const changeName = (e) => {
-    setGameData((prevState) => {
+    setTeamNames((prevState) => {
       return {
-        game: {
-          ...prevState.game,
-          [e.target.name]: e.target.value,
-        },
+        ...prevState,
+        [e.target.name]: e.target.value,
       };
     });
   };
 
-  const saveToLocalStorage = () => {
-    localStorage.setItem("volleyballGameData", JSON.stringify(gameData));
-  };
+  const handleTeamNameUpdate = () => {
+    //If user removes all text from input, default to Home and Away
+    const validatedTeamNames = {
+      homeTeamName: teamNames.homeTeamName.trim("") || "Home",
+      awayTeamName: teamNames.awayTeamName.trim("") || "Away",
+    };
 
+    setTeamNames(validatedTeamNames);
+    updateTeamName(validatedTeamNames);
+  };
   return (
     <>
       <button
-        className="focus-visible:outline-hidden inline-flex items-center gap-3 rounded-lg bg-gray-100 px-4 py-2 transition-all hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-opacity-50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
+        className="focus-visible:outline-hidden inline-flex cursor-pointer items-center gap-3 rounded-lg bg-gray-100 px-4 py-2 transition-all hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-opacity-50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
         type="button"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <Cog6ToothIcon className="size-6" />
+        <Cog6ToothIcon className="size-6" aria-hidden="true" />
       </button>
 
       <Transition
@@ -41,7 +57,7 @@ const Settings = ({ gameData, setGameData }) => {
         }}
       >
         <Dialog as="div" className="relative z-10">
-          <Transition.Child
+          <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"
             enterFrom="opacity-0"
@@ -51,11 +67,11 @@ const Settings = ({ gameData, setGameData }) => {
             leaveTo="opacity-0"
           >
             <div className="fixed inset-0 bg-black/25" />
-          </Transition.Child>
+          </TransitionChild>
 
           <div className="fixed inset-0 overflow-y-auto">
             <div className="flex min-h-full max-w-md items-center justify-center p-4 text-center">
-              <Transition.Child
+              <TransitionChild
                 as={Fragment}
                 enter="ease-out duration-300"
                 enterFrom="opacity-0 -right-full"
@@ -64,16 +80,19 @@ const Settings = ({ gameData, setGameData }) => {
                 leaveFrom="opacity-100 right-0 "
                 leaveTo="opacity-0 -right-full"
               >
-                <Dialog.Panel className="fixed inset-y-0 right-0 w-full max-w-sm overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all md:rounded-l-3xl dark:bg-[#15202b] dark:text-white">
+                <DialogPanel className="fixed inset-y-0 right-0 w-full max-w-sm overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all md:rounded-l-3xl dark:bg-[#15202b] dark:text-white">
                   <div className="flex w-full flex-row items-center justify-between">
-                    <Dialog.Title
+                    <DialogTitle
                       as="h3"
                       className="text-lg font-medium leading-6 text-gray-900 dark:text-white"
                     >
                       Settings
-                    </Dialog.Title>
+                    </DialogTitle>
                     <button onClick={() => setIsOpen(false)}>
-                      <XMarkIcon className="size-6" />
+                      <XMarkIcon
+                        className="size-6 cursor-pointer"
+                        aria-hidden="true"
+                      />
                     </button>
                   </div>
                   <div className="mt-4">
@@ -85,7 +104,7 @@ const Settings = ({ gameData, setGameData }) => {
                           placeholder="Home"
                           name="homeTeamName"
                           onChange={changeName}
-                          value={gameData.homeTeamName}
+                          value={teamNames.homeTeamName}
                           className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
                         />
                       </div>
@@ -96,17 +115,27 @@ const Settings = ({ gameData, setGameData }) => {
                           placeholder="Away"
                           name="awayTeamName"
                           onChange={changeName}
-                          value={gameData.awayTeamName}
+                          value={teamNames.awayTeamName}
                           className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
                         />
                       </div>
+                      <button
+                        className="w-full cursor-pointer rounded-lg bg-blue-600 py-2 text-white disabled:cursor-not-allowed disabled:opacity-30"
+                        disabled={
+                          match.awayTeamName === teamNames.awayTeamName &&
+                          match.homeTeamName === teamNames.homeTeamName
+                        }
+                        onClick={() => handleTeamNameUpdate()}
+                      >
+                        Update
+                      </button>
                       <div className="mt-10">
                         <DarkModeToggle />
                       </div>
                     </div>
                   </div>
-                </Dialog.Panel>
-              </Transition.Child>
+                </DialogPanel>
+              </TransitionChild>
             </div>
           </div>
         </Dialog>

@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ArrowPathIcon,
-  ArrowUturnLeftIcon,
-  ArrowsRightLeftIcon,
-  XCircleIcon,
-} from "@heroicons/react/24/outline";
+import { ArrowsRightLeftIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState, useEffect, useRef, forwardRef } from "react";
 
@@ -186,7 +181,7 @@ const Page = () => {
           <span className="hidden md:block"> Reset game</span>
         </button>
 
-        <Settings gameData={gameData} setGameData={setGameData} />
+        <Settings />
         <FullScreen />
       </div>
 

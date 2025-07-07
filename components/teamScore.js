@@ -4,6 +4,7 @@ import React, { useEffect, useState, useRef } from "react";
 import ScoreButton from "./scoreButton";
 
 import { increaseScore, timeOut } from "@/utils/gameLogic";
+import { useGameStore } from "@/store";
 
 const TeamScore = ({
   teamSwapped,
@@ -18,6 +19,7 @@ const TeamScore = ({
   team,
 }) => {
   const [timeoutCountdown, setTimeoutCountdown] = useState(0);
+
   useEffect(() => {
     let timeoutInterval;
 
@@ -28,6 +30,8 @@ const TeamScore = ({
     }
     return () => clearInterval(timeoutInterval);
   }, [timeoutCountdown]);
+
+  const { match } = useGameStore();
 
   return (
     <div className="flex h-full flex-col">
@@ -43,7 +47,7 @@ const TeamScore = ({
                 : "order-1" // if not hometeam apply this
           } truncate text-base md:text-lg lg:text-3xl`}
         >
-          {gameData?.[`${team}Name`]}
+          {match?.[`${team}Name`]}
         </span>
         <div
           className={`${
