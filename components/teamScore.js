@@ -43,7 +43,7 @@ const TeamScore = ({
                 : "order-1" // if not hometeam apply this
           } truncate text-base md:text-lg lg:text-3xl`}
         >
-          {gameData?.game[`${team}Name`]}
+          {gameData?.[`${team}Name`]}
         </span>
         <div
           className={`${
@@ -90,7 +90,7 @@ const TeamScore = ({
         <div className="flex h-full w-full flex-col gap-3">
           <ScoreButton
             increaseScore={increaseScore}
-            score={gameData?.game?.sets[currentSet]?.score?.[`${team}`]}
+            score={gameData?.sets[currentSet]?.score?.[`${team}`]}
             team={team}
             disabled={gameComplete}
             setGameData={setGameData}
@@ -109,7 +109,7 @@ const TeamScore = ({
                     : "order-2 self-start"
               } rounded-md border border-[#3E5B64] px-4 py-2 text-lg font-light tabular-nums sm:self-center`}
             >
-              {gameData.game[`${team}SetsWon`]}
+              {gameData[`${team}SetsWon`]}
             </span>
 
             <div
@@ -143,11 +143,11 @@ const TeamScore = ({
                   );
                 }}
                 disabled={
-                  gameData.game.sets[currentSet].timeouts[team] >= 2 ||
+                  gameData.sets[currentSet].timeouts[team] >= 2 ||
                   (timeoutTeam === team && timeoutCountdown > 0)
                 }
               >
-                <ClockIcon className="size-5 text-gray-900 dark:text-white sm:size-6" />
+                <ClockIcon className="size-5 text-gray-900 sm:size-6 dark:text-white" />
                 {timeoutTeam === team && timeoutCountdown > 0 ? (
                   <span className="text-xs md:text-base">
                     {timeoutCountdown} s
@@ -174,7 +174,7 @@ const TeamScore = ({
                     className={`${
                       !teamSwapped ? "first:order-0" : "first:order-2"
                     } size-5 shrink-0 rounded-md border border-slate-800 dark:border-white ${
-                      index < gameData.game.sets[currentSet].timeouts[`${team}`]
+                      index < gameData.sets[currentSet].timeouts[`${team}`]
                         ? "bg-[#3E5B64]"
                         : "border-slate-800"
                     }`}

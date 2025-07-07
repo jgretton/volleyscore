@@ -25,7 +25,7 @@ const Settings = ({ gameData, setGameData }) => {
   return (
     <>
       <button
-        className="inline-flex items-center gap-3 rounded-lg bg-gray-100 px-4 py-2 transition-all hover:bg-gray-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-opacity-50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
+        className="focus-visible:outline-hidden inline-flex items-center gap-3 rounded-lg bg-gray-100 px-4 py-2 transition-all hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-opacity-50 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
         type="button"
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -64,7 +64,7 @@ const Settings = ({ gameData, setGameData }) => {
                 leaveFrom="opacity-100 right-0 "
                 leaveTo="opacity-0 -right-full"
               >
-                <Dialog.Panel className="fixed inset-y-0 right-0 w-full max-w-sm overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all dark:bg-[#15202b] dark:text-white md:rounded-l-3xl">
+                <Dialog.Panel className="fixed inset-y-0 right-0 w-full max-w-sm overflow-hidden bg-white p-6 text-left align-middle shadow-xl transition-all md:rounded-l-3xl dark:bg-[#15202b] dark:text-white">
                   <div className="flex w-full flex-row items-center justify-between">
                     <Dialog.Title
                       as="h3"
@@ -85,7 +85,7 @@ const Settings = ({ gameData, setGameData }) => {
                           placeholder="Home"
                           name="homeTeamName"
                           onChange={changeName}
-                          value={gameData.game.homeTeamName}
+                          value={gameData.homeTeamName}
                           className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
                         />
                       </div>
@@ -96,7 +96,7 @@ const Settings = ({ gameData, setGameData }) => {
                           placeholder="Away"
                           name="awayTeamName"
                           onChange={changeName}
-                          value={gameData.game.awayTeamName}
+                          value={gameData.awayTeamName}
                           className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
                         />
                       </div>

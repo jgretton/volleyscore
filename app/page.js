@@ -2,37 +2,26 @@
 import Link from "next/link";
 import { initialGame } from "@/lib/data";
 import { useState, useEffect } from "react";
+import { useGameStore } from "@/store";
 
 export default function Home() {
   const [gameData, setGameData] = useState(initialGame);
   const [selected, setSelected] = useState(false);
   const [gameTime, setGameTime] = useState(15);
 
+  const { updateTeamName, match } = useGameStore();
+  const [teamNames, setTeamNames] = useState({
+    homeTeamName: "Home",
+    awayTeamName: "Away",
+  });
+
   const changeName = (e) => {
-    setGameData((prevState) => {
+    setTeamNames((prevState) => {
       return {
-        game: {
-          ...prevState.game,
-          [e.target.name]: e.target.value,
-        },
+        ...prevState,
+        [e.target.name]: e.target.value,
       };
     });
-  };
-
-  const saveToLocalStorage = () => {
-    if (selected) {
-      setGameData((prevState) => {
-        return {
-          game: {
-            ...prevState.game,
-            timedGame: gameTime,
-          },
-        };
-      });
-      localStorage.setItem("volleyballGameData", JSON.stringify(gameData));
-    }
-
-    console.log("storing", gameData);
   };
 
   const onChangeTime = (e) => {
@@ -40,7 +29,7 @@ export default function Home() {
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center p-24 gap-10 dark:text-white">
+    <main className="flex min-h-screen flex-col items-center gap-10 p-24 dark:text-white">
       <div className="flex flex-col gap-4">
         {/*
         <div className="flex flex-col gap-1">
@@ -54,26 +43,26 @@ export default function Home() {
             className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white "
           />
         </div> */}
-        <div className="flex flex-col gap-3 ">
+        <div className="flex flex-col gap-3">
           <label> Home team name</label>
           <input
             type="text"
             placeholder="Home"
             name="homeTeamName"
             onChange={changeName}
-            value={gameData.game.homeTeamName}
-            className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white "
+            value={teamNames.homeTeamName}
+            className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
           />
         </div>
-        <div className="flex flex-col gap-3 ">
+        <div className="flex flex-col gap-3">
           <label> Away team name</label>
           <input
             type="text"
             placeholder="Away"
             name="awayTeamName"
             onChange={changeName}
-            value={gameData.game.awayTeamName}
-            className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white "
+            value={teamNames.awayTeamName}
+            className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
           />
         </div>
         {/* <div className="flex flex-col">
@@ -101,8 +90,8 @@ export default function Home() {
 
       <Link
         href="/basic-match"
-        className=" bg-blue-600 px-4 py-3 rounded-full text-white"
-        onClick={() => saveToLocalStorage()}
+        className="rounded-full bg-blue-600 px-4 py-3 text-white"
+        onClick={() => updateTeamName(teamNames)}
       >
         Start New Match
       </Link>

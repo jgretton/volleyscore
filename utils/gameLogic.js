@@ -10,15 +10,15 @@ export const checkIfSetComplete = (
   currentSet,
   setTeamSwapped,
   setServingTeam,
-  setGameComplete
+  setGameComplete,
 ) => {
-  const currentScore = gameData.game.sets[currentSet].score;
+  const currentScore = gameData.sets[currentSet].score;
   const homeScore = currentScore.homeTeam;
   const awayScore = currentScore.awayTeam;
-  const initialServingTeam = gameData.game.firstServingTeam;
+  const initialServingTeam = gameData.firstServingTeam;
   let nextServingTeam;
-  const homeTeamSets = gameData.game.homeTeamSetsWon;
-  const awayTeamSets = gameData.game.awayTeamSetsWon;
+  const homeTeamSets = gameData.homeTeamSetsWon;
+  const awayTeamSets = gameData.awayTeamSetsWon;
 
   if (homeTeamSets >= 3 || awayTeamSets >= 3) {
     setGameComplete(true);
@@ -77,7 +77,7 @@ export const increaseScore = (
   team,
   setGameData,
   currentSet,
-  setServingTeam
+  setServingTeam,
 ) => {
   setGameData((prevState) => {
     const currentSetData = prevState.game.sets[currentSet] || {
@@ -118,7 +118,7 @@ export const decreaseScore = (
   gameData,
   setGameData,
   currentSet,
-  setServingTeam
+  setServingTeam,
 ) => {
   if (gameData.game.sets[currentSet]?.score[team] === 0) return;
   else {
@@ -151,7 +151,7 @@ export const timeOut = (
   currentSet,
   setGameData,
   setTimeoutCountdown,
-  setTimeoutTeam
+  setTimeoutTeam,
 ) => {
   setTimeoutCountdown(TIMEOUT_DURATION);
   setTimeoutTeam(team);
@@ -191,7 +191,7 @@ export const undoAction = (
   setServingTeam,
   setGameComplete,
   gameComplete,
-  setHasSetBeenProcessed
+  setHasSetBeenProcessed,
 ) => {
   const updatedGameData = { ...gameData };
   //remove last action
@@ -204,7 +204,7 @@ export const undoAction = (
   if (item.type === "timeout")
     updatedGameData.game.sets[currentSet].timeouts[item.team] = Math.max(
       updatedGameData.game.sets[currentSet].timeouts[item.team] - 1,
-      0
+      0,
     );
 
   if (item.type === "score") {
@@ -213,7 +213,7 @@ export const undoAction = (
 
     //set to last serving team, If no previous action then set to team who chose to serve first
     setServingTeam(
-      lastServingTeam?.team || updatedGameData.game.firstServingTeam
+      lastServingTeam?.team || updatedGameData.game.firstServingTeam,
     );
 
     if (gameComplete) {
@@ -235,7 +235,7 @@ export const resetGame = (
   setGameComplete,
   setEndOfSetCountdown,
   setTimeoutCountdown,
-  gameData
+  gameData,
 ) => {
   const newGame = {
     game: {
@@ -259,7 +259,7 @@ export const EndOfSet = (
   currentSet,
   setHasSetBeenProcessed,
   swapSides,
-  setGameData
+  setGameData,
 ) => {
   // Add new set data for next set
   setGameData((prevState) => ({
@@ -297,7 +297,7 @@ export const undoSetPoint = (
   currentSet,
   setServingTeam,
   setHasSetBeenProcessed,
-  setIsOpen
+  setIsOpen,
 ) => {
   const updatedGameData = { ...gameData };
   //remove last action
@@ -311,7 +311,7 @@ export const undoSetPoint = (
     .pop();
   //set to last serving team, If no previous action then set to team who chose to serve first
   setServingTeam(
-    lastServingTeam?.team || updatedGameData.game.firstServingTeam
+    lastServingTeam?.team || updatedGameData.game.firstServingTeam,
   );
 
   updatedGameData.game[`${lastAction.team}SetsWon`] =
