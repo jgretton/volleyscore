@@ -42,6 +42,9 @@ export interface MatchStore {
   currentSet: number;
   swapSides: () => void;
   updateTeamName: (teamNames: TeamNames) => void;
+
+  startNewGame: (teamNames?: TeamNames) => void;
+
   increaseTeamScore: (
     teamKey: "awayTeam" | "homeTeam",
     currentSet: number,

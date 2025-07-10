@@ -38,7 +38,6 @@ const Page = () => {
     // Set flag to true after initial render to indicate client-side execution
     setIsClient(true);
   }, []);
-  console.log(match);
   if (!isClient) {
     // Render a placeholder or loading state until client-side code runs
     return (

@@ -1,14 +1,16 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGameStore } from "@/store";
 import { TeamNames } from "@/store/types";
+import { initialGame } from "@/lib/data";
 
 export default function Home() {
   const [selected, setSelected] = useState<boolean>(false);
   const [gameTime, setGameTime] = useState<number>(15);
+  const [existingGame, setExistingGame] = useState<boolen>(false);
 
-  const { updateTeamName } = useGameStore();
+  const { startNewGame, match } = useGameStore();
   const [teamNames, setTeamNames] = useState<TeamNames>({
     homeTeamName: "Home",
     awayTeamName: "Away",
@@ -23,9 +25,12 @@ export default function Home() {
     });
   };
 
-  //   const onChangeTime = (e:) => {
-  //     setGameTime(e.target.value);
-  //   };
+  useEffect(() => {
+    if (match !== initialGame) {
+      setExistingGame(true);
+      return;
+    }
+  }, [existingGame]);
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 p-24 dark:text-white">
@@ -90,10 +95,25 @@ export default function Home() {
       <Link
         href="/basic-match"
         className="rounded-full bg-blue-600 px-4 py-3 text-white"
-        onClick={() => updateTeamName(teamNames)}
+        onClick={() => startNewGame(teamNames)}
       >
         Start New Match
       </Link>
+
+      {existingGame && (
+        <div className="mt-10 flex w-full max-w-sm flex-col gap-4 text-center">
+          <p>
+            Looks like you have already started a game, would you like to
+            continue?
+          </p>
+          <Link
+            href="/basic-match"
+            className="self-center rounded-full bg-blue-600 px-4 py-3 text-white"
+          >
+            Contiue Match
+          </Link>
+        </div>
+      )}
     </main>
   );
 }

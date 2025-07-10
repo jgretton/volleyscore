@@ -24,6 +24,15 @@ export const useGameStore = create<MatchStore>()(
           },
         }));
       },
+      startNewGame: (teamNames?: TeamNames) => {
+        const newGame = teamNames
+          ? { ...initialGame, ...teamNames }
+          : { ...initialGame };
+
+        set(() => ({
+          match: newGame,
+        }));
+      },
       increaseTeamScore: (
         teamKey: "awayTeam" | "homeTeam",
         currentSet: number,
