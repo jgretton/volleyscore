@@ -126,10 +126,6 @@ export const useGameStore = create<MatchStore>()(
         // find last array with score to figure out who is currently serving
       },
       handleSetCompletion: (setResult: "awayTeam" | "homeTeam" | null) => {
-        // figure out whoch team has won.
-        // update their sets won,
-        //update current set,
-        //add new set with default set data.
         const currentState = get();
         const { match, currentSet } = currentState;
         const updatedMatch = { ...match };
@@ -141,6 +137,9 @@ export const useGameStore = create<MatchStore>()(
         if (setResult === "awayTeam") {
           updatedMatch.awayTeamSetsWon += 1;
         }
+
+        get().swapSides();
+
         set((state) => {
           return {
             match: {
@@ -151,7 +150,7 @@ export const useGameStore = create<MatchStore>()(
           };
         });
 
-        console.log("setResult", setResult);
+        //Somewhere i need to trigger the modal and then all this function to start new set, allows users to undo set point.
       },
     }),
     {
