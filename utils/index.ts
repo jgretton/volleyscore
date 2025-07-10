@@ -3,49 +3,81 @@ const END_SET_DURATION = 180;
 // const END_SET_DURATION = 10;
 let teamsHaveSwapped = false;
 const POINTS_PER_SET = 25;
+const POINTS_FOR_FIFTH_SET = 15;
 import { Match } from "@/store/types";
 import { initialGame, initialSetData } from "../lib/data";
 
 export const isSetComplete = (match: Match, currentSet: number) => {
   const { sets } = match;
+
   const { homeTeam: homeScore, awayTeam: awayScore } = sets[currentSet].score;
+  if (currentSet === 5) {
+    //check for 8 points and the swap
+    if (homeScore === 8 || awayScore === 8) {
+      const eightPoints = match.sets[currentSet].actions.filter(
+        (action) =>
+          action.overallScore.awayTeam === 8 ||
+          action.overallScore.homeTeam === 8,
+      );
+      if (eightPoints.length === 1) {
+        return {
+          setWinner: null, // or "awayTeam" or null
+          shouldSwapSides: true, // or false
+          isSetCompleted: false, // or false
+        };
+      }
+    }
+    if (
+      (homeScore >= POINTS_FOR_FIFTH_SET ||
+        awayScore >= POINTS_FOR_FIFTH_SET) &&
+      Math.abs(homeScore - awayScore) >= 2
+    ) {
+      if (homeScore > awayScore) {
+        return {
+          setWinner: "homeTeam", // or "awayTeam" or null
+          shouldSwapSides: true, // or false
+          isSetCompleted: true, // or false
+          isGameComplete: true,
+        };
+      } else {
+        return {
+          setWinner: "awayTeam", // or "awayTeam" or null
+          shouldSwapSides: true, // or false
+          isSetCompleted: true, // or false
+          isGameComplete: true,
+        };
+      }
+    }
+  }
+
   if (
     (homeScore >= POINTS_PER_SET || awayScore >= POINTS_PER_SET) &&
     Math.abs(homeScore - awayScore) >= 2
   ) {
     if (homeScore > awayScore) {
-      //   setServingTeam(nextServingTeam);
-
-      return "homeTeam";
+      return {
+        setWinner: "homeTeam", // or "awayTeam" or null
+        shouldSwapSides: true, // or false
+        isSetCompleted: true, // or false
+      };
     } else {
-      //   setServingTeam(nextServingTeam);
-      return "awayTeam";
+      return {
+        setWinner: "awayTeam", // or "awayTeam" or null
+        shouldSwapSides: true, // or false
+        isSetCompleted: true, // or false
+      };
     }
   }
-  return null;
+  return {
+    setWinner: null, // or "awayTeam" or null
+    shouldSwapSides: false, // or false
+    isSetCompleted: false, // or false
+  };
   /* 
     check if set is complete
 
     yes - return someething
     no - return nothing.
 
-    */
-};
-
-export const isSetCompletes = ({
-  match,
-  currentSet,
-}: {
-  match: Match;
-  currentSet: string;
-}) => {
-  const { awayTeamSetsWon, homeTeamSetsWon } = match;
-  const { homeTeam: homeScore, awayTeam: awayScore } =
-    match.sets[currentSet].score;
-  /*
-    check if set is complete
-    yes - return someething
-    no - return nothing.
-    
     */
 };

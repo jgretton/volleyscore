@@ -75,11 +75,20 @@ export const useGameStore = create<MatchStore>()(
           };
         });
         const updatedState = get();
-        const checkingSet = isSetComplete(
+        const result = isSetComplete(
           updatedState.match,
           updatedState.currentSet,
         );
-        if (checkingSet) get().handleSetCompletion(checkingSet);
+        if (result.isSetCompleted === false && result.shouldSwapSides) {
+          get().swapSides(); // Call your Zustand function
+        }
+
+        if (result.setWinner && !result.isGameComplete) {
+          get().handleSetCompletion(result.setWinner);
+        } else {
+          console.log("Game over");
+          //game over logic.
+        }
       },
       resetMatchData: () => {
         set((state) => ({
