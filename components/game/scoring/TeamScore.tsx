@@ -5,6 +5,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { increaseScore, timeOut } from "@/utils/gameLogic";
 import { useGameStore } from "@/store";
 import ScoreButton from "./ScoreButton";
+import TimeoutButton from "../timeout/TimeoutButton";
 
 const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
   const {
@@ -125,39 +126,12 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
                     : "order-1 self-end"
               } flex flex-col items-center gap-3 sm:flex-row sm:self-center`}
             >
-              <button
-                className={`${
-                  !teamSwapped
-                    ? team === "homeTeam"
-                      ? "order-2 sm:order-1"
-                      : "order-1 sm:order-2"
-                    : team === "homeTeam"
-                      ? "order-1 sm:order-2"
-                      : "order-2 sm:order-1"
-                } inline-flex shrink-0 items-center gap-3 rounded-lg border border-[#3E5B64] px-4 py-2 tabular-nums hover:bg-gray-100 disabled:cursor-not-allowed dark:border-gray-200 dark:hover:bg-slate-700`}
-                onClick={() => {
-                  timeOut(
-                    team,
-                    currentSet,
-
-                    setTimeoutCountdown,
-                  );
-                }}
-                disabled={
-                  match.sets[currentSet].timeouts[team] >= 2 ||
-                  (timeoutTeam === team && timeoutCountdown > 0)
-                }
-              >
-                <ClockIcon className="size-5 text-gray-900 sm:size-6 dark:text-white" />
-                {timeoutTeam === team && timeoutCountdown > 0 ? (
-                  <span className="text-xs md:text-base">
-                    {timeoutCountdown} s
-                  </span>
-                ) : (
-                  // Otherwise, display default button text
-                  <span className="hidden sm:block">Timeout</span>
-                )}
-              </button>
+              <TimeoutButton
+                match={match}
+                team="homeTeam"
+                teamSwapped={teamSwapped}
+                timeoutCountdown={timeoutCountdown}
+              />
               <div
                 className={`${
                   !teamSwapped

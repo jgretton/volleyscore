@@ -11,7 +11,7 @@ const ScoreButton = ({
 }) => {
   return (
     <button
-      className="bg-sky-100_ mt-2 w-full grow rounded-xl bg-[#3E5B64] text-gray-50 tabular-nums ring-2 ring-slate-800/30 ring-inset disabled:opacity-30"
+      className="bg-sky-100_ mt-2 size-full grow cursor-pointer rounded-xl bg-[#3E5B64] text-gray-50 tabular-nums ring-2 ring-slate-800/30 ring-inset disabled:opacity-30"
       onClick={increaseTeamScore}
       disabled={disabled}
     >
