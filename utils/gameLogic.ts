@@ -3,6 +3,7 @@ const END_SET_DURATION = 180;
 // const END_SET_DURATION = 10;
 let teamsHaveSwapped = false;
 const POINTS_PER_SET = 25;
+import { Match } from "@/store/types";
 import { initialGame, initialSetData } from "../lib/data";
 
 export const checkIfSetComplete = (

@@ -11,7 +11,7 @@ export interface Match {
 }
 export interface Sets {
   [setNumber: number]: {
-    setStartTime: string;
+    setStartTime?: string;
     score: Score;
     timeouts: Timeouts;
     actions: GameAction[];
@@ -26,8 +26,8 @@ export interface Timeouts {
   awayTeam: number;
 }
 export interface GameAction {
-  id: string;
   type: "score" | "timeout";
+  team: string;
   overallScore: Score;
   timestamp: string;
 }
@@ -46,6 +46,8 @@ export interface MatchStore {
     teamKey: "awayTeam" | "homeTeam",
     currentSet: number,
   ) => void;
+  undoAction: (action: GameAction) => void;
+  handleSetCompletion: (setResult) => void;
 
   resetMatchData: () => void;
 }

@@ -3,51 +3,22 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState, useEffect, useRef, forwardRef } from "react";
 
 import { initialGame } from "@/lib/data";
-import {
-  checkIfSetComplete,
-  resetGame,
-  EndOfSet,
-  undoSetPoint,
-} from "@/utils/gameLogic";
+import { resetGame, EndOfSet, undoSetPoint } from "@/utils/gameLogic";
 import GameReview from "@/components/gameReview";
 import TeamScore from "@/components/game/scoring/TeamScore";
 import Timer from "@/components/timer";
-import History from "@/components/history";
+import History from "@/components/game/history/History";
 import GameHeader from "@/components/game/layout/GameHeader";
 import { useGameStore } from "@/store";
 
 const Page = () => {
-  const { teamSwappedSides: teamSwapped } = useGameStore();
-  const loadInitialGame = () => {
-    if (typeof window !== "undefined") {
-      const savedGame = localStorage.getItem("volleyballGameData");
-      return savedGame ? JSON.parse(savedGame) : initialGame;
-    }
-    return initialGame;
-  };
-  const loadCurrentSet = () => {
-    if (typeof window !== "undefined") {
-      const savedGame = localStorage.getItem("volleyballGameData");
-      const parsedGame = JSON.parse(savedGame);
-      if (parsedGame && parsedGame.game) {
-        const loadedCurrentSet =
-          parsedGame.game.homeTeamSetsWon + parsedGame.game.awayTeamSetsWon + 1;
-        return loadCurrentSet >= 6 ? 5 : loadedCurrentSet;
-      }
-      return 1;
-    }
-  };
+  const { teamSwappedSides: teamSwapped, match, currentSet } = useGameStore();
+  const { gameComplete } = match;
 
-  const [currentSet, setCurrentSet] = useState(loadCurrentSet);
+  //   const [currentSet, setCurrentSet] = useState(loadCurrentSet);
   const [isOpen, setIsOpen] = useState(false);
-  const [servingTeam, setServingTeam] = useState("homeTeam");
-  const [gameComplete, setGameComplete] = useState(false);
-  const [gameData, setGameData] = useState(loadInitialGame);
   const [endOfSetCountdown, setEndOfSetCountdown] = useState(0);
   const [timeoutCountdown, setTimeoutCountdown] = useState(0);
-  const [timeoutTeam, setTimeoutTeam] = useState("");
-
-  const [hasSetBeenProcessed, setHasSetBeenProcessed] = useState(false);
   const [isClient, setIsClient] = useState(false);
 
   const containerRef = useRef(null);
@@ -56,69 +27,18 @@ const Page = () => {
     setIsOpen(false);
   }
 
-  useEffect(() => {
-    const winningTeam = checkIfSetComplete(
-      gameData,
-      currentSet,
-      setServingTeam,
-      setGameComplete,
-    );
-
-    // If set is complete and the set hasn't already been proceπssed.
-    // Add 1 Set point to the winning team.
-    //Set process to complete
-    if (!hasSetBeenProcessed && winningTeam) {
-      setGameData((prevState) => ({
-        ...prevState,
-        game: {
-          ...prevState.game,
-          [`${winningTeam}SetsWon`]:
-            prevState.game[`${winningTeam}SetsWon`] + 1,
-        },
-      }));
-      setHasSetBeenProcessed(true);
-    }
-
-    if (!isOpen && winningTeam && !gameComplete) {
-      // console.log("called and adding set.");
-      setIsOpen(true);
-    }
-  }, [gameData, isOpen]);
-
-  // everytime container gains children, scroll left.
+  // everytime container gains children make sure it scrolls up.
   useEffect(() => {
     if (containerRef.current) {
       containerRef.current.scrollTop = -containerRef.current.scrollHeight;
     }
-  }, [gameData]);
-
-  //When current set is updated, new set is unprocessed
-  useEffect(() => {
-    setHasSetBeenProcessed(false);
-  }, [currentSet]);
+  }, [match]);
 
   useEffect(() => {
     // Set flag to true after initial render to indicate client-side execution
     setIsClient(true);
   }, []);
-
-  //Check if there is data already in local storage
-  useEffect(() => {
-    if (isClient) {
-      const savedGame = localStorage.getItem("volleyballGameData");
-      const parsedGame = JSON.parse(savedGame);
-      if (savedGame) {
-        setGameData(parsedGame);
-      }
-    }
-  }, [isClient]);
-
-  useEffect(() => {
-    if (isClient) {
-      localStorage.setItem("volleyballGameData", JSON.stringify(gameData));
-    }
-  }, [gameData, isClient, currentSet]);
-
+  console.log(match);
   if (!isClient) {
     // Render a placeholder or loading state until client-side code runs
     return (
@@ -154,20 +74,6 @@ const Page = () => {
           } col-span-1 row-span-1 row-start-1`}
         >
           <TeamScore team="homeTeam" />
-          {/* <TeamScore
-            teamSwapped={teamSwapped}
-            servingTeam={servingTeam}
-            gameData={gameData}
-            gameComplete={gameComplete}
-            setGameData={setGameData}
-            currentSet={currentSet}
-            setServingTeam={setServingTeam}
-            timeoutTeam={timeoutTeam}
-            setTimeoutTeam={setTimeoutTeam}
-            team="homeTeam"
-            timeoutCountdown={timeoutCountdown}
-            setTimeoutCountdown={setTimeoutCountdown}
-          /> */}
         </div>
         <div
           className={`${
@@ -182,20 +88,14 @@ const Page = () => {
           ref={containerRef}
           className="col-span-2 flex h-full flex-col-reverse gap-2 overflow-y-scroll py-2 sm:py-10"
         >
-          {gameData.sets[currentSet].actions.map((item, index) => (
+          {match.sets[currentSet].actions?.map((item, index) => (
             <div
               key={index}
               className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 md:last:text-3xl dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 dark:last:text-gray-100 [&:last-child>div>div>button]:inline-flex"
             >
               <History
                 item={item}
-                gameData={gameData}
-                setGameData={setGameData}
                 currentSet={currentSet}
-                setServingTeam={setServingTeam}
-                setGameComplete={setGameComplete}
-                gameComplete={gameComplete}
-                setHasSetBeenProcessed={setHasSetBeenProcessed}
                 teamSwapped={teamSwapped}
               />
             </div>
