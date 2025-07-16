@@ -5,7 +5,7 @@ import Modal from "./Modal";
 import SetCompleteContent from "./content/SetCompleteContent";
 
 const ModalManager = () => {
-  const { closeModal, modal, handleSetCompletion, undoAction } = useGameStore();
+  const { closeModal, modal, undoSetPoint } = useGameStore();
 
   return (
     <Modal isModalOpen={modal.isOpen} closeModal={closeModal}>
@@ -13,8 +13,7 @@ const ModalManager = () => {
         <SetCompleteContent
           modalData={modal.modalData}
           closeModal={closeModal}
-          handleSetCompletion={handleSetCompletion}
-          undoAction={undoAction}
+          undoSetPoint={undoSetPoint}
         />
       )}
       {/* {modal.modalType === 'MATCH_COMPLETE' && <MatchCompleteContent data={modal.modalData} />} */}

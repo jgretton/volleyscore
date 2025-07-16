@@ -59,7 +59,8 @@ export interface MatchStore {
     currentSet: number,
   ) => void;
   undoAction: (action: GameAction) => void;
-  handleSetCompletion: (setResult) => void;
+  undoSetPoint: () => void;
+  handleSetCompletion: (setResult: "awayTeam" | "homeTeam" | null) => void;
 
   resetMatchData: () => void;
 

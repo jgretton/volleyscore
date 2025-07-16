@@ -4,23 +4,19 @@ const sets = [1, 2, 3, 4, 5];
 const SetCompleteContent = ({
   modalData,
   closeModal,
-  handleSetCompletion,
-  undoAction,
+  undoSetPoint,
 }: {
   modalData?: {
     currentSet: number;
     updatedMatch: Match;
   };
   closeModal: () => void;
-  handleSetCompletion: (setResult: "homeTeam" | "awayTeam") => void;
-  undoAction: (action: GameAction) => void;
+  undoSetPoint: () => void;
 }) => {
   if (!modalData?.updatedMatch) return <div>Error Loading Match Data..</div>;
 
   const { awayTeamName, homeTeamName, awayTeamSetsWon, homeTeamSetsWon } =
     modalData.updatedMatch;
-  const actions = modalData.updatedMatch.sets[modalData.currentSet].actions;
-  const lastAction = actions[actions.length - 1];
 
   return (
     <div className="">
@@ -81,9 +77,6 @@ const SetCompleteContent = ({
 
       <button
         onClick={() => {
-          handleSetCompletion(
-            modalData.updatedMatch.sets[modalData.currentSet].winner,
-          );
           closeModal();
         }}
         className="mt-4 w-full cursor-pointer rounded border border-gray-200 bg-white px-4 py-2 text-black hover:bg-gray-200"
@@ -92,7 +85,7 @@ const SetCompleteContent = ({
       </button>
       <button
         onClick={() => {
-          undoAction(lastAction);
+          undoSetPoint();
           closeModal();
         }}
         className="mt-4 w-full cursor-pointer rounded border border-gray-200 bg-white px-4 py-2 text-black hover:bg-gray-200"

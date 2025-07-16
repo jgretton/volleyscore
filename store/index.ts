@@ -87,12 +87,7 @@ export const useGameStore = create<MatchStore>()(
         }
 
         if (result.setWinner && !result.isGameComplete) {
-          //   get().handleSetCompletion(result.setWinner);
-          const matchData = {
-            currentSet,
-            updatedMatch: updatedState.match,
-          };
-          get().openModal("SET_COMPLETE", matchData);
+          get().handleSetCompletion(result.setWinner);
         } else {
           console.log("Game over");
           //game over logic.
@@ -149,6 +144,48 @@ export const useGameStore = create<MatchStore>()(
 
         //Logic for if the game was complete, you undo action it keeps the game going.
         // find last array with score to figure out who is currently serving
+      },
+      undoSetPoint: () => {
+        const currentState = get();
+        if (currentState.currentSet <= 1)
+          throw new Error("Set hasn not been completed yet");
+
+        set((state) => {
+          const updatedMatch = { ...state.match };
+          const { actions, winner } = updatedMatch.sets[state.currentSet - 1];
+
+          updatedMatch.sets[state.currentSet - 1].actions = updatedMatch.sets[
+            state.currentSet - 1
+          ].actions.slice(0, -1);
+
+          //who won last set and -1 from their set wins
+          if (winner === "homeTeam") {
+            updatedMatch.homeTeamSetsWon = updatedMatch.homeTeamSetsWon - 1;
+            updatedMatch.sets[state.currentSet - 1].score.homeTeam =
+              updatedMatch.sets[state.currentSet - 1].score.homeTeam - 1;
+          } else {
+            updatedMatch.awayTeamSetsWon = updatedMatch.awayTeamSetsWon - 1;
+            updatedMatch.sets[state.currentSet - 1].score.awayTeam =
+              updatedMatch.sets[state.currentSet - 1].score.awayTeam - 1;
+          }
+
+          //set winner to null
+          updatedMatch.sets[state.currentSet - 1].winner = null;
+
+          // delete sets[currentset]
+          //Object destructuring, take the array position from currentSet and assign the value of that property to the variable name removedSet, extracts all other data using rest operator into a variable called remainingsets.
+          const { [state.currentSet]: removedSet, ...remainingSets } =
+            updatedMatch.sets;
+
+          updatedMatch.sets = remainingSets;
+
+          return {
+            ...state,
+            currentSet: state.currentSet - 1,
+            match: updatedMatch,
+          };
+        });
+        get().swapSides();
       },
       handleSetCompletion: (setResult: "awayTeam" | "homeTeam" | null) => {
         const currentState = get();
