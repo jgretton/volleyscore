@@ -6,8 +6,17 @@ const POINTS_PER_SET = 25;
 const POINTS_FOR_FIFTH_SET = 15;
 import { Match } from "@/store/types";
 import { initialGame, initialSetData } from "../lib/data";
+type isSetCompleteReturn = {
+  setWinner: "awayTeam" | "homeTeam" | null;
+  shouldSwapSides: boolean;
+  isSetCompleted: boolean;
+  isGameComplete?: boolean;
+};
 
-export const isSetComplete = (match: Match, currentSet: number) => {
+export const isSetComplete = (
+  match: Match,
+  currentSet: number,
+): isSetCompleteReturn => {
   const { sets } = match;
 
   const { homeTeam: homeScore, awayTeam: awayScore } = sets[currentSet].score;
