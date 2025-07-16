@@ -36,10 +36,18 @@ export interface TeamNames {
   awayTeamName: string;
 }
 
+interface ModalState {
+  isOpen: boolean;
+  modalType: "SET_COMPLETE" | "MATCH_COMPLETE" | null;
+  modalData?: any;
+}
+
 export interface MatchStore {
   match: Match;
   teamSwappedSides: boolean;
   currentSet: number;
+  modal: ModalState;
+
   swapSides: () => void;
   updateTeamName: (teamNames: TeamNames) => void;
 
@@ -53,4 +61,7 @@ export interface MatchStore {
   handleSetCompletion: (setResult) => void;
 
   resetMatchData: () => void;
+
+  openModal: (type: ModalState["modalType"], data?: any) => void;
+  closeModal: () => void;
 }

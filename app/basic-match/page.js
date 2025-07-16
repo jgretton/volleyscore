@@ -10,6 +10,7 @@ import Timer from "@/components/timer";
 import History from "@/components/game/history/History";
 import GameHeader from "@/components/game/layout/GameHeader";
 import { useGameStore } from "@/store";
+import ModalManager from "@/components/modal/ModalManager";
 
 const Page = () => {
   const { teamSwappedSides: teamSwapped, match, currentSet } = useGameStore();
@@ -87,7 +88,7 @@ const Page = () => {
           ref={containerRef}
           className="col-span-2 flex h-full flex-col-reverse gap-2 overflow-y-scroll py-2 sm:py-10"
         >
-          {match.sets[currentSet].actions?.map((item, index) => (
+          {match?.sets[currentSet]?.actions?.map((item, index) => (
             <div
               key={index}
               className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 md:last:text-3xl dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 dark:last:text-gray-100 [&:last-child>div>div>button]:inline-flex"
@@ -237,6 +238,8 @@ const Page = () => {
           </div>
         </Dialog>
       </Transition>
+
+      <ModalManager />
     </div>
   );
 };

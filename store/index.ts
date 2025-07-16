@@ -10,6 +10,7 @@ export const useGameStore = create<MatchStore>()(
       match: initialGame,
       teamSwappedSides: false,
       currentSet: 1,
+      modal: { isOpen: false, modalType: null, modalData: null },
       swapSides: () => {
         set((state) => ({
           teamSwappedSides: !state.teamSwappedSides,
@@ -169,6 +170,33 @@ export const useGameStore = create<MatchStore>()(
         });
 
         //Somewhere i need to trigger the modal and then all this function to start new set, allows users to undo set point.
+
+        const matchData = {
+          currentSet,
+          updatedMatch,
+        };
+
+        get().openModal("SET_COMPLETE", matchData);
+      },
+      openModal: (type, data) => {
+        set((state) => ({
+          ...state,
+          modal: {
+            isOpen: true,
+            modalType: type,
+            modalData: data,
+          },
+        }));
+      },
+      closeModal: () => {
+        set((state) => ({
+          ...state,
+          modal: {
+            isOpen: false,
+            modalType: null,
+            modalData: null,
+          },
+        }));
       },
     }),
     {
