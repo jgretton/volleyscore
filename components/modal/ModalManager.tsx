@@ -5,12 +5,17 @@ import Modal from "./Modal";
 import SetCompleteContent from "./content/SetCompleteContent";
 
 const ModalManager = () => {
-  const { closeModal, modal } = useGameStore();
+  const { closeModal, modal, handleSetCompletion, undoAction } = useGameStore();
 
   return (
     <Modal isModalOpen={modal.isOpen} closeModal={closeModal}>
       {modal.modalType === "SET_COMPLETE" && (
-        <SetCompleteContent modalData={modal.modalData} />
+        <SetCompleteContent
+          modalData={modal.modalData}
+          closeModal={closeModal}
+          handleSetCompletion={handleSetCompletion}
+          undoAction={undoAction}
+        />
       )}
       {/* {modal.modalType === 'MATCH_COMPLETE' && <MatchCompleteContent data={modal.modalData} />} */}
     </Modal>

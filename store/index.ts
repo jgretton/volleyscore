@@ -76,6 +76,7 @@ export const useGameStore = create<MatchStore>()(
             },
           };
         });
+
         const updatedState = get();
         const result = isSetComplete(
           updatedState.match,
@@ -86,7 +87,12 @@ export const useGameStore = create<MatchStore>()(
         }
 
         if (result.setWinner && !result.isGameComplete) {
-          get().handleSetCompletion(result.setWinner);
+          //   get().handleSetCompletion(result.setWinner);
+          const matchData = {
+            currentSet,
+            updatedMatch: updatedState.match,
+          };
+          get().openModal("SET_COMPLETE", matchData);
         } else {
           console.log("Game over");
           //game over logic.
@@ -106,7 +112,6 @@ export const useGameStore = create<MatchStore>()(
       undoAction: (action: GameAction) => {
         const currentState = get();
         const { currentSet } = currentState;
-
         const updatedActions = [...currentState.match.sets[currentSet].actions];
         updatedActions.pop();
 

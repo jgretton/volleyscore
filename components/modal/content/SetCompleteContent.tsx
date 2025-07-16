@@ -1,21 +1,26 @@
-import { Match } from "@/store/types";
+import { GameAction, Match } from "@/store/types";
 import React from "react";
-// If the name is too long elipses it
 const sets = [1, 2, 3, 4, 5];
 const SetCompleteContent = ({
   modalData,
   closeModal,
+  handleSetCompletion,
+  undoAction,
 }: {
   modalData?: {
     currentSet: number;
     updatedMatch: Match;
   };
   closeModal: () => void;
+  handleSetCompletion: (setResult: "homeTeam" | "awayTeam") => void;
+  undoAction: (action: GameAction) => void;
 }) => {
-  if (!modalData.updatedMatch) return <div>Error Loading Match Data..</div>;
+  if (!modalData?.updatedMatch) return <div>Error Loading Match Data..</div>;
 
   const { awayTeamName, homeTeamName, awayTeamSetsWon, homeTeamSetsWon } =
     modalData.updatedMatch;
+  const actions = modalData.updatedMatch.sets[modalData.currentSet].actions;
+  const lastAction = actions[actions.length - 1];
 
   return (
     <div className="">
@@ -75,10 +80,24 @@ const SetCompleteContent = ({
       </div>
 
       <button
-        onClick={closeModal}
+        onClick={() => {
+          handleSetCompletion(
+            modalData.updatedMatch.sets[modalData.currentSet].winner,
+          );
+          closeModal();
+        }}
         className="mt-4 w-full cursor-pointer rounded border border-gray-200 bg-white px-4 py-2 text-black hover:bg-gray-200"
       >
         Start next set
+      </button>
+      <button
+        onClick={() => {
+          undoAction(lastAction);
+          closeModal();
+        }}
+        className="mt-4 w-full cursor-pointer rounded border border-gray-200 bg-white px-4 py-2 text-black hover:bg-gray-200"
+      >
+        Undo last action
       </button>
     </div>
   );
