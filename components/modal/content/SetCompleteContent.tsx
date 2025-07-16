@@ -4,11 +4,13 @@ import React from "react";
 const sets = [1, 2, 3, 4, 5];
 const SetCompleteContent = ({
   modalData,
+  closeModal,
 }: {
   modalData?: {
     currentSet: number;
     updatedMatch: Match;
   };
+  closeModal: () => void;
 }) => {
   if (!modalData.updatedMatch) return <div>Error Loading Match Data..</div>;
 
@@ -31,14 +33,17 @@ const SetCompleteContent = ({
           </div>
           <div className="self-right grid grid-flow-row gap-y-2 pl-3 text-right tabular-nums">
             {sets.map((set) => {
+              const winner = modalData.updatedMatch.sets[set]?.winner ?? "";
+
               const setData =
                 modalData.updatedMatch.sets[set]?.score.homeTeam ?? "-";
               return (
-                <div className="" key={set}>
-                  <p className="text-sm text-gray-500 dark:text-gray-300">
-                    {setData}
-                  </p>
-                </div>
+                <p
+                  className={`${winner === "homeTeam" ? "font-medium dark:text-gray-100" : "text-sm/6 font-normal text-gray-500 dark:text-gray-300"} `}
+                  key={set}
+                >
+                  {setData}
+                </p>
               );
             })}
           </div>
@@ -52,19 +57,29 @@ const SetCompleteContent = ({
           </div>
           <div className="self-right grid grid-flow-row gap-y-2 text-left tabular-nums">
             {sets.map((set) => {
+              const winner = modalData.updatedMatch.sets[set]?.winner ?? "";
+
               const setData =
                 modalData.updatedMatch.sets[set]?.score.awayTeam ?? "-";
               return (
-                <div className="" key={set}>
-                  <p className="text-sm text-gray-500 tabular-nums dark:text-gray-300">
-                    {setData}
-                  </p>
-                </div>
+                <p
+                  key={set}
+                  className={`${winner === "awayTeam" ? "font-medium dark:text-gray-100" : "text-sm/6 font-normal text-gray-500 dark:text-gray-300"} `}
+                >
+                  {setData}
+                </p>
               );
             })}
           </div>
         </div>
       </div>
+
+      <button
+        onClick={closeModal}
+        className="mt-4 w-full cursor-pointer rounded border border-gray-200 bg-white px-4 py-2 text-black hover:bg-gray-200"
+      >
+        Start next set
+      </button>
     </div>
   );
 };

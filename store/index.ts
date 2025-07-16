@@ -151,9 +151,11 @@ export const useGameStore = create<MatchStore>()(
         const newSetNumber = currentSet + 1;
 
         if (setResult === "homeTeam") {
+          updatedMatch.sets[currentSet].winner = "homeTeam";
           updatedMatch.homeTeamSetsWon += 1;
         }
         if (setResult === "awayTeam") {
+          updatedMatch.sets[currentSet].winner = "awayTeam";
           updatedMatch.awayTeamSetsWon += 1;
         }
 

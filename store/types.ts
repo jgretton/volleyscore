@@ -15,6 +15,7 @@ export interface Sets {
     score: Score;
     timeouts: Timeouts;
     actions: GameAction[];
+    winner: "homeTeam" | "awayTeam" | null;
   };
 }
 export interface Score {
