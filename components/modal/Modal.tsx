@@ -38,13 +38,6 @@ const Modal = ({
     >
       <div className="mx-auto w-full rounded-md bg-white p-5 dark:bg-[#3E5B64]">
         <div className="mt-4">{children}</div>
-
-        <button
-          onClick={closeModal}
-          className="mt-4 w-full cursor-pointer rounded border border-gray-200 bg-white px-4 py-2 text-black hover:bg-gray-200"
-        >
-          Cancel
-        </button>
       </div>
     </dialog>
   );
