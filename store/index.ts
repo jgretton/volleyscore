@@ -32,6 +32,7 @@ export const useGameStore = create<MatchStore>()(
 
         set(() => ({
           match: newGame,
+          currentSet: 1,
         }));
       },
       increaseTeamScore: (
