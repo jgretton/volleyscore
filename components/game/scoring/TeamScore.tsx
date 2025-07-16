@@ -16,7 +16,7 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
   } = useGameStore();
 
   const teamName: string = match[`${team}Name`];
-  const teamScore: number = match.sets[currentSet].score[team];
+  const teamScore: number = match.sets[currentSet]?.score[team];
   const setsWon: number = match[`${team}SetsWon`];
   const gameComplete: boolean = match.gameComplete;
 
@@ -149,7 +149,7 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
                     className={`${
                       !teamSwapped ? "first:order-0" : "first:order-2"
                     } size-5 shrink-0 rounded-md border border-slate-800 dark:border-white ${
-                      index < match.sets[currentSet].timeouts[`${team}`]
+                      index < match.sets[currentSet]?.timeouts[`${team}`]
                         ? "bg-[#3E5B64]"
                         : "border-slate-800"
                     }`}
