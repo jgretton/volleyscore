@@ -1,5 +1,4 @@
 "use client";
-import { ClockIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState, useRef } from "react";
 
 import { increaseScore, timeOut } from "@/utils/gameLogic";
@@ -23,7 +22,7 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
   const servingTeam = "homeTeam";
   const timeoutTeam = "homeTeam";
 
-  const [timeoutCountdown, setTimeoutCountdown] = useState(0);
+  const [timeoutCountdown, setTimeoutCountdown] = useState<number>(0);
 
   useEffect(() => {
     let timeoutInterval;
@@ -128,9 +127,10 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
             >
               <TimeoutButton
                 match={match}
-                team="homeTeam"
+                team={team}
                 teamSwapped={teamSwapped}
                 timeoutCountdown={timeoutCountdown}
+                setTimeoutCountdown={setTimeoutCountdown}
               />
               <div
                 className={`${

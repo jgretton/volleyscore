@@ -1,3 +1,5 @@
+export type TeamOptions = "awayTeam" | "homeTeam" | null;
+
 export interface Match {
   homeTeamName: string;
   awayTeamName: string;
@@ -15,7 +17,7 @@ export interface Sets {
     score: Score;
     timeouts: Timeouts;
     actions: GameAction[];
-    winner: "homeTeam" | "awayTeam" | null;
+    winner: TeamOptions;
   };
 }
 export interface Score {
@@ -60,7 +62,9 @@ export interface MatchStore {
   ) => void;
   undoAction: (action: GameAction) => void;
   undoSetPoint: () => void;
-  handleSetCompletion: (setResult: "awayTeam" | "homeTeam" | null) => void;
+  handleSetCompletion: (setResult: TeamOptions) => void;
+
+  handleTeamTimeout: (team: TeamOptions) => void;
 
   resetMatchData: () => void;
 

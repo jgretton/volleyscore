@@ -1,7 +1,7 @@
 import { initialGame, initialSetData } from "@/lib/data";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { GameAction, MatchStore, TeamNames } from "./types";
+import { GameAction, MatchStore, TeamNames, TeamOptions } from "./types";
 import { isSetComplete } from "@/utils";
 
 export const useGameStore = create<MatchStore>()(
@@ -223,6 +223,33 @@ export const useGameStore = create<MatchStore>()(
 
         get().openModal("SET_COMPLETE", matchData);
       },
+      handleTeamTimeout: (team: TeamOptions) => {
+        const currentState = get();
+        set((state) => {
+          const updatedMatch = { ...state.match };
+          if (updatedMatch.sets[state.currentSet].timeouts[team] >= 2) {
+            throw new Error("Team has had their two timeouts.");
+          }
+          //add time out to team.
+          updatedMatch.sets[state.currentSet].timeouts[team] =
+            updatedMatch.sets[state.currentSet].timeouts[team] + 1;
+          //add action for timeout
+          updatedMatch.sets[state.currentSet].actions.push({
+            type: "timeout" as const,
+            team: team,
+            overallScore: {
+              ...state.match.sets[state.currentSet].score,
+            },
+            timestamp: new Date().toISOString(),
+          });
+
+          return {
+            ...state,
+            match: updatedMatch,
+          };
+        });
+      },
+
       openModal: (type, data) => {
         set((state) => ({
           ...state,

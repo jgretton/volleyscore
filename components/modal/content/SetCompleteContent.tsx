@@ -90,7 +90,7 @@ const SetCompleteContent = ({
         }}
         className="mt-4 w-full cursor-pointer rounded border border-gray-200 bg-white px-4 py-2 text-black hover:bg-gray-200"
       >
-        Undo last action
+        Undo set point
       </button>
     </div>
   );
