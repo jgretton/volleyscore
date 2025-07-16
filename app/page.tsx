@@ -8,7 +8,7 @@ import { initialGame } from "@/lib/data";
 export default function Home() {
   const [selected, setSelected] = useState<boolean>(false);
   const [gameTime, setGameTime] = useState<number>(15);
-  const [existingGame, setExistingGame] = useState<boolen>(false);
+  const [existingGame, setExistingGame] = useState<boolean>(false);
 
   const { startNewGame, match } = useGameStore();
   const [teamNames, setTeamNames] = useState<TeamNames>({
@@ -30,7 +30,7 @@ export default function Home() {
       setExistingGame(true);
       return;
     }
-  }, [existingGame]);
+  }, [match]);
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 p-24 dark:text-white">
