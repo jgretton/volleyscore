@@ -1,11 +1,8 @@
 export const TIMEOUT_DURATION = 30;
 const END_SET_DURATION = 180;
-// const END_SET_DURATION = 10;
-let teamsHaveSwapped = false;
 const POINTS_PER_SET = 25;
 const POINTS_FOR_FIFTH_SET = 15;
 import { Match } from "@/store/types";
-import { initialGame, initialSetData } from "../lib/data";
 type isSetCompleteReturn = {
   setWinner: "awayTeam" | "homeTeam" | null;
   shouldSwapSides: boolean;
