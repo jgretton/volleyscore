@@ -11,14 +11,15 @@ export interface Match {
   gameComplete: boolean;
   sets: Sets;
 }
+export interface SetData {
+  setStartTime?: string;
+  score: Score;
+  timeouts: Timeouts;
+  actions: GameAction[];
+  winner: TeamOptions;
+}
 export interface Sets {
-  [setNumber: number]: {
-    setStartTime?: string;
-    score: Score;
-    timeouts: Timeouts;
-    actions: GameAction[];
-    winner: TeamOptions;
-  };
+  [setNumber: number]: SetData;
 }
 export interface Score {
   homeTeam: number;
