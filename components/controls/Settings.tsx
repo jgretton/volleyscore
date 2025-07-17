@@ -44,6 +44,7 @@ const Settings = () => {
         className="focus-visible:ring-opacity-50 inline-flex cursor-pointer items-center gap-3 rounded-lg bg-gray-100 px-4 py-2 transition-all hover:bg-gray-200 focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:outline-hidden dark:bg-slate-800 dark:text-white dark:hover:bg-slate-900"
         type="button"
         onClick={() => setIsOpen(!isOpen)}
+        aria-label="Open settings"
       >
         <Cog6ToothIcon className="size-6" aria-hidden="true" />
       </button>
@@ -87,7 +88,10 @@ const Settings = () => {
                     >
                       Settings
                     </DialogTitle>
-                    <button onClick={() => setIsOpen(false)}>
+                    <button 
+                      onClick={() => setIsOpen(false)}
+                      aria-label="Close settings"
+                    >
                       <XMarkIcon
                         className="size-6 cursor-pointer"
                         aria-hidden="true"
