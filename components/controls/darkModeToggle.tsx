@@ -39,7 +39,6 @@ const DarkModeToggle = () => {
         <ListboxButton className="focus-visible:ring-opacity-75 w-full rounded-lg bg-gray-100 py-3 pr-8 pl-3 text-left text-sm focus:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-600 dark:bg-white/5 dark:text-white">
           <span className="inline-flex items-center gap-3 capitalize">
             {selected.icon} {selected.name}
-            {/* {theme} */}
           </span>
           <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
             <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />

@@ -1,6 +1,6 @@
 "use client";
-import FullScreen from "@/components/fullScreen";
-import Settings from "@/components/settings";
+import FullScreen from "@/components/controls/FullScreen";
+import Settings from "@/components/controls/Settings";
 import { useGameStore } from "@/store";
 import { ArrowsRightLeftIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import React from "react";

@@ -42,7 +42,7 @@ const FullScreen = () => {
       {isFullscreen ? (
         <div className="">
           <ArrowsPointingInIcon className="h-5 w-5" aria-hidden="true" />
-          {/* <span className="sr-only">Exit Full Screen</span> */}
+          <span className="sr-only">Exit Full Screen</span>
           <span className="pointer-events-none invisible absolute top-full right-full w-fit rounded-lg bg-gray-50 px-4 py-2 text-center opacity-0 transition-all duration-1000 group-hover:visible group-hover:opacity-100 dark:bg-slate-700">
             Exit fullscreen
           </span>
@@ -50,7 +50,7 @@ const FullScreen = () => {
       ) : (
         <div className=" ">
           <ArrowsPointingOutIcon className="h-5 w-5" aria-hidden="true" />
-          {/* <span className="sr-only">Enter Full Screen</span> */}
+          <span className="sr-only">Enter Full Screen</span>
           <span className="pointer-events-none invisible absolute top-full right-full w-full min-w-fit rounded-lg bg-gray-50 px-4 py-2 text-center opacity-0 transition-all duration-1000 group-hover:visible group-hover:opacity-100 dark:bg-slate-700">
             Enter fullscreen
           </span>

@@ -8,9 +8,9 @@ import {
 } from "@headlessui/react";
 import { Cog6ToothIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import React, { useState, Fragment } from "react";
-import DarkModeToggle from "./darkModeToggle";
 import { useGameStore } from "@/store";
 import { TeamNames } from "@/store/types";
+import DarkModeToggle from "./DarkModeToggle";
 
 const Settings = () => {
   const { match, updateTeamName } = useGameStore();
@@ -30,7 +30,6 @@ const Settings = () => {
   };
 
   const handleTeamNameUpdate = () => {
-    //If user removes all text from input, default to Home and Away
     const validatedTeamNames: TeamNames = {
       homeTeamName: teamNames.homeTeamName.trim() || "Home",
       awayTeamName: teamNames.awayTeamName.trim() || "Away",
