@@ -1,5 +1,11 @@
 export type TeamOptions = "awayTeam" | "homeTeam" | null;
 
+export interface DarkModeOption {
+  id: number;
+  name: string;
+  icon: React.ReactNode;
+}
+
 export interface Match {
   homeTeamName: string;
   awayTeamName: string;

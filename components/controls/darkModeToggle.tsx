@@ -14,12 +14,7 @@ import {
   SunIcon,
 } from "@heroicons/react/24/outline";
 import { useTheme } from "next-themes";
-
-type DarkModeOption = {
-  id: number;
-  name: string;
-  icon: React.ReactNode;
-};
+import { DarkModeOption } from "@/store/types";
 
 const darkMode: DarkModeOption[] = [
   { id: 1, name: "light", icon: <SunIcon className="size-5" /> },
