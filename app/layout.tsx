@@ -9,19 +9,19 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: {
     default: "VolleyScore - Online Volleyball Scoreboard",
-    template: "%s | VolleyScore"
+    template: "%s | VolleyScore",
   },
   description:
     "Track your volleyball games easily with our online volleyball scoreboard. Perfect for teams, coaches, and volleyball enthusiasts.",
   keywords: [
     "volleyball scoreboard",
-    "online volleyball scoreboard", 
+    "online volleyball scoreboard",
     "volleyball score tracker",
     "live volleyball scores",
     "volleyball",
     "digital scoreboard",
     "sports scoring",
-    "volleyball match tracker"
+    "volleyball match tracker",
   ],
   authors: [{ name: "VolleyScore" }],
   creator: "VolleyScore",
@@ -43,11 +43,11 @@ export const metadata: Metadata = {
     siteName: "VolleyScore",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "VolleyScore - Online Volleyball Scoreboard"
-      }
+        alt: "VolleyScore - Online Volleyball Scoreboard",
+      },
     ],
     locale: "en_GB",
     type: "website",
@@ -55,8 +55,9 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "VolleyScore - Online Volleyball Scoreboard",
-    description: "Track your volleyball games easily with our online volleyball scoreboard.",
-    images: ["/og-image.jpg"],
+    description:
+      "Track your volleyball games easily with our online volleyball scoreboard.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
@@ -86,23 +87,24 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebApplication",
-              "name": "VolleyScore",
-              "description": "Online volleyball scoreboard for tracking volleyball games",
-              "url": "https://www.volleyscore.co.uk",
-              "applicationCategory": "SportsApplication",
-              "operatingSystem": "Web Browser",
-              "offers": {
+              name: "VolleyScore",
+              description:
+                "Online volleyball scoreboard for tracking volleyball games",
+              url: "https://www.volleyscore.co.uk",
+              applicationCategory: "SportsApplication",
+              operatingSystem: "Web Browser",
+              offers: {
                 "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "GBP"
+                price: "0",
+                priceCurrency: "GBP",
               },
-              "featureList": [
+              featureList: [
                 "Real-time volleyball scoring",
                 "Team management",
                 "Match history tracking",
-                "Dark mode support"
-              ]
-            })
+                "Dark mode support",
+              ],
+            }),
           }}
         />
       </head>
