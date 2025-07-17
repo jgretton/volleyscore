@@ -6,8 +6,6 @@ import { TeamNames } from "@/store/types";
 import { initialGame } from "@/lib/data";
 
 export default function Home() {
-  const [selected, setSelected] = useState<boolean>(false);
-  const [gameTime, setGameTime] = useState<number>(15);
   const [existingGame, setExistingGame] = useState<boolean>(false);
 
   const { startNewGame, match } = useGameStore();
@@ -20,7 +18,7 @@ export default function Home() {
     setTeamNames((prevState) => {
       return {
         ...prevState,
-        [e.target.name]: e.target.value,
+        [e.target.name as keyof TeamNames]: e.target.value,
       };
     });
   };
@@ -35,18 +33,6 @@ export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 p-24 dark:text-white">
       <div className="flex flex-col gap-4">
-        {/*
-        <div className="flex flex-col gap-1">
-          <div className="inline-flex gap-3  items-center">
-            <input type="checkbox" />
-            <label> Points per set </label>
-          </div>
-          <input
-            type="number"
-            placeholder="25"
-            className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white "
-          />
-        </div> */}
         <div className="flex flex-col gap-3">
           <label> Home team name</label>
           <input
@@ -69,27 +55,6 @@ export default function Home() {
             className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
           />
         </div>
-        {/* <div className="flex flex-col">
-          <div className="inline-flex gap-3  items-center mt-4">
-            <input
-              type="checkbox"
-              className="rounded-md size-5"
-              checked={selected}
-              onChange={() => setSelected((prevState) => !prevState)}
-            />
-            <label> Timed Game</label>
-          </div>
-          <div className=" self-end inline-flex items-end">
-            <input
-              type="number"
-              className=" mt-3 rounded-md disabled:opacity-20 text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white mr-3"
-              value={gameTime}
-              disabled={!selected}
-              onChange={(e) => onChangeTime(e)}
-            />
-            <span className="flex-1"> (mins) </span>
-          </div>
-        </div> */}
       </div>
 
       <Link
