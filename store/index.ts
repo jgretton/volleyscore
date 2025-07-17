@@ -1,7 +1,13 @@
 import { initialGame, initialSetData } from "@/lib/data";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
-import { GameAction, MatchStore, TeamNames, TeamOptions } from "./types";
+import {
+  GameAction,
+  MatchStore,
+  ModalData,
+  TeamNames,
+  TeamOptions,
+} from "./types";
 import { isSetComplete } from "@/utils";
 
 export const useGameStore = create<MatchStore>()(
@@ -59,6 +65,7 @@ export const useGameStore = create<MatchStore>()(
             },
             timestamp: new Date().toISOString(),
           };
+
           return {
             match: {
               ...state.match,
@@ -88,8 +95,16 @@ export const useGameStore = create<MatchStore>()(
 
         if (result.setWinner && !result.isGameComplete) {
           get().handleSetCompletion(result.setWinner);
-        } else {
-          console.log("Game over");
+        } else if (result.setWinner && result.isGameComplete) {
+          get().handleGameComplete(result.setWinner);
+
+          const matchEndState = get();
+          const matchData: ModalData = {
+            currentSet,
+            updatedMatch: matchEndState.match,
+          };
+
+          get().openModal("MATCH_COMPLETE", matchData);
           //game over logic.
         }
       },
@@ -125,25 +140,32 @@ export const useGameStore = create<MatchStore>()(
           }
 
           if (action.type === "score") {
-            setUpdates.score = {
-              ...state.match.sets[currentSet].score,
-              [action.team]:
-                state.match.sets[currentSet].score[action.team] - 1,
-            };
+            if (currentState.match.gameComplete)
+              setUpdates.score = {
+                ...state.match.sets[currentSet].score,
+                [action.team]:
+                  state.match.sets[currentSet].score[action.team] - 1,
+              };
           }
-          return {
-            match: {
-              ...state.match,
-              sets: {
-                ...state.match.sets,
-                [currentSet]: setUpdates,
-              },
+
+          const updatedMatch = {
+            ...state.match,
+            gameComplete: false,
+            sets: {
+              ...state.match.sets,
+              [currentSet]: setUpdates,
             },
           };
-        });
 
-        //Logic for if the game was complete, you undo action it keeps the game going.
-        // find last array with score to figure out who is currently serving
+          if (action.type === "score" && state.match.gameComplete) {
+            if (action.team === "homeTeam") updatedMatch.homeTeamSetsWon -= 1;
+            else updatedMatch.awayTeamSetsWon -= 1;
+          }
+          return {
+            ...state,
+            match: updatedMatch,
+          };
+        });
       },
       undoSetPoint: () => {
         const currentState = get();
@@ -179,6 +201,8 @@ export const useGameStore = create<MatchStore>()(
 
           updatedMatch.sets = remainingSets;
 
+          updatedMatch.gameComplete = false;
+
           return {
             ...state,
             currentSet: state.currentSet - 1,
@@ -187,7 +211,7 @@ export const useGameStore = create<MatchStore>()(
         });
         get().swapSides();
       },
-      handleSetCompletion: (setResult: "awayTeam" | "homeTeam" | null) => {
+      handleSetCompletion: (setResult: TeamOptions) => {
         const currentState = get();
         const { match, currentSet } = currentState;
         const updatedMatch = { ...match };
@@ -222,6 +246,22 @@ export const useGameStore = create<MatchStore>()(
         };
 
         get().openModal("SET_COMPLETE", matchData);
+      },
+      handleGameComplete: (setResults: TeamOptions) => {
+        // set game is complete, update the team sets won but do not update current set otherwise data will be removed.
+        const { match } = get();
+        const updatedMatch = { ...match };
+        //game complete
+        updatedMatch.gameComplete = true;
+        // update sets won
+        if (setResults === "homeTeam")
+          updatedMatch.homeTeamSetsWon = updatedMatch.homeTeamSetsWon + 1;
+        else updatedMatch.awayTeamSetsWon = updatedMatch.awayTeamSetsWon + 1;
+
+        set((state) => ({
+          ...state,
+          match: updatedMatch,
+        }));
       },
       handleTeamTimeout: (team: TeamOptions) => {
         const currentState = get();

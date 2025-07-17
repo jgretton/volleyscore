@@ -65,12 +65,14 @@ export const isSetComplete = (
         setWinner: "homeTeam", // or "awayTeam" or null
         shouldSwapSides: true, // or false
         isSetCompleted: true, // or false
+        isGameComplete: match.homeTeamSetsWon === 2 ? true : false,
       };
     } else {
       return {
         setWinner: "awayTeam", // or "awayTeam" or null
         shouldSwapSides: true, // or false
         isSetCompleted: true, // or false
+        isGameComplete: match.awayTeamSetsWon === 2 ? true : false,
       };
     }
   }

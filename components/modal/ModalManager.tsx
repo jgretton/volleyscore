@@ -3,9 +3,11 @@ import { useGameStore } from "@/store";
 import React from "react";
 import Modal from "./Modal";
 import SetCompleteContent from "./content/SetCompleteContent";
+import MatchCompleteContent from "./content/MatchCompleteContent";
 
 const ModalManager = () => {
-  const { closeModal, modal, undoSetPoint } = useGameStore();
+  const { closeModal, modal, undoSetPoint, undoAction, resetMatchData } =
+    useGameStore();
 
   return (
     <Modal isModalOpen={modal.isOpen} closeModal={closeModal}>
@@ -16,7 +18,14 @@ const ModalManager = () => {
           undoSetPoint={undoSetPoint}
         />
       )}
-      {/* {modal.modalType === 'MATCH_COMPLETE' && <MatchCompleteContent data={modal.modalData} />} */}
+      {modal.modalType === "MATCH_COMPLETE" && (
+        <MatchCompleteContent
+          modalData={modal.modalData}
+          closeModal={closeModal}
+          undoAction={undoAction}
+          resetMatchData={resetMatchData}
+        />
+      )}
     </Modal>
   );
 };

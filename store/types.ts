@@ -45,6 +45,11 @@ interface ModalState {
   modalData?: any;
 }
 
+export interface ModalData {
+  currentSet: number;
+  updatedMatch: Match;
+}
+
 export interface MatchStore {
   match: Match;
   teamSwappedSides: boolean;
@@ -62,7 +67,9 @@ export interface MatchStore {
   ) => void;
   undoAction: (action: GameAction) => void;
   undoSetPoint: () => void;
+
   handleSetCompletion: (setResult: TeamOptions) => void;
+  handleGameComplete: (setResult: TeamOptions) => void;
 
   handleTeamTimeout: (team: TeamOptions) => void;
 

@@ -1,27 +1,36 @@
-import { GameAction, Match } from "@/store/types";
+import { GameAction, Match, ModalData } from "@/store/types";
 import React from "react";
 const sets = [1, 2, 3, 4, 5];
-const SetCompleteContent = ({
+const MatchCompleteContent = ({
   modalData,
   closeModal,
-  undoSetPoint,
+  undoAction,
+  resetMatchData,
 }: {
-  modalData?: {
-    currentSet: number;
-    updatedMatch: Match;
-  };
+  modalData?: ModalData;
   closeModal: () => void;
-  undoSetPoint: () => void;
+  undoAction: (action: GameAction) => void;
+  resetMatchData: () => void;
 }) => {
   if (!modalData?.updatedMatch) return <div>Error Loading Match Data..</div>;
 
-  const { awayTeamName, homeTeamName, awayTeamSetsWon, homeTeamSetsWon } =
-    modalData.updatedMatch;
+  const {
+    awayTeamName,
+    homeTeamName,
+    awayTeamSetsWon,
+    homeTeamSetsWon,
+    sets: matchSets,
+  } = modalData.updatedMatch;
+
+  const lastAction =
+    matchSets[modalData.currentSet].actions[
+      matchSets[modalData.currentSet].actions.length - 1
+    ];
+  console.log(lastAction);
+
   return (
     <div className="">
-      <h2 className="text-center text-lg">
-        End of Set {modalData.currentSet || ""}
-      </h2>
+      <h2 className="text-center text-lg">Game Finished</h2>
       <div className="bg my-10 grid grid-cols-2 divide-x">
         {/* Home Team */}
         <div className="grid w-full grid-flow-row gap-y-5 pr-3">
@@ -76,15 +85,15 @@ const SetCompleteContent = ({
 
       <button
         onClick={() => {
-          closeModal();
+          resetMatchData();
         }}
         className="mt-4 w-full cursor-pointer rounded border border-gray-200 bg-white px-4 py-2 text-black hover:bg-gray-200"
       >
-        Start next set
+        Restart new match
       </button>
       <button
         onClick={() => {
-          undoSetPoint();
+          undoAction(lastAction);
           closeModal();
         }}
         className="mt-4 w-full cursor-pointer rounded border border-gray-200 bg-white px-4 py-2 text-black hover:bg-gray-200"
@@ -95,4 +104,4 @@ const SetCompleteContent = ({
   );
 };
 
-export default SetCompleteContent;
+export default MatchCompleteContent;
