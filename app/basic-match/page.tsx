@@ -1,32 +1,18 @@
 "use client";
-import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState, useEffect, useRef, forwardRef } from "react";
+import { useState, useEffect, useRef } from "react";
 
-import { initialGame } from "@/lib/data";
-import { resetGame, EndOfSet, undoSetPoint } from "@/utils/gameLogic";
-import GameReview from "@/components/gameReview";
 import TeamScore from "@/components/game/scoring/TeamScore";
-import Timer from "@/components/timer";
 import History from "@/components/game/history/History";
 import GameHeader from "@/components/game/layout/GameHeader";
 import { useGameStore } from "@/store";
 import ModalManager from "@/components/modal/ModalManager";
+import { GameAction } from "@/store/types";
 
 const Page = () => {
   const { teamSwappedSides: teamSwapped, match, currentSet } = useGameStore();
-  const { gameComplete } = match;
+  const [isClient, setIsClient] = useState<boolean>(false);
 
-  //   const [currentSet, setCurrentSet] = useState(loadCurrentSet);
-  const [isOpen, setIsOpen] = useState(false);
-  const [endOfSetCountdown, setEndOfSetCountdown] = useState(0);
-  const [timeoutCountdown, setTimeoutCountdown] = useState(0);
-  const [isClient, setIsClient] = useState(false);
-
-  const containerRef = useRef(null);
-
-  function closeModal() {
-    setIsOpen(false);
-  }
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // everytime container gains children make sure it scrolls up.
   useEffect(() => {
@@ -88,18 +74,16 @@ const Page = () => {
           ref={containerRef}
           className="col-span-2 flex h-full flex-col-reverse gap-2 overflow-y-scroll py-2 sm:py-10"
         >
-          {match?.sets[currentSet]?.actions?.map((item, index) => (
-            <div
-              key={index}
-              className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 md:last:text-3xl dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 dark:last:text-gray-100 [&:last-child>div>div>button]:inline-flex"
-            >
-              <History
-                item={item}
-                currentSet={currentSet}
-                teamSwapped={teamSwapped}
-              />
-            </div>
-          ))}
+          {match?.sets[currentSet]?.actions?.map(
+            (item: GameAction, index: number) => (
+              <div
+                key={index}
+                className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 md:last:text-3xl dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 dark:last:text-gray-100 [&:last-child>div>div>button]:inline-flex"
+              >
+                <History item={item} teamSwapped={teamSwapped} />
+              </div>
+            ),
+          )}
         </div>
       </div>
 
