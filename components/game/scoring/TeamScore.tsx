@@ -1,33 +1,23 @@
 "use client";
-import { ClockIcon } from "@heroicons/react/24/outline";
 import React, { useEffect, useState, useRef } from "react";
-import ScoreButton from "./scoreButton";
+import { useGameStore } from "@/store";
+import ScoreButton from "./ScoreButton";
+import TimeoutButton from "../timeout/TimeoutButton";
 
-import { increaseScore, timeOut } from "@/utils/gameLogic";
+const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
+  const {
+    teamSwappedSides: teamSwapped,
+    match,
+    currentSet,
+    increaseTeamScore,
+  } = useGameStore();
 
-const TeamScore = ({
-  teamSwapped,
-  servingTeam,
-  gameData,
-  gameComplete,
-  setGameData,
-  currentSet,
-  setServingTeam,
-  timeoutTeam,
-  setTimeoutTeam,
-  team,
-}) => {
-  const [timeoutCountdown, setTimeoutCountdown] = useState(0);
-  useEffect(() => {
-    let timeoutInterval;
+  const teamName: string = match[`${team}Name`];
+  const teamScore: number = match.sets[currentSet]?.score[team];
+  const setsWon: number = match[`${team}SetsWon`];
+  const gameComplete: boolean = match.gameComplete;
 
-    if (timeoutCountdown > 0) {
-      timeoutInterval = setInterval(() => {
-        setTimeoutCountdown((prevCountdown) => prevCountdown - 1);
-      }, 1000);
-    }
-    return () => clearInterval(timeoutInterval);
-  }, [timeoutCountdown]);
+  const servingTeam = "homeTeam";
 
   return (
     <div className="flex h-full flex-col">
@@ -43,7 +33,7 @@ const TeamScore = ({
                 : "order-1" // if not hometeam apply this
           } truncate text-base md:text-lg lg:text-3xl`}
         >
-          {gameData?.game[`${team}Name`]}
+          {teamName}
         </span>
         <div
           className={`${
@@ -89,13 +79,9 @@ const TeamScore = ({
       >
         <div className="flex h-full w-full flex-col gap-3">
           <ScoreButton
-            increaseScore={increaseScore}
-            score={gameData?.game?.sets[currentSet]?.score?.[`${team}`]}
-            team={team}
+            score={teamScore}
             disabled={gameComplete}
-            setGameData={setGameData}
-            currentSet={currentSet}
-            setServingTeam={setServingTeam}
+            increaseTeamScore={() => increaseTeamScore(team, currentSet)}
           />
           <div className="flex flex-row justify-between">
             <span
@@ -109,7 +95,7 @@ const TeamScore = ({
                     : "order-2 self-start"
               } rounded-md border border-[#3E5B64] px-4 py-2 text-lg font-light tabular-nums sm:self-center`}
             >
-              {gameData.game[`${team}SetsWon`]}
+              {setsWon}
             </span>
 
             <div
@@ -123,40 +109,11 @@ const TeamScore = ({
                     : "order-1 self-end"
               } flex flex-col items-center gap-3 sm:flex-row sm:self-center`}
             >
-              <button
-                className={`${
-                  !teamSwapped
-                    ? team === "homeTeam"
-                      ? "order-2 sm:order-1"
-                      : "order-1 sm:order-2"
-                    : team === "homeTeam"
-                      ? "order-1 sm:order-2"
-                      : "order-2 sm:order-1"
-                } inline-flex shrink-0 items-center gap-3 rounded-lg border border-[#3E5B64] px-4 py-2 tabular-nums hover:bg-gray-100 disabled:cursor-not-allowed dark:border-gray-200 dark:hover:bg-slate-700`}
-                onClick={() => {
-                  timeOut(
-                    team,
-                    currentSet,
-                    setGameData,
-                    setTimeoutCountdown,
-                    setTimeoutTeam,
-                  );
-                }}
-                disabled={
-                  gameData.game.sets[currentSet].timeouts[team] >= 2 ||
-                  (timeoutTeam === team && timeoutCountdown > 0)
-                }
-              >
-                <ClockIcon className="size-5 text-gray-900 dark:text-white sm:size-6" />
-                {timeoutTeam === team && timeoutCountdown > 0 ? (
-                  <span className="text-xs md:text-base">
-                    {timeoutCountdown} s
-                  </span>
-                ) : (
-                  // Otherwise, display default button text
-                  <span className="hidden sm:block">Timeout</span>
-                )}
-              </button>
+              <TimeoutButton
+                match={match}
+                team={team}
+                teamSwapped={teamSwapped}
+              />
               <div
                 className={`${
                   !teamSwapped
@@ -174,7 +131,7 @@ const TeamScore = ({
                     className={`${
                       !teamSwapped ? "first:order-0" : "first:order-2"
                     } size-5 shrink-0 rounded-md border border-slate-800 dark:border-white ${
-                      index < gameData.game.sets[currentSet].timeouts[`${team}`]
+                      index < match.sets[currentSet]?.timeouts[`${team}`]
                         ? "bg-[#3E5B64]"
                         : "border-slate-800"
                     }`}
