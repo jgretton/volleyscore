@@ -1,7 +1,5 @@
 "use client";
 import React, { useEffect, useState, useRef } from "react";
-
-import { increaseScore, timeOut } from "@/utils/gameLogic";
 import { useGameStore } from "@/store";
 import ScoreButton from "./ScoreButton";
 import TimeoutButton from "../timeout/TimeoutButton";
@@ -20,20 +18,6 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
   const gameComplete: boolean = match.gameComplete;
 
   const servingTeam = "homeTeam";
-  const timeoutTeam = "homeTeam";
-
-  const [timeoutCountdown, setTimeoutCountdown] = useState<number>(0);
-
-  useEffect(() => {
-    let timeoutInterval;
-
-    if (timeoutCountdown > 0) {
-      timeoutInterval = setInterval(() => {
-        setTimeoutCountdown((prevCountdown) => prevCountdown - 1);
-      }, 1000);
-    }
-    return () => clearInterval(timeoutInterval);
-  }, [timeoutCountdown]);
 
   return (
     <div className="flex h-full flex-col">
@@ -129,8 +113,6 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
                 match={match}
                 team={team}
                 teamSwapped={teamSwapped}
-                timeoutCountdown={timeoutCountdown}
-                setTimeoutCountdown={setTimeoutCountdown}
               />
               <div
                 className={`${
