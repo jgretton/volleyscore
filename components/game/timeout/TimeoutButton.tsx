@@ -17,6 +17,7 @@ const TimeoutButton = ({
   match: Match;
 }) => {
   const currentSet = useGameStore((state) => state.currentSet);
+  const { gameComplete } = useGameStore((state) => state.match);
   const handleTeamTimeout = useGameStore((state) => state.handleTeamTimeout);
   const [timeoutCountdown, setTimeoutCountdown] = useState<number>(0);
   const [play] = useSound("/sounds/buzzer.mp3");
@@ -46,7 +47,9 @@ const TimeoutButton = ({
         handleTeamTimeout(team);
       }}
       disabled={
-        match.sets[currentSet].timeouts[team] >= 2 || timeoutCountdown > 0
+        match.sets[currentSet].timeouts[team] >= 2 ||
+        timeoutCountdown > 0 ||
+        gameComplete
       }
     >
       <ClockIcon className="size-5 text-gray-900 sm:size-6 dark:text-white" />
