@@ -22,4 +22,4 @@ A modern, real-time volleyball scoring application built with Next.js and TypeSc
 
 ---
 
-_For a detailed technical breakdown and development insights, read the full article on my website - [joshgretton.co.uk](www.joshgretton.co.uk)._
+_For a detailed technical breakdown and development insights, read the full article on my website - [joshgretton.co.uk](https://www.joshgretton.co.uk)._
