@@ -1,6 +1,7 @@
 import { initialGame, initialSetData } from "@/lib/data";
+import { isSetComplete } from "@/utils";
 import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { createJSONStorage, persist } from "zustand/middleware";
 import {
   GameAction,
   MatchStore,
@@ -8,7 +9,6 @@ import {
   TeamNames,
   TeamOptions,
 } from "./types";
-import { isSetComplete } from "@/utils";
 
 export const useGameStore = create<MatchStore>()(
   persist(
@@ -16,6 +16,7 @@ export const useGameStore = create<MatchStore>()(
       match: initialGame,
       teamSwappedSides: false,
       currentSet: 1,
+      servingTeam: null,
       modal: { isOpen: false, modalType: null, modalData: null },
       swapSides: () => {
         set((state) => ({
@@ -69,6 +70,7 @@ export const useGameStore = create<MatchStore>()(
           return {
             match: {
               ...state.match,
+              servingTeam: teamKey,
               sets: {
                 ...state.match.sets,
                 [currentSet]: {
@@ -225,6 +227,8 @@ export const useGameStore = create<MatchStore>()(
           updatedMatch.sets[currentSet].winner = "awayTeam";
           updatedMatch.awayTeamSetsWon += 1;
         }
+
+        updatedMatch.servingTeam = null;
 
         get().swapSides();
 

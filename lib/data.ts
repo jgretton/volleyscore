@@ -17,7 +17,8 @@ export const initialSetData: SetData = {
 export const initialGame: Match = {
   homeTeamName: "Home",
   awayTeamName: "Away",
-  firstServingTeam: "homeTeam",
+  firstServingTeam: null,
+  servingTeam: null,
   homeTeamSetsWon: 0,
   awayTeamSetsWon: 0,
   pointsPerSet: 25,

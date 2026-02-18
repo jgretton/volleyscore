@@ -80,6 +80,8 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
+        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15202b" />
         <link rel="icon" href="/favicon.ico" />
         <script
           type="application/ld+json"

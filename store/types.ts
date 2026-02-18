@@ -9,7 +9,8 @@ export interface DarkModeOption {
 export interface Match {
   homeTeamName: string;
   awayTeamName: string;
-  firstServingTeam: string;
+  firstServingTeam: "homeTeam" | "awayTeam" | null;
+  servingTeam: "homeTeam" | "awayTeam" | null;
   homeTeamSetsWon: number;
   awayTeamSetsWon: number;
   pointsPerSet: number;

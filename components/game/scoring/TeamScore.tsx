@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useState, useRef } from "react";
 import { useGameStore } from "@/store";
-import ScoreButton from "./ScoreButton";
 import TimeoutButton from "../timeout/TimeoutButton";
+import ScoreButton from "./ScoreButton";
 
 const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
   const {
@@ -17,7 +16,7 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
   const setsWon: number = match[`${team}SetsWon`];
   const gameComplete: boolean = match.gameComplete;
 
-  const servingTeam = "homeTeam";
+  const servingTeam = match.servingTeam;
 
   return (
     <div className="flex h-full flex-col">
