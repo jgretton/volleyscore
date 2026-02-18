@@ -179,7 +179,7 @@ export const useGameStore = create<MatchStore>()(
 
         set((state) => {
           const updatedMatch = { ...state.match };
-          const { actions, winner } = updatedMatch.sets[state.currentSet - 1];
+          const { winner } = updatedMatch.sets[state.currentSet - 1];
 
           updatedMatch.sets[state.currentSet - 1].actions = updatedMatch.sets[
             state.currentSet - 1
@@ -207,6 +207,11 @@ export const useGameStore = create<MatchStore>()(
           updatedMatch.sets = remainingSets;
 
           updatedMatch.gameComplete = false;
+
+          updatedMatch.servingTeam =
+            updatedMatch.sets[state.currentSet - 1].actions.findLast(
+              (a) => a.type === "score",
+            )?.team ?? null;
 
           return {
             ...state,
