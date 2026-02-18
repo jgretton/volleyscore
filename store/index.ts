@@ -126,6 +126,7 @@ export const useGameStore = create<MatchStore>()(
         const { currentSet } = currentState;
         const updatedActions = [...currentState.match.sets[currentSet].actions];
         updatedActions.pop();
+        let updatedServingTeam = currentState.match.servingTeam;
 
         set((state) => {
           const setUpdates = {
@@ -142,16 +143,18 @@ export const useGameStore = create<MatchStore>()(
           }
 
           if (action.type === "score") {
-            if (currentState.match.gameComplete)
-              setUpdates.score = {
-                ...state.match.sets[currentSet].score,
-                [action.team]:
-                  state.match.sets[currentSet].score[action.team] - 1,
-              };
+            setUpdates.score = {
+              ...state.match.sets[currentSet].score,
+              [action.team]:
+                state.match.sets[currentSet].score[action.team] - 1,
+            };
+            updatedServingTeam =
+              updatedActions.findLast((a) => a.type === "score")?.team ?? null;
           }
 
           const updatedMatch = {
             ...state.match,
+            servingTeam: updatedServingTeam,
             gameComplete: false,
             sets: {
               ...state.match.sets,

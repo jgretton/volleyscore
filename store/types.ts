@@ -38,7 +38,7 @@ export interface Timeouts {
 }
 export interface GameAction {
   type: "score" | "timeout";
-  team: string;
+  team: "homeTeam" | "awayTeam" | null;
   overallScore: Score;
   timestamp: string;
 }
