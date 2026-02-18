@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VolleyScore</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #f1f5f9;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 340px;
+      display: flex;
+      flex-direction: column;
+      gap: 2.5rem;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .logo span { color: #3b82f6; }
+
+    /* ── Resume banner ── */
+    .resume {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 1.25rem;
+      text-decoration: none;
+      display: block;
+      transition: background 0.15s;
+    }
+
+    .resume:hover { background: #243447; }
+
+    .resume-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #22c55e;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .resume-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    .resume-score {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .resume-team {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      flex: 1;
+    }
+
+    .resume-team.away { text-align: right; }
+
+    .resume-points {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .resume-points span {
+      font-size: 1rem;
+      color: #475569;
+      font-weight: 400;
+    }
+
+    .resume-sets {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .sets-tally {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #94a3b8;
+      width: 1.5rem;
+      text-align: center;
+    }
+
+    .sets-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #475569;
+    }
+
+    .resume-meta {
+      font-size: 0.75rem;
+      color: #475569;
+      text-align: center;
+    }
+
+    .btn-resume {
+      font-size: 0.825rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      background: #2563eb;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5rem 0.875rem;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    /* ── Action cards ── */
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .action-card {
+      width: 100%;
+      background: none;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s, background 0.15s;
+      text-decoration: none;
+      display: block;
+    }
+
+    .action-card:hover {
+      border-color: #334155;
+      background: #0f1f33;
+    }
+
+    .action-card.primary {
+      background: #2563eb;
+      border-color: #2563eb;
+    }
+
+    .action-card.primary:hover {
+      background: #1d4ed8;
+      border-color: #1d4ed8;
+    }
+
+    .action-card .title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #f1f5f9;
+      margin-bottom: 0.2rem;
+    }
+
+    .action-card .desc {
+      font-size: 0.775rem;
+      color: rgba(241, 245, 249, 0.5);
+    }
+
+    .action-card.primary .desc {
+      color: rgba(255,255,255,0.65);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="logo">Volley<span>Score</span></div>
+
+    <!-- Only shown when an existing match is in progress -->
+    <a href="/match" class="resume">
+      <div class="resume-label">Match in progress</div>
+      <div class="resume-score">
+        <div class="resume-team home">Home</div>
+        <div class="resume-points">18 <span>–</span> 14</div>
+        <div class="resume-team away">Away</div>
+      </div>
+      <div class="resume-sets">
+        <div class="sets-tally">1</div>
+        <div class="sets-label">Sets</div>
+        <div class="sets-tally">0</div>
+      </div>
+      <div class="resume-meta">Set 3 · Tap to continue</div>
+    </a>
+
+    <div class="actions">
+      <a href="/match" class="action-card primary">
+        <div class="title">Start New Match</div>
+        <div class="desc">Just the score.</div>
+      </a>
+      <a href="/setup" class="action-card">
+        <div class="title">Advanced Setup</div>
+        <div class="desc">Track squads, lineups and rotations.</div>
+      </a>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -8,20 +8,12 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [existingGame, setExistingGame] = useState<boolean>(false);
 
-  const { startNewGame, match } = useGameStore();
+  const { startNewGame, match, currentSet } = useGameStore();
+
   const [teamNames, setTeamNames] = useState<TeamNames>({
     homeTeamName: "Home",
     awayTeamName: "Away",
   });
-
-  const changeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTeamNames((prevState) => {
-      return {
-        ...prevState,
-        [e.target.name as keyof TeamNames]: e.target.value,
-      };
-    });
-  };
 
   useEffect(() => {
     if (match !== initialGame) {
@@ -29,56 +21,53 @@ export default function Home() {
       return;
     }
   }, [match]);
-
+  console.log(match);
   return (
-    <main className="flex min-h-screen flex-col items-center gap-10 p-24 dark:text-white">
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-3">
-          <label> Home team name</label>
-          <input
-            type="text"
-            placeholder="Home"
-            name="homeTeamName"
-            onChange={changeName}
-            value={teamNames.homeTeamName}
-            className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
-          />
-        </div>
-        <div className="flex flex-col gap-3">
-          <label> Away team name</label>
-          <input
-            type="text"
-            placeholder="Away"
-            name="awayTeamName"
-            onChange={changeName}
-            value={teamNames.awayTeamName}
-            className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
-          />
-        </div>
-      </div>
-
-      <Link
-        href="/basic-match"
-        className="rounded-full bg-blue-600 px-4 py-3 text-white"
-        onClick={() => startNewGame(teamNames)}
-      >
-        Start New Match
-      </Link>
+    <main className="flex min-h-screen flex-col items-center gap-10 p-4 sm:p-8 md:p-16 lg:p-24 dark:text-white">
+      <h1 className="text-xl text-[10vw] font-light">Volleyscore</h1>
 
       {existingGame && (
-        <div className="mt-10 flex w-full max-w-sm flex-col gap-4 text-center">
-          <p>
-            Looks like you have already started a game, would you like to
-            continue?
-          </p>
+        <div className="flex w-full max-w-xl flex-col gap-4 rounded-xl bg-slate-800 p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-green-500 uppercase">
+              <span className="size-2 shrink-0 animate-pulse rounded-full bg-green-500" />
+              Live - Set {currentSet}
+            </h2>
+            <span className="text-xs text-white/40">
+              {match.homeTeamSetsWon} - {match.awayTeamSetsWon} Sets
+            </span>
+          </div>
+
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+            <div className="truncate text-left text-sm font-medium">
+              {match.homeTeamName}
+            </div>
+            <div className="text-3xl font-bold tabular-nums">
+              {match.sets[currentSet].score.homeTeam}
+              <span className="mx-1 text-white/30">-</span>
+              {match.sets[currentSet].score.awayTeam}
+            </div>
+            <div className="truncate text-right text-sm font-medium">
+              {match.awayTeamName}
+            </div>
+          </div>
+
           <Link
-            href="/basic-match"
-            className="self-center rounded-full bg-blue-600 px-4 py-3 text-white"
+            href="/match"
+            className="rounded-lg bg-blue-600 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-700"
           >
             Continue Match
           </Link>
         </div>
       )}
+
+      <Link
+        href="/match"
+        className="rounded-full bg-blue-600 px-4 py-3 text-white"
+        onClick={() => startNewGame(teamNames)}
+      >
+        Start New Match
+      </Link>
     </main>
   );
 }

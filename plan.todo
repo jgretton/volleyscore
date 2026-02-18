@@ -1,8 +1,32 @@
 Bugs:
-    ☐ undo button not restoring score, timeouts, updating serving team.
-        - check store logic.
-
+    ✓ undo button not restoring score, timeouts, updating serving team.
+    ☐ when undoing 5th set 8 point switch, it doesnt swap side back.
 
 
 
 Features:
+    Squad & Lineup (branch: feature/squad-and-lineup):
+
+        Foundation:
+            ✔ Rename /basic-match route to /match @done(26-02-18 14:41)
+            ✔ Add matchMode ("basic" | "advanced") to store @done(26-02-18 14:45)
+            ✔ Define Player and Squad types in store/types.ts @done(26-02-18 14:53)
+            ✔ Add squad and lineup state to store @done(26-02-18 15:31)
+                ✔ Squad: per match (stays the same across sets) @done(26-02-18 15:31)
+                ✔ Lineup: per set (coaches submit new sheet each set, 6 players in positions 1-6) @done(26-02-18 15:31)
+
+        Home Page:
+            ☐ Add match mode selection (Basic / Advanced)
+
+        Setup Flow (/setup):
+            ☐ Create /setup route with multi-step form
+            ☐ Step 1: Team names
+            ☐ Step 2: Add players to each squad (name + shirt number)
+            ☐ Navigate to /match on completion
+
+        Match Page:
+            ☐ Conditionally show advanced features based on matchMode
+            ☐ Lineup modal blocks match start until both teams submit lineup sheet for set 1
+                - 6 players per team assigned to positions 1-6 (rotation order)
+            ☐ Display active lineup for current set
+            ☐ Lineup modal reappears at the start of each new set

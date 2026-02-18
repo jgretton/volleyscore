@@ -9,6 +9,8 @@ export interface DarkModeOption {
 export interface Match {
   homeTeamName: string;
   awayTeamName: string;
+  homeTeamSquad: Team;
+  awayTeamSquad: Team;
   firstServingTeam: "homeTeam" | "awayTeam" | null;
   servingTeam: "homeTeam" | "awayTeam" | null;
   homeTeamSetsWon: number;
@@ -24,6 +26,10 @@ export interface SetData {
   timeouts: Timeouts;
   actions: GameAction[];
   winner: TeamOptions;
+  lineup?: {
+    homeTeam: Lineup;
+    awayTeam: Lineup;
+  };
 }
 export interface Sets {
   [setNumber: number]: SetData;
@@ -63,6 +69,7 @@ export interface MatchStore {
   teamSwappedSides: boolean;
   currentSet: number;
   modal: ModalState;
+  matchMode: "basic" | "advanced" | null;
 
   swapSides: () => void;
   updateTeamName: (teamNames: TeamNames) => void;
@@ -85,4 +92,19 @@ export interface MatchStore {
 
   openModal: (type: ModalState["modalType"], data?: any) => void;
   closeModal: () => void;
+}
+
+export interface Player {
+  id: string;
+  number: number;
+  name: string;
+}
+
+export interface Team {
+  players: Player[];
+  liberos: Player[];
+}
+
+export interface Lineup {
+  [position: number]: Player;
 }

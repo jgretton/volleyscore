@@ -14,6 +14,7 @@ export const useGameStore = create<MatchStore>()(
   persist(
     (set, get) => ({
       match: initialGame,
+      matchMode: null,
       teamSwappedSides: false,
       currentSet: 1,
       servingTeam: null,
