@@ -1,9 +1,9 @@
 "use client";
-import Link from "next/link";
-import { useEffect, useState } from "react";
+import { initialGame } from "@/lib/data";
 import { useGameStore } from "@/store";
 import { TeamNames } from "@/store/types";
-import { initialGame } from "@/lib/data";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [existingGame, setExistingGame] = useState<boolean>(false);
@@ -75,7 +75,7 @@ export default function Home() {
             href="/basic-match"
             className="self-center rounded-full bg-blue-600 px-4 py-3 text-white"
           >
-            Contiue Match
+            Continue Match
           </Link>
         </div>
       )}

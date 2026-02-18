@@ -175,7 +175,7 @@ export const useGameStore = create<MatchStore>()(
       undoSetPoint: () => {
         const currentState = get();
         if (currentState.currentSet <= 1)
-          throw new Error("Set hasn not been completed yet");
+          throw new Error("Set has not been completed yet");
 
         set((state) => {
           const updatedMatch = { ...state.match };
