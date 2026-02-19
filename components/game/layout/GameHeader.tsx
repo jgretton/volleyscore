@@ -3,15 +3,6 @@ import FullScreen from "@/components/controls/FullScreen";
 import Settings from "@/components/controls/Settings";
 import { useGameStore } from "@/store";
 import { ArrowsRightLeftIcon, XCircleIcon } from "@heroicons/react/24/outline";
-import React from "react";
-
-// TODO: Move to Zustand/hooks:
-// - setServingTeam
-// - setCurrentSet
-// - setTeamSwapped (✓ done)
-// - setGameComplete
-// - setEndOfSetCountdown
-// - setTimeoutCountdown
 
 const GameHeader = () => {
   const { swapSides, resetMatchData } = useGameStore();
