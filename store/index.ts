@@ -6,6 +6,7 @@ import {
   GameAction,
   MatchStore,
   ModalData,
+  Team,
   TeamNames,
   TeamOptions,
 } from "./types";
@@ -33,6 +34,17 @@ export const useGameStore = create<MatchStore>()(
           },
         }));
       },
+
+      setTeamSquad: (homeTeamSquad: Team, awayTeamSquad: Team) => {
+        set((state) => ({
+          match: {
+            ...state.match,
+            homeTeamSquad: homeTeamSquad,
+            awayTeamSquad: awayTeamSquad,
+          },
+        }));
+      },
+
       startNewGame: (teamNames?: TeamNames) => {
         const newGame = teamNames
           ? { ...initialGame, ...teamNames }

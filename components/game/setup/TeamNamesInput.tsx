@@ -6,7 +6,7 @@ import { useGameStore } from "@/store";
 import { TeamNames } from "@/store/types";
 import { useEffect, useState } from "react";
 
-const TeamNamesInput = () => {
+const TeamNamesInput = ({ onConfirm }: { onConfirm: () => void }) => {
   const { updateTeamName, match } = useGameStore();
   const [teamNames, setTeamNames] = useState<TeamNames>({
     homeTeamName: "",
@@ -41,36 +41,34 @@ const TeamNamesInput = () => {
     }
 
     updateTeamName(teamNames);
+    onConfirm();
   };
 
   return (
-    <div className="w-full">
-      <h2>Team names</h2>
-      <form className="mt-5 grid grid-cols-2 gap-5" onSubmit={handleConfirm}>
-        <div className="space-y-2">
-          <Label htmlFor="homeTeamName"> Home team</Label>
-          <Input
-            id="homeTeamName"
-            value={teamNames.homeTeamName}
-            name="homeTeamName"
-            required
-            onChange={handleChange}
-          />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="awayTeamName"> Away team</Label>
-          <Input
-            id="awayTeamName"
-            value={teamNames.awayTeamName}
-            name="awayTeamName"
-            required
-            onChange={handleChange}
-          />
-        </div>
-        {error && <p className="col-start-1 text-sm text-red-500">{error}</p>}
-        <Button className="col-start-2">Confirm</Button>
-      </form>
-    </div>
+    <form className="mt-5 grid grid-cols-2 gap-5" onSubmit={handleConfirm}>
+      <div className="space-y-2">
+        <Label htmlFor="homeTeamName"> Home team</Label>
+        <Input
+          id="homeTeamName"
+          value={teamNames.homeTeamName}
+          name="homeTeamName"
+          required
+          onChange={handleChange}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="awayTeamName"> Away team</Label>
+        <Input
+          id="awayTeamName"
+          value={teamNames.awayTeamName}
+          name="awayTeamName"
+          required
+          onChange={handleChange}
+        />
+      </div>
+      {error && <p className="col-start-1 text-sm text-red-500">{error}</p>}
+      <Button className="col-start-2">Confirm</Button>
+    </form>
   );
 };
 
