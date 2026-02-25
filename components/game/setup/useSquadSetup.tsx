@@ -9,7 +9,7 @@ export const MIN_PLAYERS = 6;
 export const useSquadSetup = () => {
   const { setMatchSetupSquad, matchSetup } = useGameStore();
   const [squad, setSquad] = useState<{ homeTeam: Team; awayTeam: Team }>(
-    matchSetup.homeTeamSquad.players.length >= 6
+    matchSetup?.homeTeamSquad.players.length >= 6
       ? {
           homeTeam: matchSetup.homeTeamSquad,
           awayTeam: matchSetup.awayTeamSquad,

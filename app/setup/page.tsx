@@ -11,10 +11,10 @@ import { useState } from "react";
 const Page = () => {
   const { matchSetup } = useGameStore();
   const [step, setStep] = useState<"teamNames" | "squad" | "confirm">(() => {
-    if (matchSetup.homeTeamSquad.players.length >= 6) return "confirm";
+    if (matchSetup?.homeTeamSquad.players.length >= 6) return "confirm";
     else if (
-      matchSetup.teamNames.awayTeamName.trim() !== "" &&
-      matchSetup.teamNames.homeTeamName.trim() !== ""
+      matchSetup?.teamNames.awayTeamName.trim() !== "" &&
+      matchSetup?.teamNames.homeTeamName.trim() !== ""
     )
       return "squad";
     else return "teamNames";
@@ -99,7 +99,7 @@ const Page = () => {
               Start Match
             </Button>
             {step !== "confirm" && (
-              <p className="text-muted-foreground text-xs">
+              <p className="text-muted-foreground mt-1 text-xs">
                 Complete the steps above to start the match.
               </p>
             )}
