@@ -12,9 +12,14 @@ import {
 interface SquadInputProps {
   homeTeamName: string;
   awayTeamName: string;
+  onConfirm: () => void;
 }
 
-const SquadInput = ({ homeTeamName, awayTeamName }: SquadInputProps) => {
+const SquadInput = ({
+  homeTeamName,
+  awayTeamName,
+  onConfirm,
+}: SquadInputProps) => {
   const { squad, addPlayer, handleChange, removePlayer, confirmSquad } =
     useSquadSetup();
 
@@ -99,7 +104,7 @@ const SquadInput = ({ homeTeamName, awayTeamName }: SquadInputProps) => {
         {renderTeamColumn("awayTeam", awayTeamName)}
       </div>
       <div className="flex justify-end">
-        <Button onClick={() => confirmSquad()}>Confirm Squad</Button>
+        <Button onClick={() => confirmSquad(onConfirm)}>Confirm Squad</Button>
       </div>
     </div>
   );

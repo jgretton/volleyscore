@@ -4,22 +4,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useGameStore } from "@/store";
 import { TeamNames } from "@/store/types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const TeamNamesInput = ({ onConfirm }: { onConfirm: () => void }) => {
-  const { updateTeamName, match } = useGameStore();
+  const { updateMatchSetupTeamNames, matchSetup } = useGameStore();
   const [teamNames, setTeamNames] = useState<TeamNames>({
-    homeTeamName: "",
-    awayTeamName: "",
+    homeTeamName: matchSetup.teamNames.homeTeamName,
+    awayTeamName: matchSetup.teamNames.awayTeamName,
   });
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    setTeamNames({
-      homeTeamName: match.homeTeamName,
-      awayTeamName: match.awayTeamName,
-    });
-  }, [match.homeTeamName, match.awayTeamName]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setError(null);
@@ -40,7 +33,7 @@ const TeamNamesInput = ({ onConfirm }: { onConfirm: () => void }) => {
       return;
     }
 
-    updateTeamName(teamNames);
+    updateMatchSetupTeamNames(teamNames);
     onConfirm();
   };
 

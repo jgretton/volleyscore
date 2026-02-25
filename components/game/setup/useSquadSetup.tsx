@@ -1,3 +1,4 @@
+import { initalSquadData } from "@/lib/data";
 import { useGameStore } from "@/store";
 import { Player, Team } from "@/store/types";
 import { useState } from "react";
@@ -6,25 +7,15 @@ export const MAX_LIBEROS = 2;
 export const MIN_PLAYERS = 6;
 
 export const useSquadSetup = () => {
-  const { setTeamSquad } = useGameStore();
-  const [squad, setSquad] = useState<{ homeTeam: Team; awayTeam: Team }>({
-    homeTeam: {
-      players: Array.from({ length: 6 }, () => ({
-        id: crypto.randomUUID(),
-        number: 0,
-        name: "",
-      })),
-      liberos: [],
-    },
-    awayTeam: {
-      players: Array.from({ length: 6 }, () => ({
-        id: crypto.randomUUID(),
-        number: 0,
-        name: "",
-      })),
-      liberos: [],
-    },
-  });
+  const { setMatchSetupSquad, matchSetup } = useGameStore();
+  const [squad, setSquad] = useState<{ homeTeam: Team; awayTeam: Team }>(
+    matchSetup.homeTeamSquad.players.length >= 6
+      ? {
+          homeTeam: matchSetup.homeTeamSquad,
+          awayTeam: matchSetup.awayTeamSquad,
+        }
+      : initalSquadData,
+  );
 
   const addPlayer = (
     teamKey: "homeTeam" | "awayTeam",
@@ -76,22 +67,31 @@ export const useSquadSetup = () => {
     }));
   };
 
-  const confirmSquad = () => {
+  const confirmSquad = (onConfirm: () => void) => {
     const cleanPlayers = (players: Player[]) =>
       players.filter((p) => p.name.trim() !== "" || p.number > 0);
 
     const cleanedHome = cleanPlayers(squad.homeTeam.players);
     const cleanedAway = cleanPlayers(squad.awayTeam.players);
 
-    if (cleanedHome.length < MIN_PLAYERS || cleanedAway.length < MIN_PLAYERS) {
+    const cleanedHomeLiberos = cleanPlayers(squad.homeTeam.liberos);
+    const cleanedAwayLiberos = cleanPlayers(squad.awayTeam.liberos);
+
+    if (
+      cleanedHome.length < MIN_PLAYERS ||
+      cleanedAway.length < MIN_PLAYERS ||
+      cleanedHomeLiberos.length > MAX_LIBEROS ||
+      cleanedAwayLiberos.length > MAX_LIBEROS
+    ) {
       console.log("MISSING INPUTS");
       return;
     }
 
-    setTeamSquad(
-      { ...squad.homeTeam, players: cleanedHome },
-      { ...squad.awayTeam, players: cleanedAway },
+    setMatchSetupSquad(
+      { ...squad.homeTeam, players: cleanedHome, liberos: cleanedHomeLiberos },
+      { ...squad.awayTeam, players: cleanedAway, liberos: cleanedAwayLiberos },
     );
+    onConfirm();
   };
   return { squad, addPlayer, removePlayer, handleChange, confirmSquad };
 };

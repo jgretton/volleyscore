@@ -16,12 +16,15 @@ Features:
                 ✔ Lineup: per set (coaches submit new sheet each set, 6 players in positions 1-6) @done(26-02-18 15:31)
 
         Home Page:
-            ☐ Add match mode selection (Basic / Advanced)
+            ✔ Add match mode selection (Basic / Advanced) @done(26-02-25 12:55)
 
         Setup Flow (/setup):
-            ☐ Create /setup route with multi-step form
-            ☐ Step 1: Team names
-            ☐ Step 2: Add players to each squad (name + shirt number)
+            ✔ Create /setup route with multi-step form @done(26-02-25 12:55)
+            ✔ Step 1: Team names @done(26-02-25 12:55)
+            ✔ Step 2: Add players to each squad (name + shirt number) @done(26-02-25 12:56)
+            ☐ Make confirmation section
+            ☐ Update edit buttons, on confirm check which step to move to (if all areas have been completed)
+            ☐ Update player inputs to a form.
             ☐ Navigate to /match on completion
 
         Match Page:

@@ -1,4 +1,4 @@
-import { Match, SetData } from "@/store/types";
+import { Match, MatchSetup, SetData, SquadData } from "@/store/types";
 
 export const initialSetData: SetData = {
   setStartTime: new Date().toISOString(),
@@ -26,5 +26,39 @@ export const initialGame: Match = {
   gameComplete: false,
   sets: {
     1: { ...initialSetData },
+  },
+};
+
+export const initialMatchSetup: MatchSetup = {
+  teamNames: {
+    homeTeamName: "",
+    awayTeamName: "",
+  },
+  homeTeamSquad: {
+    liberos: [],
+    players: [],
+  },
+  awayTeamSquad: {
+    liberos: [],
+    players: [],
+  },
+};
+
+export const initalSquadData: SquadData = {
+  homeTeam: {
+    players: Array.from({ length: 6 }, () => ({
+      id: crypto.randomUUID(),
+      number: 0,
+      name: "",
+    })),
+    liberos: [],
+  },
+  awayTeam: {
+    players: Array.from({ length: 6 }, () => ({
+      id: crypto.randomUUID(),
+      number: 0,
+      name: "",
+    })),
+    liberos: [],
   },
 };
