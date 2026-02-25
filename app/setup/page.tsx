@@ -53,9 +53,9 @@ const Page = () => {
               </Button>
             </div>
             <div className="text-muted-foreground mt-1 flex items-center gap-2 pl-6 text-sm">
-              <span>{matchSetup.teamNames.homeTeamName}</span>
+              <span>{matchSetup?.teamNames.homeTeamName}</span>
               <span>·</span>
-              <span>{matchSetup.teamNames.awayTeamName}</span>
+              <span>{matchSetup?.teamNames.awayTeamName}</span>
             </div>
           </div>
         )}
@@ -67,8 +67,8 @@ const Page = () => {
               squad details for both teams.
             </p>
             <SquadInput
-              homeTeamName={matchSetup.teamNames.homeTeamName}
-              awayTeamName={matchSetup.teamNames.awayTeamName}
+              homeTeamName={matchSetup?.teamNames.homeTeamName ?? ""}
+              awayTeamName={matchSetup?.teamNames.awayTeamName ?? ""}
               onConfirm={() => setStep("confirm")}
             />
           </div>

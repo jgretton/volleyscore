@@ -9,8 +9,8 @@ import { useState } from "react";
 const TeamNamesInput = ({ onConfirm }: { onConfirm: () => void }) => {
   const { updateMatchSetupTeamNames, matchSetup } = useGameStore();
   const [teamNames, setTeamNames] = useState<TeamNames>({
-    homeTeamName: matchSetup.teamNames.homeTeamName,
-    awayTeamName: matchSetup.teamNames.awayTeamName,
+    homeTeamName: matchSetup?.teamNames.homeTeamName ?? "",
+    awayTeamName: matchSetup?.teamNames.awayTeamName ?? "",
   });
   const [error, setError] = useState<string | null>(null);
 
