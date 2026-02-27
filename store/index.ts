@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
   GameAction,
+  Match,
   MatchStore,
   ModalData,
   Team,
@@ -74,13 +75,39 @@ export const useGameStore = create<MatchStore>()(
         set(() => ({
           match: newGame,
           currentSet: 1,
+          teamSwappedSides: false,
         }));
       },
-      startNewMatchSetup: () => {
+      initialiseMatchSetup: () => {
         set((state) => ({
           ...state,
           matchSetup: initialMatchSetup,
         }));
+      },
+      startNewOfficialGame: () => {
+        // Need to copy the draft matchSetup into the actual match data.
+        // Use initialGame.
+        const { matchSetup } = get();
+        if (matchSetup === null)
+          return {
+            success: false,
+            message: "Something has gone wrong, please try again",
+          };
+
+        const newGame: Match = {
+          ...initialGame,
+          ...matchSetup.teamNames,
+          homeTeamSquad: matchSetup.homeTeamSquad,
+          awayTeamSquad: matchSetup.awayTeamSquad,
+        };
+        set((state) => ({
+          ...state,
+          match: newGame,
+          matchMode: "advanced",
+          currentSet: 1,
+          teamSwappedSides: false,
+        }));
+        return { success: true };
       },
       increaseTeamScore: (
         teamKey: "awayTeam" | "homeTeam",

@@ -72,7 +72,7 @@ export interface MatchSetup {
 
 export interface MatchStore {
   match: Match;
-  matchSetup?: MatchSetup;
+  matchSetup: MatchSetup;
   teamSwappedSides: boolean;
   currentSet: number;
   modal: ModalState;
@@ -85,8 +85,9 @@ export interface MatchStore {
   setMatchSetupSquad: (homeTeamSquad: Team, awayTeamSquad: Team) => void;
   updateTeamSquads: (homeTeamSquad: Team, awayTeamSquad: Team) => void;
 
+  initialiseMatchSetup: () => void;
   startNewGame: (teamNames?: TeamNames) => void;
-  startNewMatchSetup: () => void;
+  startNewOfficialGame: () => ReturnMessage;
 
   increaseTeamScore: (
     teamKey: "awayTeam" | "homeTeam",
@@ -124,4 +125,9 @@ export interface Lineup {
 export interface SquadData {
   homeTeam: Team;
   awayTeam: Team;
+}
+
+export interface ReturnMessage {
+  success: boolean;
+  message?: string;
 }

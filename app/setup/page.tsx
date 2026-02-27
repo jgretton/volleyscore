@@ -9,7 +9,9 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const Page = () => {
-  const { matchSetup } = useGameStore();
+  const { matchSetup, startNewOfficialGame, initialiseMatchSetup } =
+    useGameStore();
+  const router = useRouter();
   const [step, setStep] = useState<"teamNames" | "squad" | "confirm">(() => {
     if (matchSetup?.homeTeamSquad.players.length >= 6) return "confirm";
     else if (
@@ -19,8 +21,20 @@ const Page = () => {
       return "squad";
     else return "teamNames";
   });
+  const [error, setError] = useState<string>();
+  const StartNewMatch = () => {
+    setError(null);
+    const officialGameResponse = startNewOfficialGame();
 
-  const router = useRouter();
+    if (!officialGameResponse.success) {
+      setError(officialGameResponse.message);
+      return;
+    }
+    router.push("/match");
+    initialiseMatchSetup();
+    setStep("teamNames");
+  };
+
   return (
     <main className="relative flex min-h-screen flex-col items-center gap-10 p-4 text-slate-900 sm:p-8 md:p-16 dark:text-white">
       <Button variant="ghost" onClick={() => router.back()}>
@@ -95,9 +109,15 @@ const Page = () => {
             <span />
           )}
           <div className="flex flex-col items-end gap-1">
-            <Button size="lg" disabled={step !== "confirm"} variant="default">
+            <Button
+              size="lg"
+              disabled={step !== "confirm"}
+              variant="default"
+              onClick={StartNewMatch}
+            >
               Start Match
             </Button>
+            {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
             {step !== "confirm" && (
               <p className="text-muted-foreground mt-1 text-xs">
                 Complete the steps above to start the match.

@@ -1,4 +1,4 @@
-import { initalSquadData } from "@/lib/data";
+import { testSquad } from "@/lib/data";
 import { useGameStore } from "@/store";
 import { Player, Team } from "@/store/types";
 import { useState } from "react";
@@ -8,13 +8,22 @@ export const MIN_PLAYERS = 6;
 
 export const useSquadSetup = () => {
   const { setMatchSetupSquad, matchSetup } = useGameStore();
+  //   const [squad, setSquad] = useState<{ homeTeam: Team; awayTeam: Team }>(
+  //     matchSetup?.homeTeamSquad.players.length >= 6
+  //       ? {
+  //           homeTeam: matchSetup.homeTeamSquad,
+  //           awayTeam: matchSetup.awayTeamSquad,
+  //         }
+  //       : initalSquadData,
+  //   );
+
   const [squad, setSquad] = useState<{ homeTeam: Team; awayTeam: Team }>(
     matchSetup?.homeTeamSquad.players.length >= 6
       ? {
           homeTeam: matchSetup.homeTeamSquad,
           awayTeam: matchSetup.awayTeamSquad,
         }
-      : initalSquadData,
+      : testSquad,
   );
 
   const addPlayer = (

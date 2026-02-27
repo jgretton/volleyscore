@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [existingGame, setExistingGame] = useState<boolean>(false);
 
-  const { startNewGame, startNewMatchSetup, match, currentSet } =
+  const { startNewGame, initialiseMatchSetup, match, currentSet } =
     useGameStore();
 
   useEffect(() => {
@@ -75,7 +75,7 @@ export default function Home() {
 
           <Link
             href="/setup"
-            onClick={() => startNewMatchSetup()}
+            onClick={() => initialiseMatchSetup()}
             className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-5 transition hover:bg-slate-50 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700"
           >
             <div className="flex flex-col gap-2">
