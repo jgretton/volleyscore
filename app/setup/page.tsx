@@ -5,6 +5,7 @@ import TeamNamesInput from "@/components/game/setup/TeamNamesInput";
 import { Button } from "@/components/ui/button";
 import { useGameStore } from "@/store";
 import { CheckCircleIcon, ChevronLeftIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -21,8 +22,9 @@ const Page = () => {
       return "squad";
     else return "teamNames";
   });
+  const [squadConfirmed, setSquadConfirmed] = useState<boolean>(false);
   const [error, setError] = useState<string>();
-  const StartNewMatch = () => {
+  const startNewMatch = () => {
     setError(null);
     const officialGameResponse = startNewOfficialGame();
 
@@ -30,15 +32,17 @@ const Page = () => {
       setError(officialGameResponse.message);
       return;
     }
+    setStep("teamNames");
     router.push("/match");
     initialiseMatchSetup();
-    setStep("teamNames");
   };
 
   return (
     <main className="relative flex min-h-screen flex-col items-center gap-10 p-4 text-slate-900 sm:p-8 md:p-16 dark:text-white">
-      <Button variant="ghost" onClick={() => router.back()}>
-        <ChevronLeftIcon /> Back
+      <Button variant="ghost" asChild>
+        <Link href={"/"}>
+          <ChevronLeftIcon /> Back
+        </Link>
       </Button>
       <h1 className="text-2xl font-semibold">Match Setup</h1>
 
@@ -49,7 +53,12 @@ const Page = () => {
             <p className="text-muted-foreground mt-1 text-sm">
               Please enter the names for both teams
             </p>
-            <TeamNamesInput onConfirm={() => setStep("squad")} />
+            <TeamNamesInput
+              onConfirm={() => {
+                if (squadConfirmed === false) setStep("squad");
+                else setStep("confirm");
+              }}
+            />
           </div>
         ) : (
           <div className="w-full rounded-lg border border-green-500 p-6">
@@ -83,13 +92,19 @@ const Page = () => {
             <SquadInput
               homeTeamName={matchSetup?.teamNames.homeTeamName ?? ""}
               awayTeamName={matchSetup?.teamNames.awayTeamName ?? ""}
-              onConfirm={() => setStep("confirm")}
+              onConfirm={() => {
+                setStep("confirm");
+                setSquadConfirmed(true);
+              }}
             />
           </div>
         ) : step === "confirm" ? (
           <ConfirmedSquad
             matchSetup={matchSetup}
-            setStep={() => setStep("squad")}
+            setStep={() => {
+              setStep("squad");
+              setSquadConfirmed(false);
+            }}
           />
         ) : (
           <div className="mt-4 w-full rounded-lg border p-8">
@@ -113,7 +128,7 @@ const Page = () => {
               size="lg"
               disabled={step !== "confirm"}
               variant="default"
-              onClick={StartNewMatch}
+              onClick={startNewMatch}
             >
               Start Match
             </Button>

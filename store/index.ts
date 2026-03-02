@@ -16,7 +16,7 @@ export const useGameStore = create<MatchStore>()(
   persist(
     (set, get) => ({
       match: initialGame,
-      matchSetup: null,
+      matchSetup: initialMatchSetup,
       matchMode: null,
       teamSwappedSides: false,
       currentSet: 1,
@@ -307,7 +307,7 @@ export const useGameStore = create<MatchStore>()(
 
         get().swapSides();
 
-        set((state) => {
+        set(() => {
           return {
             match: {
               ...updatedMatch,
@@ -343,7 +343,6 @@ export const useGameStore = create<MatchStore>()(
         }));
       },
       handleTeamTimeout: (team: TeamOptions) => {
-        const currentState = get();
         set((state) => {
           const updatedMatch = { ...state.match };
           if (updatedMatch.sets[state.currentSet].timeouts[team] >= 2) {
