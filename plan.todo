@@ -22,10 +22,21 @@ Features:
             ✔ Create /setup route with multi-step form @done(26-02-25 12:55)
             ✔ Step 1: Team names @done(26-02-25 12:55)
             ✔ Step 2: Add players to each squad (name + shirt number) @done(26-02-25 12:56)
-            ☐ Make confirmation section
-            ☐ Update edit buttons, on confirm check which step to move to (if all areas have been completed)
+            ✔ Make confirmation section @done(26-03-03)
+            ✔ Update edit buttons, on confirm check which step to move to (if all areas have been completed) @done(26-03-03)
+            ✔ Navigate to /match on completion @done(26-03-03)
+            ☐ Squad validation (on confirm):
+                ☐ Hard errors (block submission):
+                    ☐ Minimum 6 players per team
+                    ☐ Every player must have a name
+                    ☐ Every player must have a number between 1-99
+                ☐ Warnings (allow submission but flag):
+                    ☐ Duplicate numbers within a team
+                    ☐ Libero number matches a player number
+                    ☐ Single character player names
+                ☐ Display errors inline next to the relevant player row
+                ☐ Sort players by number ascending silently on confirm
             ☐ Update player inputs to a form.
-            ☐ Navigate to /match on completion
 
         Match Page:
             ☐ Conditionally show advanced features based on matchMode

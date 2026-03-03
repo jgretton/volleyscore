@@ -1,6 +1,7 @@
 import { testSquad } from "@/lib/data";
 import { useGameStore } from "@/store";
 import { Player, Team } from "@/store/types";
+import { validateSquad } from "@/utils/squadErrorHandling";
 import { useState } from "react";
 export const MAX_PLAYERS = 12;
 export const MAX_LIBEROS = 2;
@@ -86,21 +87,19 @@ export const useSquadSetup = () => {
     const cleanedHomeLiberos = cleanPlayers(squad.homeTeam.liberos);
     const cleanedAwayLiberos = cleanPlayers(squad.awayTeam.liberos);
 
-    if (
-      cleanedHome.length < MIN_PLAYERS ||
-      cleanedAway.length < MIN_PLAYERS ||
-      cleanedHomeLiberos.length > MAX_LIBEROS ||
-      cleanedAwayLiberos.length > MAX_LIBEROS
-    ) {
-      console.log("MISSING INPUTS");
-      return;
-    }
+    const cleanedSquad = {
+      homeTeam: { players: cleanedHome, liberos: cleanedHomeLiberos },
+      awayTeam: { players: cleanedAway, liberos: cleanedAwayLiberos },
+    };
+
+    // validateSquad(cleanedSquad);
+    validateSquad(squad);
 
     setMatchSetupSquad(
       { ...squad.homeTeam, players: cleanedHome, liberos: cleanedHomeLiberos },
       { ...squad.awayTeam, players: cleanedAway, liberos: cleanedAwayLiberos },
     );
-    onConfirm();
+    // onConfirm();
   };
   return { squad, addPlayer, removePlayer, handleChange, confirmSquad };
 };

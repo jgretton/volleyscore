@@ -6,13 +6,18 @@ import { useEffect, useState } from "react";
 
 export default function Home() {
   const [existingGame, setExistingGame] = useState<boolean>(false);
+  const [existingMatchSetup, setExistingMatchSetup] = useState<boolean>(false);
 
-  const { startNewGame, initialiseMatchSetup, match, currentSet } =
+  const { startNewGame, initialiseMatchSetup, matchSetup, match, currentSet } =
     useGameStore();
 
   useEffect(() => {
     if (match.sets[1].actions.length > 0) {
       setExistingGame(true);
+      return;
+    }
+    if (matchSetup.teamNames.awayTeamName.trim() !== "") {
+      setExistingMatchSetup(true);
       return;
     }
   }, [match]);
@@ -55,7 +60,45 @@ export default function Home() {
           </Link>
         </div>
       )}
+      {existingMatchSetup && (
+        <div className="flex w-full max-w-xl flex-col gap-4 rounded-xl bg-[#3E5B64] p-5">
+          <h2 className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-amber-400 uppercase">
+            <span className="size-2 shrink-0 rounded-full bg-amber-400" />
+            Setup in Progress
+          </h2>
 
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-white">
+            <div className="flex flex-col gap-0.5">
+              <span className="truncate text-sm font-medium">
+                {matchSetup.teamNames.homeTeamName}
+              </span>
+              {matchSetup.homeTeamSquad.players.length > 0 && (
+                <span className="text-xs text-white/50">
+                  {matchSetup.homeTeamSquad.players.length} players
+                </span>
+              )}
+            </div>
+            <span className="text-sm font-bold text-white/40">vs</span>
+            <div className="flex flex-col items-end gap-0.5">
+              <span className="truncate text-sm font-medium">
+                {matchSetup.teamNames.awayTeamName}
+              </span>
+              {matchSetup.awayTeamSquad.players.length > 0 && (
+                <span className="text-xs text-white/50">
+                  {matchSetup.awayTeamSquad.players.length} players
+                </span>
+              )}
+            </div>
+          </div>
+
+          <Link
+            href="/setup"
+            className="rounded-lg bg-slate-800 py-2 text-center text-sm font-medium text-white transition hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600"
+          >
+            Continue Setup
+          </Link>
+        </div>
+      )}
       <div className="mt-10 flex w-full max-w-xl flex-col gap-5">
         <h2 className="text-xl font-medium">Score New Match</h2>
         <div className="flex w-full flex-col gap-3">
