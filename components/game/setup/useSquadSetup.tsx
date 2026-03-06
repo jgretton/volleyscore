@@ -1,6 +1,6 @@
-import { testSquad } from "@/lib/data";
+import { initalSquadData } from "@/lib/data";
 import { useGameStore } from "@/store";
-import { Player, Team } from "@/store/types";
+import { Player, SquadError, Team } from "@/store/types";
 import { validateSquad } from "@/utils/squadErrorHandling";
 import { useState } from "react";
 export const MAX_PLAYERS = 12;
@@ -9,23 +9,24 @@ export const MIN_PLAYERS = 6;
 
 export const useSquadSetup = () => {
   const { setMatchSetupSquad, matchSetup } = useGameStore();
-  //   const [squad, setSquad] = useState<{ homeTeam: Team; awayTeam: Team }>(
-  //     matchSetup?.homeTeamSquad.players.length >= 6
-  //       ? {
-  //           homeTeam: matchSetup.homeTeamSquad,
-  //           awayTeam: matchSetup.awayTeamSquad,
-  //         }
-  //       : initalSquadData,
-  //   );
-
   const [squad, setSquad] = useState<{ homeTeam: Team; awayTeam: Team }>(
     matchSetup?.homeTeamSquad.players.length >= 6
       ? {
           homeTeam: matchSetup.homeTeamSquad,
           awayTeam: matchSetup.awayTeamSquad,
         }
-      : testSquad,
+      : initalSquadData,
   );
+  const [squadErrors, setSquadErrors] = useState<SquadError[]>([]);
+
+  //   const [squad, setSquad] = useState<{ homeTeam: Team; awayTeam: Team }>(
+  //     matchSetup?.homeTeamSquad.players.length >= 6
+  //       ? {
+  //           homeTeam: matchSetup.homeTeamSquad,
+  //           awayTeam: matchSetup.awayTeamSquad,
+  //         }
+  //       : testSquad,
+  //   );
 
   const addPlayer = (
     teamKey: "homeTeam" | "awayTeam",
@@ -93,13 +94,34 @@ export const useSquadSetup = () => {
     };
 
     // validateSquad(cleanedSquad);
-    validateSquad(squad);
+    // validateSquad(squad);
 
-    setMatchSetupSquad(
-      { ...squad.homeTeam, players: cleanedHome, liberos: cleanedHomeLiberos },
-      { ...squad.awayTeam, players: cleanedAway, liberos: cleanedAwayLiberos },
-    );
-    // onConfirm();
+    //
+    const errors = validateSquad(squad);
+    if (errors.length > 0) return setSquadErrors(errors);
+    else {
+      setSquadErrors([]);
+      setMatchSetupSquad(
+        {
+          ...squad.homeTeam,
+          players: cleanedHome,
+          liberos: cleanedHomeLiberos,
+        },
+        {
+          ...squad.awayTeam,
+          players: cleanedAway,
+          liberos: cleanedAwayLiberos,
+        },
+      );
+      onConfirm();
+    }
   };
-  return { squad, addPlayer, removePlayer, handleChange, confirmSquad };
+  return {
+    squad,
+    addPlayer,
+    removePlayer,
+    handleChange,
+    confirmSquad,
+    squadErrors,
+  };
 };

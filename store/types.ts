@@ -131,3 +131,10 @@ export interface ReturnMessage {
   success: boolean;
   message?: string;
 }
+
+export interface SquadError {
+  type: "error" | "warning";
+  message: string;
+  id: string;
+  field: "name" | "number";
+}

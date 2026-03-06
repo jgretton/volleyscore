@@ -8,6 +8,7 @@ import {
   MIN_PLAYERS,
   useSquadSetup,
 } from "./useSquadSetup";
+import { error } from "console";
 
 interface SquadInputProps {
   homeTeamName: string;
@@ -20,8 +21,14 @@ const SquadInput = ({
   awayTeamName,
   onConfirm,
 }: SquadInputProps) => {
-  const { squad, addPlayer, handleChange, removePlayer, confirmSquad } =
-    useSquadSetup();
+  const {
+    squad,
+    addPlayer,
+    handleChange,
+    removePlayer,
+    confirmSquad,
+    squadErrors,
+  } = useSquadSetup();
 
   const renderTeamColumn = (
     teamKey: "homeTeam" | "awayTeam",
@@ -43,18 +50,22 @@ const SquadInput = ({
         </div>
 
         <div className="flex flex-col gap-2">
-          {team.players.map((player, index) => (
-            <PlayerInput
-              key={player.id}
-              player={player}
-              onChange={(e) => handleChange(e, teamKey, "players", player.id)}
-              onRemove={
-                index >= MIN_PLAYERS
-                  ? () => removePlayer(teamKey, "players", player.id)
-                  : undefined
-              }
-            />
-          ))}
+          {team.players.map((player, index) => {
+            const error = squadErrors.filter((error) => error.id === player.id);
+            return (
+              <PlayerInput
+                key={player.id}
+                error={error}
+                player={player}
+                onChange={(e) => handleChange(e, teamKey, "players", player.id)}
+                onRemove={
+                  index >= MIN_PLAYERS
+                    ? () => removePlayer(teamKey, "players", player.id)
+                    : undefined
+                }
+              />
+            );
+          })}
         </div>
 
         {team.players.length < MAX_PLAYERS && (
@@ -73,14 +84,22 @@ const SquadInput = ({
           </h4>
 
           <div className="flex flex-col gap-2">
-            {team.liberos.map((player) => (
-              <PlayerInput
-                key={player.id}
-                player={player}
-                onChange={(e) => handleChange(e, teamKey, "liberos", player.id)}
-                onRemove={() => removePlayer(teamKey, "liberos", player.id)}
-              />
-            ))}
+            {team.liberos.map((player) => {
+              const error = squadErrors.filter(
+                (error) => error.id === player.id,
+              );
+              return (
+                <PlayerInput
+                  key={player.id}
+                  player={player}
+                  error={error}
+                  onChange={(e) =>
+                    handleChange(e, teamKey, "liberos", player.id)
+                  }
+                  onRemove={() => removePlayer(teamKey, "liberos", player.id)}
+                />
+              );
+            })}
           </div>
 
           {team.liberos.length < MAX_LIBEROS && (
@@ -104,7 +123,9 @@ const SquadInput = ({
         {renderTeamColumn("awayTeam", awayTeamName)}
       </div>
       <div className="flex justify-end">
-        <Button onClick={() => confirmSquad(onConfirm)}>Confirm Squad</Button>
+        <Button onClick={() => console.log(confirmSquad(onConfirm))}>
+          Confirm Squad
+        </Button>
       </div>
     </div>
   );
