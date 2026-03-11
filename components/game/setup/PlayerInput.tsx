@@ -17,8 +17,6 @@ const PlayerInput = ({
   onRemove,
   error,
 }: PlayerInputProps) => {
-  console.log("this is the errois", error);
-
   const hasNumberError = error.some((error) => error.field === "number");
   const hasNameError = error.some((error) => error.field === "name");
 

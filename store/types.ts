@@ -132,9 +132,14 @@ export interface ReturnMessage {
   message?: string;
 }
 
+export interface SquadErrors {
+  homeErrors: SquadError[];
+  awayErrors: SquadError[];
+}
+
 export interface SquadError {
   type: "error" | "warning";
   message: string;
-  id: string;
-  field: "name" | "number";
+  id?: string;
+  field?: "name" | "number" | "both";
 }

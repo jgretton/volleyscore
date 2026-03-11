@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { ExclamationCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
 import PlayerInput from "./PlayerInput";
 import {
   MAX_LIBEROS,
@@ -8,7 +8,6 @@ import {
   MIN_PLAYERS,
   useSquadSetup,
 } from "./useSquadSetup";
-import { error } from "console";
 
 interface SquadInputProps {
   homeTeamName: string;
@@ -35,6 +34,7 @@ const SquadInput = ({
     label: string,
   ) => {
     const team = squad[teamKey];
+    const errorTeam = teamKey === "homeTeam" ? "homeErrors" : "awayErrors";
 
     return (
       <div className="p-4">
@@ -51,7 +51,9 @@ const SquadInput = ({
 
         <div className="flex flex-col gap-2">
           {team.players.map((player, index) => {
-            const error = squadErrors.filter((error) => error.id === player.id);
+            const error = squadErrors[errorTeam].filter(
+              (error) => error.id === player.id,
+            );
             return (
               <PlayerInput
                 key={player.id}
@@ -78,6 +80,21 @@ const SquadInput = ({
           </Button>
         )}
 
+        {squadErrors[errorTeam]
+          .filter(
+            (e, idx, arr) =>
+              arr.findIndex((x) => x.message === e.message) === idx,
+          )
+          .map((error, idx) => (
+            <div
+              key={idx}
+              className="mt-3 flex items-center gap-1.5 text-sm text-red-500"
+            >
+              <ExclamationCircleIcon className="size-4 shrink-0" />
+              <span>{error.message}</span>
+            </div>
+          ))}
+
         <div className="border-border mt-6 border-t pt-4">
           <h4 className="text-muted-foreground mb-2 text-xs font-semibold tracking-wide uppercase">
             Liberos
@@ -85,7 +102,7 @@ const SquadInput = ({
 
           <div className="flex flex-col gap-2">
             {team.liberos.map((player) => {
-              const error = squadErrors.filter(
+              const error = squadErrors[errorTeam].filter(
                 (error) => error.id === player.id,
               );
               return (
@@ -119,13 +136,11 @@ const SquadInput = ({
   return (
     <div className="mt-5 space-y-4">
       <div className="grid grid-cols-1 divide-y md:grid-cols-2 md:divide-x md:divide-y-0">
-        {renderTeamColumn("homeTeam", homeTeamName)}
-        {renderTeamColumn("awayTeam", awayTeamName)}
+        <div>{renderTeamColumn("homeTeam", homeTeamName)}</div>
+        <div>{renderTeamColumn("awayTeam", awayTeamName)}</div>
       </div>
       <div className="flex justify-end">
-        <Button onClick={() => console.log(confirmSquad(onConfirm))}>
-          Confirm Squad
-        </Button>
+        <Button onClick={() => confirmSquad(onConfirm)}>Confirm Squad</Button>
       </div>
     </div>
   );

@@ -1,61 +1,36 @@
-import { SquadError, Team } from "@/store/types";
+import { MIN_PLAYERS } from "@/components/game/setup/useSquadSetup";
+import { Player, SquadError, Team } from "@/store/types";
 
 export const validateSquad = (squad: { homeTeam: Team; awayTeam: Team }) => {
-  /*
-  Hard Errors:
-    - minimum 6 players on each team
-    - every player needs a name
-    - every player needs a number between 1-99
-  */
-  console.log(squad);
-  const returnValue: SquadError[] = [];
-  const isValidNumber = (number) => {
-    if (number >= 1 && number <= 99) {
-      return true;
-    } else return false;
+  const returnValue: { homeErrors: SquadError[]; awayErrors: SquadError[] } = {
+    homeErrors: [],
+    awayErrors: [],
   };
-
-  const isInputEmpty = (value) => {
-    if (value.trim() === "") return true;
-    else return false;
-  };
-
+  let validHomePlayerCount = 0;
+  let validAwayPlayerCount = 0;
   squad.homeTeam.players.forEach((player) => {
-    if (!isValidNumber(player.number)) {
-      returnValue.push({
-        type: "error",
-        message: "Invalid number",
-        id: player.id,
-        field: "number",
-      });
-    }
-    if (isInputEmpty(player.name)) {
-      returnValue.push({
-        type: "error",
-        message: "Empty input",
-        id: player.id,
-        field: "name",
-      });
-    }
+    const validateReturn = validatePlayer(player);
+    if (validateReturn === null) return;
+    if (validateReturn.length === 0) validHomePlayerCount++;
+    else return returnValue.homeErrors.push(...validateReturn);
   });
+
   squad.awayTeam.players.forEach((player) => {
-    if (!isValidNumber(player.number)) {
-      returnValue.push({
-        type: "error",
-        message: "Invalid number",
-        id: player.id,
-        field: "number",
-      });
-    }
-    if (isInputEmpty(player.name)) {
-      returnValue.push({
-        type: "error",
-        message: "Empty input",
-        id: player.id,
-        field: "name",
-      });
-    }
+    const validateReturn = validatePlayer(player);
+    if (validateReturn === null) return;
+    if (validateReturn.length === 0) validAwayPlayerCount++;
+    else return returnValue.awayErrors.push(...validateReturn);
   });
+  if (validHomePlayerCount < MIN_PLAYERS)
+    returnValue.homeErrors.push({
+      type: "error",
+      message: "Home team requires 6 players",
+    });
+  if (validAwayPlayerCount < MIN_PLAYERS)
+    returnValue.awayErrors.push({
+      type: "error",
+      message: "Away team requires 6 players",
+    });
 
   return returnValue;
 
@@ -63,18 +38,36 @@ export const validateSquad = (squad: { homeTeam: Team; awayTeam: Team }) => {
   //     players.filter((p) => p.name.trim() !== "" || p.number > 0);
   //   console.log(squad);
 };
-/*
 
-[{
-type: 'warning',
-message: 'You have 2 players with the same number',
-id:[ '123', '321']
-},
-{
-type: 'error',
-message: 'This player has an invalid number. Needs to be between 1 and 99',
-id:[ '123']
-}]
+const validatePlayer = (player: Player) => {
+  const returnArray: SquadError[] = [];
+  if (isInputEmpty(player.name) && player.number === 0) return null;
+  if (isInputEmpty(player.name))
+    returnArray.push({
+      type: "error",
+      message: "Name field required",
+      id: player.id,
+      field: "name",
+    });
 
+  if (!isValidNumber(player.number))
+    returnArray.push({
+      type: "error",
+      message: "Player number needs to be betwee 1-99",
+      id: player.id,
+      field: "number",
+    });
 
-*/
+  return returnArray;
+};
+
+const isValidNumber = (number) => {
+  if (number >= 1 && number <= 99) {
+    return true;
+  } else return false;
+};
+
+const isInputEmpty = (value) => {
+  if (value.trim() === "") return true;
+  else return false;
+};

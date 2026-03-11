@@ -1,11 +1,13 @@
-import { initalSquadData } from "@/lib/data";
+import { testSquad } from "@/lib/data";
 import { useGameStore } from "@/store";
-import { Player, SquadError, Team } from "@/store/types";
+import { Player, SquadErrors, Team } from "@/store/types";
 import { validateSquad } from "@/utils/squadErrorHandling";
 import { useState } from "react";
 export const MAX_PLAYERS = 12;
 export const MAX_LIBEROS = 2;
 export const MIN_PLAYERS = 6;
+
+const INITIAL_SQUAD_ERRORS = { homeErrors: [], awayErrors: [] };
 
 export const useSquadSetup = () => {
   const { setMatchSetupSquad, matchSetup } = useGameStore();
@@ -15,9 +17,11 @@ export const useSquadSetup = () => {
           homeTeam: matchSetup.homeTeamSquad,
           awayTeam: matchSetup.awayTeamSquad,
         }
-      : initalSquadData,
+      : //   : initalSquadData,
+        testSquad,
   );
-  const [squadErrors, setSquadErrors] = useState<SquadError[]>([]);
+  const [squadErrors, setSquadErrors] =
+    useState<SquadErrors>(INITIAL_SQUAD_ERRORS);
 
   //   const [squad, setSquad] = useState<{ homeTeam: Team; awayTeam: Team }>(
   //     matchSetup?.homeTeamSquad.players.length >= 6
@@ -98,9 +102,11 @@ export const useSquadSetup = () => {
 
     //
     const errors = validateSquad(squad);
-    if (errors.length > 0) return setSquadErrors(errors);
+    console.log("This is the return from useSquad confirm", errors);
+    if (errors.homeErrors.length > 0 || errors.awayErrors.length > 0)
+      return setSquadErrors(errors);
     else {
-      setSquadErrors([]);
+      setSquadErrors(INITIAL_SQUAD_ERRORS);
       setMatchSetupSquad(
         {
           ...squad.homeTeam,
