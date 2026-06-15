@@ -60,7 +60,7 @@ export default function Home() {
           </Link>
         </div>
       )}
-      {existingMatchSetup && (
+      {/* {existingMatchSetup && (
         <div className="flex w-full max-w-xl flex-col gap-4 rounded-xl bg-[#3E5B64] p-5">
           <h2 className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-amber-400 uppercase">
             <span className="size-2 shrink-0 rounded-full bg-amber-400" />
@@ -98,7 +98,7 @@ export default function Home() {
             Continue Setup
           </Link>
         </div>
-      )}
+      )} */}
       <div className="mt-10 flex w-full max-w-xl flex-col gap-5">
         <h2 className="text-xl font-medium">Score New Match</h2>
         <div className="flex w-full flex-col gap-3">
