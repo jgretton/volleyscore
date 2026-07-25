@@ -1,5 +1,4 @@
 "use client";
-import { initialGame } from "@/lib/data";
 import { useGameStore } from "@/store";
 import { TeamNames } from "@/store/types";
 import Link from "next/link";
@@ -24,9 +23,13 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (match !== initialGame) {
+    const hasStartedGame =
+      match.homeTeamSetsWon > 0 ||
+      match.awayTeamSetsWon > 0 ||
+      Object.values(match.sets).some((set) => set.actions.length > 0);
+
+    if (hasStartedGame) {
       setExistingGame(true);
-      return;
     }
   }, [match]);
 
