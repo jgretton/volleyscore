@@ -21,6 +21,7 @@ const TimeoutButton = ({
   const handleTeamTimeout = useGameStore((state) => state.handleTeamTimeout);
   const [timeoutCountdown, setTimeoutCountdown] = useState<number>(0);
   const [play] = useSound("/sounds/buzzer.mp3");
+  const teamTimeoutCount = match.sets[currentSet].timeouts[team];
   useEffect(() => {
     let timeoutInterval;
     if (timeoutCountdown > 0) {
@@ -31,6 +32,14 @@ const TimeoutButton = ({
     }
     return () => clearInterval(timeoutInterval);
   }, [timeoutCountdown, play]);
+
+  // If the store's timeout count resets to 0 (e.g. game reset), cancel
+  // any running local countdown so the timer and buzzer stop.
+  useEffect(() => {
+    if (teamTimeoutCount === 0) {
+      setTimeoutCountdown(0);
+    }
+  }, [teamTimeoutCount]);
   return (
     <button
       className={`${
@@ -47,7 +56,7 @@ const TimeoutButton = ({
         handleTeamTimeout(team);
       }}
       disabled={
-        match.sets[currentSet].timeouts[team] >= 2 ||
+        teamTimeoutCount >= 2 ||
         timeoutCountdown > 0 ||
         gameComplete
       }
