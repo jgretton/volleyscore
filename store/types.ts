@@ -139,6 +139,7 @@ export interface SquadErrors {
 
 export interface SquadError {
   type: "error" | "warning";
+  section?: "player" | "libero";
   message: string;
   id?: string;
   field?: "name" | "number" | "both";

@@ -41,6 +41,14 @@
     opacity: 1;
   }
 }
+@keyframes srv {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .28; transform: scale(.76); }
+}
+@keyframes live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .2; }
+}
 /*
   ---break---
 */

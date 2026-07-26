@@ -92,20 +92,15 @@ export const useSquadSetup = () => {
     const cleanedHomeLiberos = cleanPlayers(squad.homeTeam.liberos);
     const cleanedAwayLiberos = cleanPlayers(squad.awayTeam.liberos);
 
-    const cleanedSquad = {
-      homeTeam: { players: cleanedHome, liberos: cleanedHomeLiberos },
-      awayTeam: { players: cleanedAway, liberos: cleanedAwayLiberos },
-    };
-
-    // validateSquad(cleanedSquad);
-    // validateSquad(squad);
-
-    //
     const errors = validateSquad(squad);
-    console.log("This is the return from useSquad confirm", errors);
+
     if (errors.homeErrors.length > 0 || errors.awayErrors.length > 0)
       return setSquadErrors(errors);
     else {
+      cleanedHome.sort((a, b) => a.number - b.number);
+      cleanedAway.sort((a, b) => a.number - b.number);
+      cleanedHomeLiberos.sort((a, b) => a.number - b.number);
+      cleanedAwayLiberos.sort((a, b) => a.number - b.number);
       setSquadErrors(INITIAL_SQUAD_ERRORS);
       setMatchSetupSquad(
         {

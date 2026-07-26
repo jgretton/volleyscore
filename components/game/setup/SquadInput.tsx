@@ -81,6 +81,7 @@ const SquadInput = ({
         )}
 
         {squadErrors[errorTeam]
+          .filter((e) => e.section === "player")
           .filter(
             (e, idx, arr) =>
               arr.findIndex((x) => x.message === e.message) === idx,
@@ -128,6 +129,22 @@ const SquadInput = ({
               <PlusIcon className="size-4" /> Add Libero
             </Button>
           )}
+
+          {squadErrors[errorTeam]
+            .filter((e) => e.section === "libero")
+            .filter(
+              (e, idx, arr) =>
+                arr.findIndex((x) => x.message === e.message) === idx,
+            )
+            .map((error, idx) => (
+              <div
+                key={idx}
+                className="mt-3 flex items-center gap-1.5 text-sm text-red-500"
+              >
+                <ExclamationCircleIcon className="size-4 shrink-0" />
+                <span>{error.message}</span>
+              </div>
+            ))}
         </div>
       </div>
     );
