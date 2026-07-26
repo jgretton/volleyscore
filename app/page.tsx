@@ -12,9 +12,13 @@ export default function Home() {
     useGameStore();
 
   useEffect(() => {
-    if (match.sets[1].actions.length > 0) {
+    const hasStartedGame =
+      match.homeTeamSetsWon > 0 ||
+      match.awayTeamSetsWon > 0 ||
+      Object.values(match.sets).some((set) => set.actions.length > 0);
+
+    if (hasStartedGame) {
       setExistingGame(true);
-      return;
     }
     if (matchSetup.teamNames.awayTeamName.trim() !== "") {
       setExistingMatchSetup(true);

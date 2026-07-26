@@ -1,4 +1,8 @@
-import { initialGame, initialMatchSetup, initialSetData } from "@/lib/data";
+import {
+  createInitialGame,
+  createInitialSetData,
+  initialMatchSetup,
+} from "@/lib/data";
 import { isSetComplete } from "@/utils";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
@@ -15,7 +19,7 @@ import {
 export const useGameStore = create<MatchStore>()(
   persist(
     (set, get) => ({
-      match: initialGame,
+      match: createInitialGame(),
       matchSetup: initialMatchSetup,
       matchMode: null,
       teamSwappedSides: false,
@@ -69,8 +73,8 @@ export const useGameStore = create<MatchStore>()(
 
       startNewGame: (teamNames?: TeamNames) => {
         const newGame = teamNames
-          ? { ...initialGame, ...teamNames }
-          : { ...initialGame };
+          ? { ...createInitialGame(), ...teamNames }
+          : createInitialGame();
 
         set(() => ({
           match: newGame,
@@ -95,7 +99,7 @@ export const useGameStore = create<MatchStore>()(
           };
 
         const newGame: Match = {
-          ...initialGame,
+          ...createInitialGame(),
           ...matchSetup.teamNames,
           homeTeamSquad: matchSetup.homeTeamSquad,
           awayTeamSquad: matchSetup.awayTeamSquad,
@@ -180,7 +184,7 @@ export const useGameStore = create<MatchStore>()(
       resetMatchData: () => {
         set((state) => ({
           match: {
-            ...initialGame,
+            ...createInitialGame(),
             homeTeamName: state.match.homeTeamName,
             awayTeamName: state.match.awayTeamName,
           },
@@ -311,7 +315,7 @@ export const useGameStore = create<MatchStore>()(
           return {
             match: {
               ...updatedMatch,
-              sets: { ...updatedMatch.sets, [newSetNumber]: initialSetData },
+              sets: { ...updatedMatch.sets, [newSetNumber]: createInitialSetData() },
             },
             currentSet: newSetNumber,
           };
