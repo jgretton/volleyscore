@@ -4,12 +4,12 @@ export const metadata: Metadata = {
   title: "Live Volleyball Match",
   description: "Track your live volleyball match with real-time scoring and match history.",
   alternates: {
-    canonical: "/basic-match",
+    canonical: "/match",
   },
   openGraph: {
     title: "Live Volleyball Match | VolleyScore",
     description: "Track your live volleyball match with real-time scoring and match history.",
-    url: "https://www.volleyscore.co.uk/basic-match",
+    url: "https://www.volleyscore.co.uk/match",
   },
   robots: {
     index: true,
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function BasicMatchLayout({
+export default function MatchLayout({
   children,
 }: {
   children: React.ReactNode;
