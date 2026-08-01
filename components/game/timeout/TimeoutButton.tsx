@@ -12,7 +12,7 @@ const TimeoutButton = ({
   teamSwapped,
   match,
 }: {
-  team: "homeTeam" | "awayTeam";
+  team: "home" | "away";
   teamSwapped: boolean;
   match: Match;
 }) => {
@@ -21,7 +21,7 @@ const TimeoutButton = ({
   const handleTeamTimeout = useGameStore((state) => state.handleTeamTimeout);
   const [timeoutCountdown, setTimeoutCountdown] = useState<number>(0);
   const [play] = useSound("/sounds/buzzer.mp3");
-  const teamTimeoutCount = match.sets[currentSet].timeouts[team];
+  const teamTimeoutCount = match.sets[currentSet][team].timeouts;
   useEffect(() => {
     let timeoutInterval;
     if (timeoutCountdown > 0) {
@@ -44,10 +44,10 @@ const TimeoutButton = ({
     <button
       className={`${
         !teamSwapped
-          ? team === "homeTeam"
+          ? team === "home"
             ? "order-2 sm:order-1"
             : "order-1 sm:order-2"
-          : team === "homeTeam"
+          : team === "home"
             ? "order-1 sm:order-2"
             : "order-2 sm:order-1"
       } inline-flex shrink-0 cursor-pointer items-center gap-3 rounded-lg border border-[#3E5B64] px-4 py-2 tabular-nums hover:bg-gray-100 disabled:cursor-not-allowed dark:border-gray-200 dark:hover:bg-slate-700`}

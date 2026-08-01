@@ -14,13 +14,7 @@ const MatchCompleteContent = ({
 }) => {
   if (!modalData?.updatedMatch) return <div>Error Loading Match Data..</div>;
 
-  const {
-    awayTeamName,
-    homeTeamName,
-    awayTeamSetsWon,
-    homeTeamSetsWon,
-    sets: matchSets,
-  } = modalData.updatedMatch;
+  const { home, away, sets: matchSets } = modalData.updatedMatch;
 
   // Get only the played sets
   const playedSets = Object.entries(matchSets).filter(
@@ -28,8 +22,8 @@ const MatchCompleteContent = ({
   );
 
   // Determine overall winner
-  const homeTeamWon = homeTeamSetsWon > awayTeamSetsWon;
-  const awayTeamWon = awayTeamSetsWon > homeTeamSetsWon;
+  const homeTeamWon = home.setsWon > away.setsWon;
+  const awayTeamWon = away.setsWon > home.setsWon;
 
   const lastAction =
     modalData.currentSet && matchSets[modalData.currentSet]?.actions?.length > 0
@@ -62,7 +56,7 @@ const MatchCompleteContent = ({
                       : "font-medium text-gray-600 dark:text-gray-300"
                   }`}
                 >
-                  {homeTeamName}
+                  {home.name}
                 </h3>
                 <div
                   className={`text-6xl tabular-nums ${
@@ -71,7 +65,7 @@ const MatchCompleteContent = ({
                       : "font-semibold text-gray-500 dark:text-gray-400"
                   }`}
                 >
-                  {homeTeamSetsWon}
+                  {home.setsWon}
                 </div>
               </div>
             </div>
@@ -81,12 +75,12 @@ const MatchCompleteContent = ({
                 <div key={setNumber} className="text-right">
                   <span
                     className={`text-xl tabular-nums ${
-                      setData.winner === "homeTeam"
+                      setData.winner === "home"
                         ? "font-bold text-gray-900 dark:text-white"
                         : "font-normal text-gray-400 dark:text-gray-500"
                     }`}
                   >
-                    {setData.score.homeTeam}
+                    {setData.home.score}
                   </span>
                 </div>
               ))}
@@ -103,7 +97,7 @@ const MatchCompleteContent = ({
                       : "font-semibold text-gray-500 dark:text-gray-400"
                   }`}
                 >
-                  {awayTeamSetsWon}
+                  {away.setsWon}
                 </div>
                 <h3
                   className={`ml-4 truncate text-right text-xl ${
@@ -112,7 +106,7 @@ const MatchCompleteContent = ({
                       : "font-medium text-gray-600 dark:text-gray-300"
                   }`}
                 >
-                  {awayTeamName}
+                  {away.name}
                 </h3>
               </div>
             </div>
@@ -122,12 +116,12 @@ const MatchCompleteContent = ({
                 <div key={setNumber} className="text-left">
                   <span
                     className={`text-xl tabular-nums ${
-                      setData.winner === "awayTeam"
+                      setData.winner === "away"
                         ? "font-bold text-gray-900 dark:text-white"
                         : "font-normal text-gray-400 dark:text-gray-500"
                     }`}
                   >
-                    {setData.score.awayTeam}
+                    {setData.away.score}
                   </span>
                 </div>
               ))}

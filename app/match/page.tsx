@@ -1,11 +1,10 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import TeamScore from "@/components/game/scoring/TeamScore";
 import History from "@/components/game/history/History";
-import GameHeader from "@/components/game/layout/GameHeader";
-import { useGameStore } from "@/store";
+import TeamScore from "@/components/game/scoring/TeamScore";
 import ModalManager from "@/components/modal/ModalManager";
+import { useGameStore } from "@/store";
 import { GameAction } from "@/store/types";
 
 const Page = () => {
@@ -51,39 +50,41 @@ const Page = () => {
   }
   return (
     <div className="flex h-full flex-col gap-4 text-gray-800 dark:text-white">
-      <GameHeader />
+      {/* <GameHeader /> */}
 
-      <div className="grid h-[calc(100dvh-5rem)] max-h-full grid-cols-2 grid-rows-[2fr_auto_1fr] gap-4">
+      <div className="grid h-[calc(100dvh-5rem)] max-h-full grid-cols-[1fr_auto_1fr] grid-rows-1 gap-4">
         <div
           className={`${
-            !teamSwapped ? "col-start-1 pl-2" : "col-start-2 pr-2"
+            !teamSwapped ? "col-start-1 pl-2" : "col-start-3 pr-2"
           } col-span-1 row-span-1 row-start-1`}
         >
-          <TeamScore team="homeTeam" />
+          <TeamScore team="home" />
+        </div>
+        <div className="">
+          {" "}
+          <h2 className="text-center text-3xl">Set {currentSet}</h2>
+          <div
+            ref={containerRef}
+            className="col-span-1 flex h-full flex-col-reverse gap-2 overflow-y-scroll py-2 sm:py-10"
+          >
+            {match?.sets[currentSet]?.actions?.map(
+              (item: GameAction, index: number) => (
+                <div
+                  key={index}
+                  className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 md:last:text-3xl dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 dark:last:text-gray-100 [&:last-child>div>div>button]:inline-flex"
+                >
+                  <History item={item} teamSwapped={teamSwapped} />
+                </div>
+              ),
+            )}
+          </div>
         </div>
         <div
           className={`${
-            !teamSwapped ? "pr-2 sm:col-start-2" : "pl-2 sm:col-start-1"
+            !teamSwapped ? "pr-2 sm:col-start-3" : "pl-2 sm:col-start-1"
           } sm:col-span-1 sm:row-span-1 sm:row-start-1`}
         >
-          <TeamScore team="awayTeam" />
-        </div>
-
-        <h2 className="col-span-2 text-center text-3xl">Set {currentSet}</h2>
-        <div
-          ref={containerRef}
-          className="col-span-2 flex h-full flex-col-reverse gap-2 overflow-y-scroll py-2 sm:py-10"
-        >
-          {match?.sets[currentSet]?.actions?.map(
-            (item: GameAction, index: number) => (
-              <div
-                key={index}
-                className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 md:last:text-3xl dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 dark:last:text-gray-100 [&:last-child>div>div>button]:inline-flex"
-              >
-                <History item={item} teamSwapped={teamSwapped} />
-              </div>
-            ),
-          )}
+          <TeamScore team="away" />
         </div>
       </div>
 

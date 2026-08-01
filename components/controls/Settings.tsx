@@ -16,8 +16,8 @@ const Settings = () => {
   const { match, updateTeamName } = useGameStore();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [teamNames, setTeamNames] = useState<TeamNames>({
-    homeTeamName: match.homeTeamName,
-    awayTeamName: match.awayTeamName,
+    homeTeamName: match.home.name,
+    awayTeamName: match.away.name,
   });
 
   const changeName = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,8 +125,8 @@ const Settings = () => {
                       <button
                         className="w-full cursor-pointer rounded-lg bg-blue-600 py-2 text-white disabled:cursor-not-allowed disabled:opacity-30"
                         disabled={
-                          match.awayTeamName === teamNames.awayTeamName &&
-                          match.homeTeamName === teamNames.homeTeamName
+                          match.away.name === teamNames.awayTeamName &&
+                          match.home.name === teamNames.homeTeamName
                         }
                         onClick={() => handleTeamNameUpdate()}
                       >

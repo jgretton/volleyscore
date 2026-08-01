@@ -3,7 +3,7 @@ import { useGameStore } from "@/store";
 import TimeoutButton from "../timeout/TimeoutButton";
 import ScoreButton from "./ScoreButton";
 
-const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
+const TeamScore = ({ team }: { team: "home" | "away" }) => {
   const {
     teamSwappedSides: teamSwapped,
     match,
@@ -11,9 +11,9 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
     increaseTeamScore,
   } = useGameStore();
 
-  const teamName: string = match[`${team}Name`];
-  const teamScore: number = match.sets[currentSet]?.score[team];
-  const setsWon: number = match[`${team}SetsWon`];
+  const teamName: string = match[team].name;
+  const teamScore: number = match.sets[currentSet]?.[team].score;
+  const setsWon: number = match[team].setsWon;
   const gameComplete: boolean = match.gameComplete;
 
   const servingTeam = match.servingTeam;
@@ -24,10 +24,10 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
         <span
           className={`${
             !teamSwapped
-              ? team === "homeTeam" // If team is not swapped and is home team
+              ? team === "home" // If team is not swapped and is home team
                 ? "order-1" //apply this
                 : "order-2" // if not hometeam, apply this
-              : team === "homeTeam" // If team is swapped and is home team
+              : team === "home" // If team is swapped and is home team
                 ? "order-2" //apply this
                 : "order-1" // if not hometeam apply this
           } truncate text-base md:text-lg lg:text-3xl`}
@@ -41,10 +41,10 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
               : "fill-transparent"
           } ${
             !teamSwapped
-              ? team === "homeTeam"
+              ? team === "home"
                 ? "order-2"
                 : "order-1"
-              : team === "homeTeam"
+              : team === "home"
                 ? "order-1"
                 : "order-2"
           } size-6rounded-full shrink-0`}
@@ -86,10 +86,10 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
             <span
               className={`${
                 !teamSwapped
-                  ? team === "homeTeam"
+                  ? team === "home"
                     ? "order-2 self-start"
                     : "order-1 self-start"
-                  : team === "homeTeam"
+                  : team === "home"
                     ? "order-1 self-start"
                     : "order-2 self-start"
               } rounded-md border border-[#3E5B64] px-4 py-2 text-lg font-light tabular-nums sm:self-center`}
@@ -100,10 +100,10 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
             <div
               className={`${
                 !teamSwapped
-                  ? team === "homeTeam"
+                  ? team === "home"
                     ? "order-1 self-end"
                     : "order-2 self-start"
-                  : team === "homeTeam"
+                  : team === "home"
                     ? "order-2 self-start"
                     : "order-1 self-end"
               } flex flex-col items-center gap-3 sm:flex-row sm:self-center`}
@@ -116,10 +116,10 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
               <div
                 className={`${
                   !teamSwapped
-                    ? team === "homeTeam"
+                    ? team === "home"
                       ? "order-2"
                       : "order-2 sm:order-1"
-                    : team === "homeTeam"
+                    : team === "home"
                       ? "order-1"
                       : "order-2"
                 } flex flex-row items-center gap-2`}
@@ -130,7 +130,7 @@ const TeamScore = ({ team }: { team: "homeTeam" | "awayTeam" }) => {
                     className={`${
                       !teamSwapped ? "first:order-0" : "first:order-2"
                     } size-5 shrink-0 rounded-md border border-slate-800 dark:border-white ${
-                      index < match.sets[currentSet]?.timeouts[`${team}`]
+                      index < match.sets[currentSet]?.[team].timeouts
                         ? "bg-[#3E5B64]"
                         : "border-slate-800"
                     }`}

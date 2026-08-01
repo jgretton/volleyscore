@@ -12,7 +12,7 @@ const Card = ({ item }) => {
   const team = item.team;
   const score = item.overallScore[team];
   return (
-    <span className={`${team === "homeTeam" ? "order-2" : "order-1"}`}>
+    <span className={`${team === "home" ? "order-2" : "order-1"}`}>
       {item.type === "score" ? score : "Timeout"}
     </span>
   );
@@ -50,15 +50,15 @@ const History = ({
         className={`${
           teamSwapped
             ? `order-3 pl-2 text-left ${
-                item.team === "homeTeam" ? "border-l-2" : ""
+                item.team === "home" ? "border-l-2" : ""
               }`
             : `order-1 pr-3 text-right ${
-                item.team !== "homeTeam" ? "" : "border-r-2"
+                item.team !== "home" ? "" : "border-r-2"
               }`
         } flex-1 self-center`}
       >
-        {item.team === "homeTeam" && <Card item={item} />}
-        {item.team !== "homeTeam" && <UndoButton />}
+        {item.team === "home" && <Card item={item} />}
+        {item.team !== "home" && <UndoButton />}
       </div>
       <div className="order-2 inline-flex shrink-0 items-center justify-center px-1">
         {Icon[item.type]}
@@ -67,15 +67,15 @@ const History = ({
         className={`${
           teamSwapped
             ? `order-1 pr-2 text-right ${
-                item.team !== "homeTeam" ? "border-r-2" : ""
+                item.team !== "home" ? "border-r-2" : ""
               }`
             : `order-3 pl-2 text-left ${
-                item.team === "homeTeam" ? "" : "border-l-2"
+                item.team === "home" ? "" : "border-l-2"
               }`
         } flex-1 self-center`}
       >
-        {item.team !== "homeTeam" && <Card item={item} />}
-        {item.team === "homeTeam" && <UndoButton />}
+        {item.team !== "home" && <Card item={item} />}
+        {item.team === "home" && <UndoButton />}
       </div>
     </div>
   );

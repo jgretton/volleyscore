@@ -13,14 +13,14 @@ export default function Home() {
 
   useEffect(() => {
     const hasStartedGame =
-      match.homeTeamSetsWon > 0 ||
-      match.awayTeamSetsWon > 0 ||
+      match.home.setsWon > 0 ||
+      match.away.setsWon > 0 ||
       Object.values(match.sets).some((set) => set.actions.length > 0);
 
     if (hasStartedGame) {
       setExistingGame(true);
     }
-    if (matchSetup.teamNames.awayTeamName.trim() !== "") {
+    if (matchSetup.home.name.trim() !== "") {
       setExistingMatchSetup(true);
       return;
     }
@@ -38,21 +38,21 @@ export default function Home() {
               Live - Set {currentSet}
             </h2>
             <span className="text-xs text-white/70">
-              {match.homeTeamSetsWon} - {match.awayTeamSetsWon} Sets
+              {match.home.setsWon} - {match.away.setsWon} Sets
             </span>
           </div>
 
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-white">
             <div className="truncate text-left text-sm font-medium">
-              {match.homeTeamName}
+              {match.home.name}
             </div>
             <div className="text-3xl font-bold tabular-nums">
-              {match.sets[currentSet].score.homeTeam}
+              {match.sets[currentSet].home.score}
               <span className="mx-1 text-slate-300 dark:text-white/30">-</span>
-              {match.sets[currentSet].score.awayTeam}
+              {match.sets[currentSet].away.score}
             </div>
             <div className="truncate text-right text-sm font-medium">
-              {match.awayTeamName}
+              {match.away.name}
             </div>
           </div>
 
@@ -64,7 +64,7 @@ export default function Home() {
           </Link>
         </div>
       )}
-      {/* {existingMatchSetup && (
+      {existingMatchSetup && (
         <div className="flex w-full max-w-xl flex-col gap-4 rounded-xl bg-[#3E5B64] p-5">
           <h2 className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-amber-400 uppercase">
             <span className="size-2 shrink-0 rounded-full bg-amber-400" />
@@ -74,22 +74,22 @@ export default function Home() {
           <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-white">
             <div className="flex flex-col gap-0.5">
               <span className="truncate text-sm font-medium">
-                {matchSetup.teamNames.homeTeamName}
+                {matchSetup.home.name}
               </span>
-              {matchSetup.homeTeamSquad.players.length > 0 && (
+              {matchSetup.home.players.length > 0 && (
                 <span className="text-xs text-white/50">
-                  {matchSetup.homeTeamSquad.players.length} players
+                  {matchSetup.home.players.length} players
                 </span>
               )}
             </div>
             <span className="text-sm font-bold text-white/40">vs</span>
             <div className="flex flex-col items-end gap-0.5">
               <span className="truncate text-sm font-medium">
-                {matchSetup.teamNames.awayTeamName}
+                {matchSetup.away.name}
               </span>
-              {matchSetup.awayTeamSquad.players.length > 0 && (
+              {matchSetup.away.players.length > 0 && (
                 <span className="text-xs text-white/50">
-                  {matchSetup.awayTeamSquad.players.length} players
+                  {matchSetup.away.players.length} players
                 </span>
               )}
             </div>
@@ -102,7 +102,7 @@ export default function Home() {
             Continue Setup
           </Link>
         </div>
-      )} */}
+      )}
       <div className="mt-10 flex w-full max-w-xl flex-col gap-5">
         <h2 className="text-xl font-medium">Score New Match</h2>
         <div className="flex w-full flex-col gap-3">

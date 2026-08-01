@@ -15,20 +15,14 @@ const SetCompleteContent = ({
 }) => {
   if (!modalData?.updatedMatch) return <div>Error Loading Match Data..</div>;
 
-  const {
-    awayTeamName,
-    homeTeamName,
-    awayTeamSetsWon,
-    homeTeamSetsWon,
-    sets: matchSets,
-  } = modalData.updatedMatch;
+  const { home, away, sets: matchSets } = modalData.updatedMatch;
 
   // All possible sets (1-5)
   const allSets = [1, 2, 3, 4, 5];
 
   // Determine overall winner
-  const homeTeamWon = homeTeamSetsWon > awayTeamSetsWon;
-  const awayTeamWon = awayTeamSetsWon > homeTeamSetsWon;
+  const homeTeamWon = home.setsWon > away.setsWon;
+  const awayTeamWon = away.setsWon > home.setsWon;
 
   return (
     <div className="p-2">
@@ -57,7 +51,7 @@ const SetCompleteContent = ({
                       : "font-medium text-gray-600 dark:text-gray-300"
                   }`}
                 >
-                  {homeTeamName}
+                  {home.name}
                 </h3>
                 <div
                   className={`text-6xl tabular-nums ${
@@ -66,7 +60,7 @@ const SetCompleteContent = ({
                       : "font-semibold text-gray-500 dark:text-gray-400"
                   }`}
                 >
-                  {homeTeamSetsWon}
+                  {home.setsWon}
                 </div>
               </div>
             </div>
@@ -76,13 +70,13 @@ const SetCompleteContent = ({
               {allSets.map((setNumber) => {
                 const setData = matchSets[setNumber];
                 const hasStarted = setData !== undefined;
-                const setScore = hasStarted ? setData.score.homeTeam : "-";
+                const setScore = hasStarted ? setData.home.score : "-";
 
                 return (
                   <div key={setNumber} className="text-right">
                     <span
                       className={`text-xl tabular-nums ${
-                        hasStarted && setData.winner === "homeTeam"
+                        hasStarted && setData.winner === "home"
                           ? "font-bold text-gray-900 dark:text-white"
                           : hasStarted
                             ? "font-normal text-gray-500 dark:text-gray-400"
@@ -109,7 +103,7 @@ const SetCompleteContent = ({
                       : "font-semibold text-gray-500 dark:text-gray-400"
                   }`}
                 >
-                  {awayTeamSetsWon}
+                  {away.setsWon}
                 </div>
                 <h3
                   className={`ml-4 truncate text-right text-xl ${
@@ -118,7 +112,7 @@ const SetCompleteContent = ({
                       : "font-medium text-gray-600 dark:text-gray-300"
                   }`}
                 >
-                  {awayTeamName}
+                  {away.name}
                 </h3>
               </div>
             </div>
@@ -128,13 +122,13 @@ const SetCompleteContent = ({
               {allSets.map((setNumber) => {
                 const setData = matchSets[setNumber];
                 const hasStarted = setData !== undefined;
-                const setScore = hasStarted ? setData.score.awayTeam : "-";
+                const setScore = hasStarted ? setData.away.score : "-";
 
                 return (
                   <div key={setNumber} className="text-left">
                     <span
                       className={`text-xl tabular-nums ${
-                        hasStarted && setData.winner === "awayTeam"
+                        hasStarted && setData.winner === "away"
                           ? "font-bold text-gray-900 dark:text-white"
                           : hasStarted
                             ? "font-normal text-gray-500 dark:text-gray-400"

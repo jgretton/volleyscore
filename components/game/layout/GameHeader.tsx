@@ -6,6 +6,9 @@ import { ArrowsRightLeftIcon, XCircleIcon } from "@heroicons/react/24/outline";
 
 const GameHeader = () => {
   const { swapSides, resetMatchData } = useGameStore();
+  // Reset is a basic-mode convenience only — an advanced match has real setup
+  // invested, so wiping it from the header would be a footgun.
+  const isBasic = useGameStore((state) => state.match.mode === "basic");
   return (
     <div className="flex flex-row items-center justify-end gap-3 pt-5 pr-2">
       <button
@@ -15,13 +18,15 @@ const GameHeader = () => {
         <ArrowsRightLeftIcon className="size-5 text-gray-800 dark:text-white" />
         <span className="hidden md:block">Swap sides</span>
       </button>
-      <button
-        onClick={resetMatchData}
-        className="inline-flex shrink-0 cursor-pointer items-center gap-3 self-start rounded-lg border px-4 py-2 text-sm hover:bg-gray-100 sm:text-base dark:hover:bg-gray-900"
-      >
-        <XCircleIcon className="size-5 text-gray-800 dark:text-white" />{" "}
-        <span className="hidden md:block"> Reset game</span>
-      </button>
+      {isBasic && (
+        <button
+          onClick={resetMatchData}
+          className="inline-flex shrink-0 cursor-pointer items-center gap-3 self-start rounded-lg border px-4 py-2 text-sm hover:bg-gray-100 sm:text-base dark:hover:bg-gray-900"
+        >
+          <XCircleIcon className="size-5 text-gray-800 dark:text-white" />{" "}
+          <span className="hidden md:block"> Reset game</span>
+        </button>
+      )}
 
       <Settings />
       <FullScreen />
