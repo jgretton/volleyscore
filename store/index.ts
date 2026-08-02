@@ -47,15 +47,15 @@ export const useGameStore = create<MatchStore>()(
         set((state) => ({
           matchSetup: {
             ...state.matchSetup,
-            [team]: { ...state.matchSetup[team], name: teamName },
+            [team]: { ...state.matchSetup[team], name: teamName.trim() },
           },
         })),
       setTeamNames: (home, away) =>
         set((state) => ({
           matchSetup: {
             ...state.matchSetup,
-            home: { ...state.matchSetup.home, name: home },
-            away: { ...state.matchSetup.away, name: away },
+            home: { ...state.matchSetup.home, name: home.trim() },
+            away: { ...state.matchSetup.away, name: away.trim() },
           },
         })),
       removeAdditionalPlayer: (team, playerID) =>

@@ -22,17 +22,23 @@ const { home, away, setTeamNames } = useGameStore(
 	const handleTeamNameSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setError("");
-		const data = new FormData(e.currentTarget);
-		const homeTeamName = data.get("homeTeamName");
-		const awayTeamName = data.get("awayTeamName");
 
-		if (
-			awayTeamName?.toString().trim() === "" && homeTeamName?.toString().trim()
-		) {
-			setError("Please enter team names");
+		const data = new FormData(e.currentTarget);
+		const homeTeamName = data.get("homeTeamName")?.toString().trim() ?? "";
+		const awayTeamName = data.get("awayTeamName")?.toString().trim() ?? "";
+
+		// required stops an empty field, but not one holding only spaces
+		if (homeTeamName === "" || awayTeamName === "") {
+			setError("Both teams need a name.");
+			return;
 		}
 
-		setTeamNames(homeTeamName?.toString() ?? "", awayTeamName?.toString() ?? "");
+		if (homeTeamName.toLowerCase() === awayTeamName.toLowerCase()) {
+			setError("Team names must be different.");
+			return;
+		}
+
+		setTeamNames(homeTeamName, awayTeamName);
 		nextStep();
 	};
 	return (
@@ -71,7 +77,11 @@ const { home, away, setTeamNames } = useGameStore(
 						/>
 					</div>
 					<div className="flex flex-col gap-2 md:items-end md:col-start-2 h-full  ">
-						{error && <p className="text-sm text-red-600">{error}</p>}
+						{error && (
+							<p role="alert" className="text-sm text-red-600">
+								{error}
+							</p>
+						)}
 						<Button
 							type="submit"
 							className="w-full py-5 self-end mt-auto md:mt-0"
