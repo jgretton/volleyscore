@@ -44,7 +44,7 @@ const { home, away, setTeamNames } = useGameStore(
 	return (
 		<div className="flex flex-1 flex-col">
 			<div>
-				<h2 className="text-lg font-medium text-slate-900">Team names</h2>
+				<h2 className="text-lg font-medium text-slate-900 dark:text-white">Team names</h2>
 				<p className="text-slate-600 text-base">
 					Please enter the team names below. These can be changed in the future.
 					Click continue when you are ready to move onto the next step.

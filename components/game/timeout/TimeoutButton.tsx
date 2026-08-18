@@ -4,7 +4,7 @@ import { useGameStore } from "@/store";
 import { Match } from "@/store/types";
 import { TIMEOUT_DURATION } from "@/utils";
 import { ClockIcon } from "@heroicons/react/24/outline";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useSound from "use-sound";
 
 const TimeoutButton = ({
@@ -55,11 +55,7 @@ const TimeoutButton = ({
         setTimeoutCountdown(TIMEOUT_DURATION);
         handleTeamTimeout(team);
       }}
-      disabled={
-        teamTimeoutCount >= 2 ||
-        timeoutCountdown > 0 ||
-        gameComplete
-      }
+      disabled={teamTimeoutCount >= 2 || timeoutCountdown > 0 || gameComplete}
     >
       <ClockIcon className="size-5 text-gray-900 sm:size-6 dark:text-white" />
       {timeoutCountdown > 0 ? (
@@ -68,7 +64,7 @@ const TimeoutButton = ({
         </span>
       ) : (
         // Otherwise, display default button text
-        <span className="hidden sm:block">Timeout</span>
+        <span className="hidden md:block">Timeout</span>
       )}
     </button>
   );

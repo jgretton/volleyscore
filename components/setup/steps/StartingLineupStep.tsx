@@ -76,7 +76,7 @@ export default function StartingLineupStep({
 	return (
 		<div className="flex flex-1 flex-col">
 			<div>
-				<h2 className="text-lg font-medium text-slate-900">
+				<h2 className="text-lg font-medium text-slate-900 dark:text-white">
 					Team starting lineup
 				</h2>
 				<p className="text-slate-600 text-base">

@@ -12,7 +12,7 @@ export default function VolleyballCourt({
 	return (
 		<div className="aspect-square relative overflow-hidden">
 			{/* net */}
-			<div className="top-0 w-full h-7 bg-mauve-800 z-50 -inset-x-10 absolute right-0 left-0 rounded-lg " />
+			<div className="top-0 w-full h-7 bg-mauve-800 dark:bg-mauve-300 z-50 -inset-x-10 absolute right-0 left-0 rounded-lg " />
 			{/* court */}
 			<div
 				className="@container/court inset-x-[7%] aspect-square inset-y-0 bg-[#ff915c]  absolute z-10 rounded-b-md border-3 border-white mt-7 border-t-0"

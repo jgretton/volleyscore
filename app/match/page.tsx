@@ -2,7 +2,10 @@
 import { useEffect, useRef, useState } from "react";
 
 import History from "@/components/game/history/History";
+import MatchActions from "@/components/game/history/MatchActions";
+import TeamHeader from "@/components/game/scoring/TeamHeader";
 import TeamScore from "@/components/game/scoring/TeamScore";
+import TeamTimeoutControl from "@/components/game/scoring/TeamTimeoutControl";
 import ModalManager from "@/components/modal/ModalManager";
 import { useGameStore } from "@/store";
 import { GameAction } from "@/store/types";
@@ -48,30 +51,48 @@ const Page = () => {
       </div>
     );
   }
-  return (
-    <div className="flex h-full flex-col gap-4 text-gray-800 dark:text-white">
-      {/* <GameHeader /> */}
+  const homeIsRight = teamSwapped;
+  const awayIsRight = !teamSwapped;
+  const homeCol = homeIsRight ? "col-start-2 md:col-start-3 pr-2" : "col-start-1 pl-2";
+  const awayCol = awayIsRight ? "col-start-2 md:col-start-3 pr-2" : "col-start-1 pl-2";
 
-      <div className="grid h-[calc(100dvh-5rem)] max-h-full grid-cols-[1fr_auto_1fr] grid-rows-1 gap-4">
-        <div
-          className={`${
-            !teamSwapped ? "col-start-1 pl-2" : "col-start-3 pr-2"
-          } col-span-1 row-span-1 row-start-1`}
-        >
+  return (
+    <div className="flex h-full flex-col gap-4 pt-3 pb-3 text-gray-800 dark:text-white">
+      <div className="grid min-h-0 flex-1 grid-cols-2 grid-rows-[auto_auto_minmax(0,1fr)_auto] gap-x-4 gap-y-2 md:grid-cols-[1fr_auto_1fr]">
+        {/* utility bar — swap/undo/reset/menu. Mobile only: top-right of the
+            page, above team identity, since it's reached far less often
+            than the score buttons. At md+ there's enough room for it to
+            live between the two timeout buttons instead (see timeout row),
+            so this bar disappears entirely there. */}
+        <div className="col-span-2 row-start-1 flex items-center justify-end md:hidden">
+          <MatchActions />
+        </div>
+
+        {/* header row */}
+        <div className={`${homeCol} row-start-2`}>
+          <TeamHeader team="home" />
+        </div>
+        <div className="row-start-2 hidden items-center justify-center md:col-start-2 md:flex">
+          <h2 className="text-center text-3xl">Set {currentSet}</h2>
+        </div>
+        <div className={`${awayCol} row-start-2`}>
+          <TeamHeader team="away" />
+        </div>
+
+        {/* score row — absorbs all spare vertical space */}
+        <div className={`${homeCol} row-start-3 min-h-0`}>
           <TeamScore team="home" />
         </div>
-        <div className="">
-          {" "}
-          <h2 className="text-center text-3xl">Set {currentSet}</h2>
+        <div className="row-start-3 hidden h-full min-h-0 flex-col md:col-start-2 md:flex md:w-40">
           <div
             ref={containerRef}
-            className="col-span-1 flex h-full flex-col-reverse gap-2 overflow-y-scroll py-2 sm:py-10"
+            className="flex min-h-0 flex-1 flex-col-reverse gap-2 overflow-y-scroll py-2 sm:py-10 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
           >
             {match?.sets[currentSet]?.actions?.map(
               (item: GameAction, index: number) => (
                 <div
                   key={index}
-                  className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 md:last:text-3xl dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 dark:last:text-gray-100 [&:last-child>div>div>button]:inline-flex"
+                  className="text-base text-gray-950/30 last:border-gray-950 last:text-2xl last:leading-10 last:text-gray-950 md:last:text-3xl dark:border-gray-500 dark:text-gray-500 dark:last:border-gray-100 dark:last:text-gray-100"
                 >
                   <History item={item} teamSwapped={teamSwapped} />
                 </div>
@@ -79,12 +100,35 @@ const Page = () => {
             )}
           </div>
         </div>
-        <div
-          className={`${
-            !teamSwapped ? "pr-2 sm:col-start-3" : "pl-2 sm:col-start-1"
-          } sm:col-span-1 sm:row-span-1 sm:row-start-1`}
-        >
+        <div className={`${awayCol} row-start-3 min-h-0`}>
           <TeamScore team="away" />
+        </div>
+
+        {/* timeout row — last, right underneath the score buttons.
+            Mobile: nothing needs to stay centered relative to a sibling
+            here, so it's a plain justify-between row, not a grid.
+            md+: MatchActions moves back in between the two timeout
+            controls (matching where it lived on tablet/desktop before),
+            using a real 1fr/auto/1fr grid so a timeout button's countdown
+            text growing in its own track can never push it off-center. */}
+        <div className="col-span-2 row-start-4 mt-2 flex items-center justify-between md:hidden">
+          <div className={homeIsRight ? "order-2 pr-2" : "order-1 pl-2"}>
+            <TeamTimeoutControl team="home" />
+          </div>
+          <div className={awayIsRight ? "order-2 pr-2" : "order-1 pl-2"}>
+            <TeamTimeoutControl team="away" />
+          </div>
+        </div>
+        <div className="col-span-2 row-start-4 mt-2 hidden items-center gap-4 md:col-span-3 md:grid md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+          <div className={`flex ${homeIsRight ? "col-start-3 justify-end pr-2" : "col-start-1 justify-start pl-2"}`}>
+            <TeamTimeoutControl team="home" />
+          </div>
+          <div className="col-start-2 flex items-center justify-center">
+            <MatchActions />
+          </div>
+          <div className={`flex ${awayIsRight ? "col-start-3 justify-end pr-2" : "col-start-1 justify-start pl-2"}`}>
+            <TeamTimeoutControl team="away" />
+          </div>
         </div>
       </div>
 

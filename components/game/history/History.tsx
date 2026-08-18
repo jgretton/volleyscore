@@ -13,7 +13,7 @@ const Card = ({ item }) => {
   const score = item.overallScore[team];
   return (
     <span className={`${team === "home" ? "order-2" : "order-1"}`}>
-      {item.type === "score" ? score : "Timeout"}
+      {item.type === "score" ? score : ""}
     </span>
   );
 };

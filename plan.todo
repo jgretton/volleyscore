@@ -1,46 +1,6 @@
-Bugs:
-    ✓ undo button not restoring score, timeouts, updating serving team.
-    ☐ when undoing 5th set 8 point switch, it doesnt swap side back.
+Notes:
 
-
-
-Features:
-    Squad & Lineup (branch: feature/squad-and-lineup):
-
-        Foundation:
-            ✔ Rename /basic-match route to /match @done(26-02-18 14:41)
-            ✔ Add matchMode ("basic" | "advanced") to store @done(26-02-18 14:45)
-            ✔ Define Player and Squad types in store/types.ts @done(26-02-18 14:53)
-            ✔ Add squad and lineup state to store @done(26-02-18 15:31)
-                ✔ Squad: per match (stays the same across sets) @done(26-02-18 15:31)
-                ✔ Lineup: per set (coaches submit new sheet each set, 6 players in positions 1-6) @done(26-02-18 15:31)
-
-        Home Page:
-            ✔ Add match mode selection (Basic / Advanced) @done(26-02-25 12:55)
-
-        Setup Flow (/setup):
-            ✔ Create /setup route with multi-step form @done(26-02-25 12:55)
-            ✔ Step 1: Team names @done(26-02-25 12:55)
-            ✔ Step 2: Add players to each squad (name + shirt number) @done(26-02-25 12:56)
-            ✔ Make confirmation section @done(26-03-03)
-            ✔ Update edit buttons, on confirm check which step to move to (if all areas have been completed) @done(26-03-03)
-            ✔ Navigate to /match on completion @done(26-03-03)
-            ☐ Squad validation (on confirm):
-                ☐ Hard errors (block submission):
-                    ☐ Minimum 6 players per team
-                    ☐ Every player must have a name
-                    ☐ Every player must have a number between 1-99
-                ☐ Warnings (allow submission but flag):
-                    ☐ Duplicate numbers within a team
-                    ☐ Libero number matches a player number
-                    ☐ Single character player names
-                ☐ Display errors inline next to the relevant player row
-                ☐ Sort players by number ascending silently on confirm
-            ☐ Update player inputs to a form.
-
-        Match Page:
-            ☐ Conditionally show advanced features based on matchMode
-            ☐ Lineup modal blocks match start until both teams submit lineup sheet for set 1
-                - 6 players per team assigned to positions 1-6 (rotation order)
-            ☐ Display active lineup for current set
-            ☐ Lineup modal reappears at the start of each new set
+    Match Page:
+        ☐ Timeout button: once pressed and counting down, swap the icon to an X so the user can cancel a mis-tap.
+            - Cancelling must undo the previous action (restore score/timeout count via undoAction), not just stop the visual countdown.
+            - Must also stop/cancel the buzzer sound if it's queued.
