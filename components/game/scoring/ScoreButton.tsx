@@ -10,12 +10,20 @@ const ScoreButton = ({
   increaseTeamScore: () => void;
 }) => {
   return (
+    // Below xl the panel around this button carries the background, so the
+    // button itself is transparent. From xl the panel unfolds and the
+    // background moves here, leaving the button meaning only "the score".
     <button
-      className="bg-sky-100_ mt-2 size-full grow cursor-pointer rounded-xl bg-[#3E5B64] text-gray-50 tabular-nums ring-2 ring-slate-800/30 ring-inset disabled:opacity-30"
+      className="flex min-h-0 flex-1 cursor-pointer items-center justify-center rounded-xl text-gray-50 tabular-nums [container-type:size] disabled:opacity-30 xl:bg-[#3E5B64] xl:ring-2 xl:ring-slate-800/30 xl:ring-inset"
       onClick={increaseTeamScore}
       disabled={disabled}
     >
-      <span className="text-[min(25vw,20rem)] font-light">{score}</span>
+      {/* Sized off the button rather than the viewport so the digit fills
+          whatever box the layout leaves it. leading-none collapses the line
+          box to the font size, which is what keeps the digit centred. */}
+      <span className="text-[min(130cqh,70cqw)] leading-none font-light">
+        {score}
+      </span>
     </button>
   );
 };

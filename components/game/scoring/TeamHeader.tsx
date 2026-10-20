@@ -4,10 +4,12 @@ import { useGameStore } from "@/store";
 const ServeIndicator = ({ serving }: { serving: boolean }) => (
   <div
     className={`${
-      serving ? "fill-gray-950 dark:fill-gray-100" : "fill-transparent"
-    } size-5 shrink-0`}
+      serving
+        ? "fill-white xl:fill-gray-950 xl:dark:fill-gray-100"
+        : "fill-transparent"
+    } size-5 shrink-0 xl:size-7`}
   >
-    <svg className="size-5" viewBox="0 0 58 58">
+    <svg className="size-full" viewBox="0 0 58 58">
       <path
         d="M29,0C13.01,0,0,13.009,0,29s13.01,29,29,29s29-13.009,29-29S44.99,0,29,0z M56,29c0,1.749-0.173,3.458-0.492,5.115
    c-2.68-11.081-6.982-18.874-17.726-24.449c0.671-0.817,1.375-1.647,2.118-2.52c0.549-0.645,1.121-1.319,1.703-2.015
@@ -41,20 +43,20 @@ const TeamHeader = ({ team }: { team: "home" | "away" }) => {
 
   return (
     <div
-      className={`flex items-center justify-between gap-2 ${
+      className={`flex shrink-0 items-center justify-between gap-2 ${
         isRightSide ? "flex-row-reverse" : ""
       }`}
     >
-      <span className="truncate text-base md:text-lg lg:text-3xl">
+      <span className="truncate text-base md:text-lg lg:text-2xl xl:text-3xl">
         {teamName}
       </span>
       <div
-        className={`flex shrink-0 items-center gap-2 ${
+        className={`flex shrink-0 items-center gap-2 xl:gap-4 ${
           isRightSide ? "flex-row-reverse" : ""
         }`}
       >
         <ServeIndicator serving={isServing} />
-        <span className="inline-flex h-9 min-w-9 items-center justify-center rounded-md border border-[#3E5B64] px-2 text-2xl font-light tabular-nums md:h-11 md:min-w-11 md:text-3xl">
+        <span className="inline-flex h-9 min-w-9 items-center justify-center rounded-md border border-white/30 px-2 text-2xl font-light tabular-nums md:h-11 md:min-w-11 md:text-3xl xl:h-14 xl:min-w-14 xl:border-[#3E5B64] xl:text-4xl">
           {setsWon}
         </span>
       </div>

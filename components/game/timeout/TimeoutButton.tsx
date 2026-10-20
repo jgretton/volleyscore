@@ -1,70 +1,79 @@
 "use client";
 
 import { useGameStore } from "@/store";
-import { Match } from "@/store/types";
 import { TIMEOUT_DURATION } from "@/utils";
-import { ClockIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 import useSound from "use-sound";
 
-const TimeoutButton = ({
-  team,
-  teamSwapped,
-  match,
-}: {
-  team: "home" | "away";
-  teamSwapped: boolean;
-  match: Match;
-}) => {
-  const currentSet = useGameStore((state) => state.currentSet);
-  const { gameComplete } = useGameStore((state) => state.match);
-  const handleTeamTimeout = useGameStore((state) => state.handleTeamTimeout);
-  const [timeoutCountdown, setTimeoutCountdown] = useState<number>(0);
-  const [play] = useSound("/sounds/buzzer.mp3");
-  const teamTimeoutCount = match.sets[currentSet][team].timeouts;
+const TimeoutButton = ({ team }: { team: "home" | "away" }) => {
+  const { match, currentSet, handleTeamTimeout, undoAction } = useGameStore();
+  const [countdown, setCountdown] = useState<number>(0);
+  // How many actions the set had once our timeout was recorded. If anything
+  // has been recorded since, cancelling must not undo that instead.
+  const [actionCount, setActionCount] = useState<number>(0);
+  const [play, { stop }] = useSound("/sounds/buzzer.mp3");
+
+  const actions = match.sets[currentSet]?.actions ?? [];
+  const timeoutsUsed: number = match.sets[currentSet]?.[team].timeouts;
+  const isRunning = countdown > 0;
+
   useEffect(() => {
     let timeoutInterval;
-    if (timeoutCountdown > 0) {
+    if (countdown > 0) {
       timeoutInterval = setInterval(() => {
-        if (timeoutCountdown === 1) play();
-        setTimeoutCountdown((prevCountdown) => prevCountdown - 1);
+        if (countdown === 1) play();
+        setCountdown((prevCountdown) => prevCountdown - 1);
       }, 1000);
     }
     return () => clearInterval(timeoutInterval);
-  }, [timeoutCountdown, play]);
+  }, [countdown, play]);
 
   // If the store's timeout count resets to 0 (e.g. game reset), cancel
   // any running local countdown so the timer and buzzer stop.
   useEffect(() => {
-    if (teamTimeoutCount === 0) {
-      setTimeoutCountdown(0);
+    if (timeoutsUsed === 0) {
+      setCountdown(0);
     }
-  }, [teamTimeoutCount]);
+  }, [timeoutsUsed]);
+
+  const startTimeout = () => {
+    handleTeamTimeout(team);
+    setActionCount(actions.length + 1);
+    setCountdown(TIMEOUT_DURATION);
+  };
+
+  // A mis-tap has to be cheap to undo, so cancelling stops the clock, kills
+  // the queued buzzer and takes the timeout back off the team.
+  const cancelTimeout = () => {
+    stop();
+    setCountdown(0);
+    const lastAction = actions[actions.length - 1];
+    if (lastAction && actions.length === actionCount) {
+      undoAction(lastAction);
+    }
+  };
+
   return (
     <button
-      className={`${
-        !teamSwapped
-          ? team === "home"
-            ? "order-2 sm:order-1"
-            : "order-1 sm:order-2"
-          : team === "home"
-            ? "order-1 sm:order-2"
-            : "order-2 sm:order-1"
-      } inline-flex shrink-0 cursor-pointer items-center gap-3 rounded-lg border border-[#3E5B64] px-4 py-2 tabular-nums hover:bg-gray-100 disabled:cursor-not-allowed dark:border-gray-200 dark:hover:bg-slate-700`}
-      onClick={() => {
-        setTimeoutCountdown(TIMEOUT_DURATION);
-        handleTeamTimeout(team);
-      }}
-      disabled={teamTimeoutCount >= 2 || timeoutCountdown > 0 || gameComplete}
+      className={`inline-flex min-w-20 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-lg border px-3 py-2 tabular-nums disabled:cursor-not-allowed disabled:opacity-40 xl:px-5 xl:py-3 xl:text-lg ${
+        isRunning
+          ? "border-red-300 text-red-100 xl:border-red-500 xl:text-red-600 xl:dark:text-red-400"
+          : "border-white/30 hover:bg-white/10 xl:border-[#3E5B64] xl:hover:bg-gray-100 xl:dark:border-gray-200 xl:dark:hover:bg-slate-700"
+      }`}
+      onClick={isRunning ? cancelTimeout : startTimeout}
+      disabled={!isRunning && (timeoutsUsed >= 2 || match.gameComplete)}
+      aria-label={isRunning ? "Cancel timeout" : "Timeout"}
     >
-      <ClockIcon className="size-5 text-gray-900 sm:size-6 dark:text-white" />
-      {timeoutCountdown > 0 ? (
-        <span className="text-xs tabular-nums md:text-base">
-          {timeoutCountdown} s
-        </span>
+      {isRunning ? (
+        <XMarkIcon className="size-5 xl:size-6" />
       ) : (
-        // Otherwise, display default button text
-        <span className="hidden md:block">Timeout</span>
+        <ClockIcon className="size-5 xl:size-6" />
+      )}
+      {isRunning ? (
+        <span className="text-sm tabular-nums xl:text-lg">{countdown} s</span>
+      ) : (
+        <span className="hidden lg:inline">Timeout</span>
       )}
     </button>
   );
