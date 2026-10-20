@@ -6,7 +6,7 @@ import {
     makePlayer,
     makeTeam
 } from "@/lib/data";
-import { isSetComplete } from "@/utils";
+import { isSetComplete, reachedEighthPoint } from "@/utils";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
@@ -436,6 +436,21 @@ export const useGameStore = create<MatchStore>()(
             match: updatedMatch,
           };
         });
+
+        // Undoing the point that triggered the fifth set switch has to put
+        // the sides back. Without this the next point reaches 8 again, the
+        // "first time" check passes a second time, and the teams end up
+        // swapped for the rest of the match.
+        if (currentSet === 5 && reachedEighthPoint(action)) {
+          let anotherStillReaches = false;
+          for (const remaining of updatedActions) {
+            if (reachedEighthPoint(remaining)) {
+              anotherStillReaches = true;
+              break;
+            }
+          }
+          if (!anotherStillReaches) get().swapSides();
+        }
       },
       undoSetPoint: () => {
         const currentState = get();
