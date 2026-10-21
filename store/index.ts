@@ -407,6 +407,10 @@ export const useGameStore = create<MatchStore>()(
             };
             updatedServingTeam =
               updatedActions.findLast((a) => a.type === "score")?.team ?? null;
+
+            // Undoing the match point reopens the set, so the winner it was
+            // given when the game completed has to come off with it.
+            if (state.match.gameComplete) setUpdates.winner = null;
           }
 
           const updatedMatch = {
@@ -541,10 +545,13 @@ export const useGameStore = create<MatchStore>()(
       },
       handleGameComplete: (setResults: TeamOptions) => {
         // set game is complete, update the team sets won but do not update current set otherwise data will be removed.
-        const { match } = get();
+        const { match, currentSet } = get();
         const updatedMatch = { ...match };
         //game complete
         updatedMatch.gameComplete = true;
+        // The deciding set ends here rather than through handleSetCompletion,
+        // so record its winner too or it stays null for the rest of the match.
+        updatedMatch.sets[currentSet].winner = setResults;
         // update sets won
         if (setResults === "home")
           updatedMatch.home.setsWon = updatedMatch.home.setsWon + 1;
@@ -560,9 +567,10 @@ export const useGameStore = create<MatchStore>()(
           if (!team) return state;
           const updatedMatch = { ...state.match };
           const setData = updatedMatch.sets[state.currentSet];
-          if (setData[team].timeouts >= 2) {
-            throw new Error("Team has had their two timeouts.");
-          }
+          // The button is already disabled at two, so this is only a guard.
+          // Throwing from a store setter would take the page down over a
+          // rule the UI has enforced anyway.
+          if (setData[team].timeouts >= 2) return state;
           //add time out to team.
           setData[team].timeouts = setData[team].timeouts + 1;
           //add action for timeout
