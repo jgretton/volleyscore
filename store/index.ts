@@ -625,6 +625,11 @@ export const useGameStore = create<MatchStore>()(
             ...persistedState,
             match: createInitialGame(),
             matchSetup: createInitialMatchSetup(),
+            // The spread carries these across, and a fresh match only has
+            // set 1. Left alone, a saved currentSet of 3 points at a set
+            // that does not exist and scoring throws on the first tap.
+            currentSet: 1,
+            teamSwappedSides: false,
           };
         }
         return persistedState;
