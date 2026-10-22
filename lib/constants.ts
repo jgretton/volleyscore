@@ -1,3 +1,8 @@
+// The setup wizard collects squads and lineups but the match page cannot
+// use them yet, so an official match is currently a quick match with team
+// names. Flip this when the match page can act on them.
+export const ADVANCED_MATCH_ENABLED = false;
+
 export const MIN_PLAYERS = 6;
 export const MAX_PLAYERS = 12;
 export const MAX_LIBEROS = 2;

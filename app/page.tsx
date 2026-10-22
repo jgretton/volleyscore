@@ -1,4 +1,5 @@
 "use client";
+import { ADVANCED_MATCH_ENABLED } from "@/lib/constants";
 import { useGameStore } from "@/store";
 import { ChevronRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
@@ -20,7 +21,7 @@ export default function Home() {
     if (hasStartedGame) {
       setExistingGame(true);
     }
-    if (matchSetup.home.name.trim() !== "") {
+    if (ADVANCED_MATCH_ENABLED && matchSetup.home.name.trim() !== "") {
       setExistingMatchSetup(true);
       return;
     }
@@ -120,21 +121,42 @@ export default function Home() {
             <ChevronRightIcon className="size-5 shrink-0 text-slate-400 dark:text-white/30" />
           </Link>
 
-          <Link
-            href="/setup"
-            onClick={() => initialiseMatchSetup()}
-            className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-5 transition hover:bg-slate-50 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700"
-          >
-            <div className="flex flex-col gap-2">
-              <p className="font-semibold">Official Match</p>
-              <ul className="flex flex-col gap-1 text-sm text-slate-500 dark:text-white/50">
-                <li>Player squads & shirt numbers</li>
-                <li>Lineup sheet per set</li>
-                <li>Rotation tracking</li>
-              </ul>
+          {ADVANCED_MATCH_ENABLED ? (
+            <Link
+              href="/setup"
+              onClick={() => initialiseMatchSetup()}
+              className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-5 transition hover:bg-slate-50 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700"
+            >
+              <div className="flex flex-col gap-2">
+                <p className="font-semibold">Official Match</p>
+                <ul className="flex flex-col gap-1 text-sm text-slate-500 dark:text-white/50">
+                  <li>Player squads & shirt numbers</li>
+                  <li>Lineup sheet per set</li>
+                  <li>Rotation tracking</li>
+                </ul>
+              </div>
+              <ChevronRightIcon className="size-5 shrink-0 text-slate-400 dark:text-white/30" />
+            </Link>
+          ) : (
+            <div
+              aria-disabled="true"
+              className="flex w-full cursor-not-allowed items-center justify-between rounded-xl border border-dashed border-slate-200 bg-white/50 p-5 dark:border-white/10 dark:bg-slate-800/40"
+            >
+              <div className="flex flex-col gap-2">
+                <p className="font-semibold text-slate-400 dark:text-white/40">
+                  Official Match
+                </p>
+                <ul className="flex flex-col gap-1 text-sm text-slate-400 dark:text-white/30">
+                  <li>Player squads & shirt numbers</li>
+                  <li>Lineup sheet per set</li>
+                  <li>Rotation tracking</li>
+                </ul>
+              </div>
+              <span className="shrink-0 rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-400 dark:border-white/15 dark:text-white/40">
+                Coming soon
+              </span>
             </div>
-            <ChevronRightIcon className="size-5 shrink-0 text-slate-400 dark:text-white/30" />
-          </Link>
+          )}
         </div>
       </div>
     </main>
