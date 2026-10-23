@@ -1,0 +1,83 @@
+SEO plan of attack. Reasoning and sources are in SEO.md.
+
+Decisions: international English, Josh writes the copy, no articles.
+Order matters. Phase 1 aims everything else, so do not skip it.
+
+    Phase 1 - Aim before building (you):
+        ✔ Search Console: export last 3 months of the Performance report @done(26-10-22)
+        ✔ Read the queries, pages, countries and devices reports @done(26-10-22)
+        ✔ Reversed the UK leaning decision, the audience is international @done(26-10-22)
+            - UK is 18% of impressions and the worst CTR of the top countries
+            - Findings written up in SEO.md under "What the data actually said"
+
+        Target terms, in priority order:
+            - volleyball scoreboard            95 imp, position 18.0, 0 clicks
+            - volleyball scoreboard online    110 imp, position 11.2, 10 clicks
+            - online volleyball scoreboard     41 imp, position 13.8, 2 clicks
+            - volleyball scoreboards           67 imp, position 28.3, 0 clicks
+            - volleyball score online          38 imp, position 24.9, 0 clicks
+            - scoreboard volleyball            36 imp, position 19.4, 0 clicks
+
+    Phase 2 - Technical, no copy needed (me):
+        ✔ Make the homepage h1 descriptive @done(26-10-22)
+            - h1 is sr-only so the wordmark stays the hero visually
+        ✔ Noindex /match and drop it from the sitemap @done(26-10-22)
+            - Verified: serves "noindex, follow", sitemap is down to / and the
+              manifest. /basic-match impressions will fall away with it.
+        ✔ Confirm the homepage still server-renders its text @done(26-10-22)
+            - 200 chars and the h1 both present in the raw HTML
+
+    Phase 3 - Page structure (me):
+        ✔ Homepage copy lives in lib/homepage-content.ts @done(26-10-23)
+        ✔ Content sits behind a closed disclosure at the foot of the page @done(26-10-23)
+            - Native <details>, not the Radix Collapsible, which unmounts its
+              content and would keep the text out of the HTML entirely
+            - Google's spam policy, updated May 2026, lists accordions as a
+              legitimate pattern and collapsed text gets full ranking weight
+            - Always shown, not conditional, so nothing shifts after hydration
+        ✔ Cut the scoring rules section @done(26-10-23)
+            - It targets a different topic from "volleyball scoreboard", which
+              is the only thing the data shows demand for. Chasing rules
+              queries would be the article writing that was ruled out.
+        ✔ Structure above the fold left exactly as it was @done(26-10-23)
+
+    Phase 4 - Copy (you):
+        ✔ Approved, with the target phrases worked into prose @done(26-10-23)
+        ✔ Title tag now leads with "Free", matching how people search @done(26-10-23)
+            - Carried through to the open graph and twitter titles
+        ☐ Optional later: make the disclosure read more obviously clickable
+            - Label is a description rather than an action
+            - A full width row would be more recognisable than centred text
+
+    Phase 5 - Ship and verify:
+        ✔ Verified in the rendered HTML: title, three headings, 881 chars, @done(26-10-23)
+          disclosure closed, target phrases x3 each
+        ☐ Push and deploy (me)
+        ☐ Search Console: request reindex of / and resubmit the sitemap (you)
+        ☐ Wait. Indexing is days, position movement is weeks.
+
+    Phase 6 - Measure (me):
+        ☐ PageSpeed Insights on / and /match, record the field data
+            - Targets: LCP under 2.5s, INP under 200ms, CLS under 0.1
+            - INP matters most here: every point tapped is a store update, a
+              re-render and a localStorage write
+            - Fix only what actually fails
+        ☐ Re-read Search Console 4-6 weeks after deploy, compare to Phase 1
+
+    Optional, low value:
+        ☐ FAQPage structured data on the scoring section
+            - Rich results were removed on 7 May 2026, so there is no search
+              result from this any more. Google still reads it for page
+              understanding. Only worth adding if it is nearly free.
+        ☐ Look at why desktop ranks at 22.9 against mobile at 9.7
+            - Noticed in the Phase 1 export, cause unknown, may be nothing
+
+    Explicitly not doing:
+        ☐ llms.txt - no measurable effect, Google confirmed nothing reads it
+        ☐ More meta tag work - already done well, no return left
+        ☐ Explainer articles - decided against
+
+    Competitive gaps, product work not SEO, recorded so they are not lost:
+        ☐ Live sync across devices
+        ☐ Share a view link or QR code to spectators
+        ☐ TV display mode
