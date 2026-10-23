@@ -1,7 +1,8 @@
 "use client";
 import { ADVANCED_MATCH_ENABLED } from "@/lib/constants";
+import { ABOUT, ABOUT_HEADING, ABOUT_POINTS } from "@/lib/homepage-content";
 import { useGameStore } from "@/store";
-import { ChevronRightIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -29,7 +30,8 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-10 p-4 text-slate-900 sm:p-8 md:p-16 dark:text-white">
-      <h1 className="text-xl text-[min(10vw,7rem)] font-light">Volleyscore</h1>
+      <h1 className="sr-only">Online Volleyball Scoreboard</h1>
+      <span className="text-[min(10vw,7rem)] font-light">Volleyscore</span>
 
       {existingGame && (
         <div className="flex w-full max-w-xl flex-col gap-4 rounded-xl bg-[#3E5B64] p-5">
@@ -104,7 +106,7 @@ export default function Home() {
           </Link>
         </div>
       )}
-      <div className="mt-10 flex w-full max-w-xl flex-col gap-5">
+      <div className="flex w-full max-w-xl flex-col gap-5">
         <h2 className="text-xl font-medium">Score New Match</h2>
         <div className="flex w-full flex-col gap-3">
           <Link
@@ -159,6 +161,34 @@ export default function Home() {
           )}
         </div>
       </div>
+
+      <details className="group w-full max-w-xl">
+        <summary className="flex cursor-pointer list-none items-center justify-center gap-1.5 py-2 text-sm text-slate-500 dark:text-white/40 [&::-webkit-details-marker]:hidden">
+          <h2 className="text-sm font-normal">{ABOUT_HEADING}</h2>
+          <ChevronDownIcon className="size-3.5 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="mt-3 border-t border-slate-200 pt-5 dark:border-white/10">
+          {ABOUT.map((paragraph) => (
+            <p
+              key={paragraph}
+              className="mt-3 text-sm leading-relaxed text-slate-600 first:mt-0 dark:text-white/50"
+            >
+              {paragraph}
+            </p>
+          ))}
+          <ul className="mt-5 flex flex-col gap-2 text-sm text-slate-600 dark:text-white/50">
+            {ABOUT_POINTS.map((point) => (
+              <li key={point} className="flex gap-2.5">
+                <span
+                  aria-hidden="true"
+                  className="mt-2 size-1 shrink-0 rounded-full bg-slate-300 dark:bg-white/25"
+                />
+                {point}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
     </main>
   );
 }
