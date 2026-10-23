@@ -2,12 +2,20 @@ export const TIMEOUT_DURATION = 30;
 const END_SET_DURATION = 180;
 const POINTS_PER_SET = 25;
 const POINTS_FOR_FIFTH_SET = 15;
-import { Match } from "@/store/types";
+import { GameAction, Match, TeamOptions } from "@/store/types";
 type isSetCompleteReturn = {
-  setWinner: "awayTeam" | "homeTeam" | null;
+  setWinner: TeamOptions;
   shouldSwapSides: boolean;
   isSetCompleted: boolean;
   isGameComplete?: boolean;
+};
+
+// The fifth set changes ends the first time either team reaches 8. Only
+// scores count: a timeout records the score it was called at, so counting
+// those as well made the switch depend on whether anyone had called one.
+export const reachedEighthPoint = (action: GameAction): boolean => {
+  if (action.type !== "score") return false;
+  return action.overallScore.home === 8 || action.overallScore.away === 8;
 };
 
 export const isSetComplete = (
@@ -16,15 +24,13 @@ export const isSetComplete = (
 ): isSetCompleteReturn => {
   const { sets } = match;
 
-  const { homeTeam: homeScore, awayTeam: awayScore } = sets[currentSet].score;
+  const homeScore = sets[currentSet].home.score;
+  const awayScore = sets[currentSet].away.score;
   if (currentSet === 5) {
     //check for 8 points and the swap
     if (homeScore === 8 || awayScore === 8) {
-      const eightPoints = match.sets[currentSet].actions.filter(
-        (action) =>
-          action.overallScore.awayTeam === 8 ||
-          action.overallScore.homeTeam === 8,
-      );
+      const eightPoints =
+        match.sets[currentSet].actions.filter(reachedEighthPoint);
       if (eightPoints.length === 1) {
         return {
           setWinner: null, // or "awayTeam" or null
@@ -40,14 +46,14 @@ export const isSetComplete = (
     ) {
       if (homeScore > awayScore) {
         return {
-          setWinner: "homeTeam", // or "awayTeam" or null
+          setWinner: "home", // or "away" or null
           shouldSwapSides: true, // or false
           isSetCompleted: true, // or false
           isGameComplete: true,
         };
       } else {
         return {
-          setWinner: "awayTeam", // or "awayTeam" or null
+          setWinner: "away", // or "away" or null
           shouldSwapSides: true, // or false
           isSetCompleted: true, // or false
           isGameComplete: true,
@@ -62,17 +68,17 @@ export const isSetComplete = (
   ) {
     if (homeScore > awayScore) {
       return {
-        setWinner: "homeTeam", // or "awayTeam" or null
+        setWinner: "home", // or "away" or null
         shouldSwapSides: true, // or false
         isSetCompleted: true, // or false
-        isGameComplete: match.homeTeamSetsWon === 2 ? true : false,
+        isGameComplete: match.home.setsWon === 2 ? true : false,
       };
     } else {
       return {
-        setWinner: "awayTeam", // or "awayTeam" or null
+        setWinner: "away", // or "away" or null
         shouldSwapSides: true, // or false
         isSetCompleted: true, // or false
-        isGameComplete: match.awayTeamSetsWon === 2 ? true : false,
+        isGameComplete: match.away.setsWon === 2 ? true : false,
       };
     }
   }

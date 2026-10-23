@@ -1,87 +1,194 @@
 "use client";
+import { ADVANCED_MATCH_ENABLED } from "@/lib/constants";
+import { ABOUT, ABOUT_HEADING, ABOUT_POINTS } from "@/lib/homepage-content";
 import { useGameStore } from "@/store";
-import { TeamNames } from "@/store/types";
+import { ChevronDownIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [existingGame, setExistingGame] = useState<boolean>(false);
+  const [existingMatchSetup, setExistingMatchSetup] = useState<boolean>(false);
 
-  const { startNewGame, match } = useGameStore();
-  const [teamNames, setTeamNames] = useState<TeamNames>({
-    homeTeamName: "Home",
-    awayTeamName: "Away",
-  });
-
-  const changeName = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTeamNames((prevState) => {
-      return {
-        ...prevState,
-        [e.target.name as keyof TeamNames]: e.target.value,
-      };
-    });
-  };
+  const { startNewGame, initialiseMatchSetup, matchSetup, match, currentSet } =
+    useGameStore();
 
   useEffect(() => {
     const hasStartedGame =
-      match.homeTeamSetsWon > 0 ||
-      match.awayTeamSetsWon > 0 ||
+      match.home.setsWon > 0 ||
+      match.away.setsWon > 0 ||
       Object.values(match.sets).some((set) => set.actions.length > 0);
 
     if (hasStartedGame) {
       setExistingGame(true);
     }
+    if (ADVANCED_MATCH_ENABLED && matchSetup.home.name.trim() !== "") {
+      setExistingMatchSetup(true);
+      return;
+    }
   }, [match]);
 
   return (
-    <main className="flex min-h-screen flex-col items-center gap-10 p-24 dark:text-white">
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-3">
-          <label> Home team name</label>
-          <input
-            type="text"
-            placeholder="Home"
-            name="homeTeamName"
-            onChange={changeName}
-            value={teamNames.homeTeamName}
-            className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
-          />
-        </div>
-        <div className="flex flex-col gap-3">
-          <label> Away team name</label>
-          <input
-            type="text"
-            placeholder="Away"
-            name="awayTeamName"
-            onChange={changeName}
-            value={teamNames.awayTeamName}
-            className="rounded-md text-gray-400 focus:text-gray-800 dark:bg-slate-800 dark:focus:text-white"
-          />
-        </div>
-      </div>
-
-      <Link
-        href="/basic-match"
-        className="rounded-full bg-blue-600 px-4 py-3 text-white"
-        onClick={() => startNewGame(teamNames)}
-      >
-        Start New Match
-      </Link>
+    <main className="flex min-h-screen flex-col items-center gap-10 p-4 text-slate-900 sm:p-8 md:p-16 dark:text-white">
+      <h1 className="sr-only">Online Volleyball Scoreboard</h1>
+      <span className="text-[min(10vw,7rem)] font-light">Volleyscore</span>
 
       {existingGame && (
-        <div className="mt-10 flex w-full max-w-sm flex-col gap-4 text-center">
-          <p>
-            Looks like you have already started a game, would you like to
-            continue?
-          </p>
+        <div className="flex w-full max-w-xl flex-col gap-4 rounded-xl bg-[#3E5B64] p-5">
+          <div className="flex items-center justify-between">
+            <h2 className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-green-500 uppercase">
+              <span className="size-2 shrink-0 animate-pulse rounded-full bg-green-500" />
+              Live - Set {currentSet}
+            </h2>
+            <span className="text-xs text-white/70">
+              {match.home.setsWon} - {match.away.setsWon} Sets
+            </span>
+          </div>
+
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-white">
+            <div className="truncate text-left text-sm font-medium">
+              {match.home.name}
+            </div>
+            <div className="text-3xl font-bold tabular-nums">
+              {match.sets[currentSet].home.score}
+              <span className="mx-1 text-slate-300 dark:text-white/30">-</span>
+              {match.sets[currentSet].away.score}
+            </div>
+            <div className="truncate text-right text-sm font-medium">
+              {match.away.name}
+            </div>
+          </div>
+
           <Link
-            href="/basic-match"
-            className="self-center rounded-full bg-blue-600 px-4 py-3 text-white"
+            href="/match"
+            className="rounded-lg bg-slate-800 py-2 text-center text-sm font-medium text-white transition hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600"
           >
             Continue Match
           </Link>
         </div>
       )}
+      {existingMatchSetup && (
+        <div className="flex w-full max-w-xl flex-col gap-4 rounded-xl bg-[#3E5B64] p-5">
+          <h2 className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider text-amber-400 uppercase">
+            <span className="size-2 shrink-0 rounded-full bg-amber-400" />
+            Setup in Progress
+          </h2>
+
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 text-white">
+            <div className="flex flex-col gap-0.5">
+              <span className="truncate text-sm font-medium">
+                {matchSetup.home.name}
+              </span>
+              {matchSetup.home.players.length > 0 && (
+                <span className="text-xs text-white/50">
+                  {matchSetup.home.players.length} players
+                </span>
+              )}
+            </div>
+            <span className="text-sm font-bold text-white/40">vs</span>
+            <div className="flex flex-col items-end gap-0.5">
+              <span className="truncate text-sm font-medium">
+                {matchSetup.away.name}
+              </span>
+              {matchSetup.away.players.length > 0 && (
+                <span className="text-xs text-white/50">
+                  {matchSetup.away.players.length} players
+                </span>
+              )}
+            </div>
+          </div>
+
+          <Link
+            href="/setup"
+            className="rounded-lg bg-slate-800 py-2 text-center text-sm font-medium text-white transition hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600"
+          >
+            Continue Setup
+          </Link>
+        </div>
+      )}
+      <div className="flex w-full max-w-xl flex-col gap-5">
+        <h2 className="text-xl font-medium">Score New Match</h2>
+        <div className="flex w-full flex-col gap-3">
+          <Link
+            href="/match"
+            onClick={() => startNewGame()}
+            className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-5 transition hover:bg-slate-50 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700"
+          >
+            <div className="flex flex-col gap-1">
+              <p className="font-semibold">Quick Match</p>
+              <p className="text-sm text-slate-500 dark:text-white/50">
+                Just the score, no setup needed
+              </p>
+            </div>
+            <ChevronRightIcon className="size-5 shrink-0 text-slate-400 dark:text-white/30" />
+          </Link>
+
+          {ADVANCED_MATCH_ENABLED ? (
+            <Link
+              href="/setup"
+              onClick={() => initialiseMatchSetup()}
+              className="flex w-full items-center justify-between rounded-xl border border-slate-200 bg-white p-5 transition hover:bg-slate-50 dark:border-transparent dark:bg-slate-800 dark:hover:bg-slate-700"
+            >
+              <div className="flex flex-col gap-2">
+                <p className="font-semibold">Official Match</p>
+                <ul className="flex flex-col gap-1 text-sm text-slate-500 dark:text-white/50">
+                  <li>Player squads & shirt numbers</li>
+                  <li>Lineup sheet per set</li>
+                  <li>Rotation tracking</li>
+                </ul>
+              </div>
+              <ChevronRightIcon className="size-5 shrink-0 text-slate-400 dark:text-white/30" />
+            </Link>
+          ) : (
+            <div
+              aria-disabled="true"
+              className="flex w-full cursor-not-allowed items-center justify-between rounded-xl border border-dashed border-slate-200 bg-white/50 p-5 dark:border-white/10 dark:bg-slate-800/40"
+            >
+              <div className="flex flex-col gap-2">
+                <p className="font-semibold text-slate-400 dark:text-white/40">
+                  Official Match
+                </p>
+                <ul className="flex flex-col gap-1 text-sm text-slate-400 dark:text-white/30">
+                  <li>Player squads & shirt numbers</li>
+                  <li>Lineup sheet per set</li>
+                  <li>Rotation tracking</li>
+                </ul>
+              </div>
+              <span className="shrink-0 rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-400 dark:border-white/15 dark:text-white/40">
+                Coming soon
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <details className="group w-full max-w-xl">
+        <summary className="flex cursor-pointer list-none items-center justify-center gap-1.5 py-2 text-sm text-slate-500 dark:text-white/40 [&::-webkit-details-marker]:hidden">
+          <h2 className="text-sm font-normal">{ABOUT_HEADING}</h2>
+          <ChevronDownIcon className="size-3.5 transition-transform group-open:rotate-180" />
+        </summary>
+        <div className="mt-3 border-t border-slate-200 pt-5 dark:border-white/10">
+          {ABOUT.map((paragraph) => (
+            <p
+              key={paragraph}
+              className="mt-3 text-sm leading-relaxed text-slate-600 first:mt-0 dark:text-white/50"
+            >
+              {paragraph}
+            </p>
+          ))}
+          <ul className="mt-5 flex flex-col gap-2 text-sm text-slate-600 dark:text-white/50">
+            {ABOUT_POINTS.map((point) => (
+              <li key={point} className="flex gap-2.5">
+                <span
+                  aria-hidden="true"
+                  className="mt-2 size-1 shrink-0 rounded-full bg-slate-300 dark:bg-white/25"
+                />
+                {point}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </details>
     </main>
   );
 }

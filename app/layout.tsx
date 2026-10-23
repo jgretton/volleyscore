@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: {
-    default: "VolleyScore - Online Volleyball Scoreboard",
+    default: "Free Online Volleyball Scoreboard - VolleyScore",
     template: "%s | VolleyScore",
   },
   description:
@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "VolleyScore - Online Volleyball Scoreboard",
+    title: "Free Online Volleyball Scoreboard - VolleyScore",
     description:
       "Track your volleyball games easily with our online volleyball scoreboard. Perfect for teams, coaches, and volleyball enthusiasts.",
     url: "https://www.volleyscore.co.uk",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "VolleyScore - Online Volleyball Scoreboard",
+        alt: "Free Online Volleyball Scoreboard - VolleyScore",
       },
     ],
     locale: "en_GB",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "VolleyScore - Online Volleyball Scoreboard",
+    title: "Free Online Volleyball Scoreboard - VolleyScore",
     description:
       "Track your volleyball games easily with our online volleyball scoreboard.",
     images: ["/og-image.png"],
@@ -80,8 +80,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta name="theme-color" media="(prefers-color-scheme: light)" content="white" />
-        <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#15202b" />
+        <meta
+          name="theme-color"
+          media="(prefers-color-scheme: light)"
+          content="white"
+        />
+        <meta
+          name="theme-color"
+          media="(prefers-color-scheme: dark)"
+          content="#15202b"
+        />
         <link rel="icon" href="/favicon.ico" />
         <script
           type="application/ld+json"

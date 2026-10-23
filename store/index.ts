@@ -1,23 +1,250 @@
-import { createInitialGame, createInitialSetData } from "@/lib/data";
-import { isSetComplete } from "@/utils";
+import { MAX_LIBEROS, MAX_PLAYERS, MIN_PLAYERS } from "@/lib/constants";
+import {
+    createInitialGame,
+    createInitialMatchSetup,
+    createInitialSetData,
+    makePlayer,
+    makeTeam
+} from "@/lib/data";
+import { isSetComplete, reachedEighthPoint } from "@/utils";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
-  GameAction,
-  MatchStore,
-  ModalData,
-  TeamNames,
-  TeamOptions,
+    GameAction,
+    MatchStore,
+    ModalData,
+    Player,
+    Side,
+    TeamNames,
+    TeamOptions
 } from "./types";
 
 export const useGameStore = create<MatchStore>()(
   persist(
     (set, get) => ({
       match: createInitialGame(),
+      matchSetup: {
+        home: makeTeam(),
+        away:makeTeam(),
+        currentStep: 1,
+      },
       teamSwappedSides: false,
       currentSet: 1,
       servingTeam: null,
       modal: { isOpen: false, modalType: null, modalData: null },
+
+      setCurrentStep: (step: number) =>
+        set((state) => {
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              currentStep: step,
+            },
+          };
+        }),
+
+      setTeamName: (team, teamName) =>
+        set((state) => ({
+          matchSetup: {
+            ...state.matchSetup,
+            [team]: { ...state.matchSetup[team], name: teamName.trim() },
+          },
+        })),
+      setTeamNames: (home, away) =>
+        set((state) => ({
+          matchSetup: {
+            ...state.matchSetup,
+            home: { ...state.matchSetup.home, name: home.trim() },
+            away: { ...state.matchSetup.away, name: away.trim() },
+          },
+        })),
+      removeAdditionalPlayer: (team, playerID) =>
+        set((state) => {
+          if (state.matchSetup[team].players.length <= MIN_PLAYERS)
+            return state;
+
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              [team]: {
+                ...state.matchSetup[team],
+                players: state.matchSetup[team].players.filter(
+                  (player) => player.id !== playerID,
+                ),
+              },
+            },
+          };
+        }),
+      addAdditionalPlayer: (team) =>
+        set((state) => {
+          if (state.matchSetup[team].players.length >= MAX_PLAYERS)
+            return state;
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              [team]: {
+                ...state.matchSetup[team],
+                players: [...state.matchSetup[team].players, makePlayer()],
+              },
+            },
+          };
+        }),
+      updatePlayer: (team, playerID, value) =>
+        set((state) => {
+          const updatedPlayers = state.matchSetup[team].players.map((player) =>
+            player.id === playerID
+              ? {
+                  ...player,
+                  ...value,
+                }
+              : player,
+          );
+
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              [team]: { ...state.matchSetup[team], players: updatedPlayers },
+            },
+          };
+        }),
+      removeEmptyPlayers: (team) =>
+        set((state) => {
+          const players = state.matchSetup[team].players;
+          const nonEmpty = players.filter(
+            (player) => player.name.trim() !== "" || player.number !== null,
+          );
+
+          // safety: if we don't have 6 real players, leave the roster alone
+          if (nonEmpty.length < MIN_PLAYERS) return state;
+
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              [team]: { ...state.matchSetup[team], players: nonEmpty },
+            },
+          };
+        }),
+      addLibero: (team) =>
+        set((state) => {
+          if (state.matchSetup[team].liberos.length >= MAX_LIBEROS)
+            return state;
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              [team]: {
+                ...state.matchSetup[team],
+                liberos: [...state.matchSetup[team].liberos, makePlayer()],
+              },
+            },
+          };
+        }),
+      removeLibero: (team, playerID) =>
+        set((state) => ({
+          matchSetup: {
+            ...state.matchSetup,
+            [team]: {
+              ...state.matchSetup[team],
+              liberos: state.matchSetup[team].liberos.filter(
+                (libero) => libero.id !== playerID,
+              ),
+            },
+          },
+        })),
+      updateLibero: (team, playerID, value) =>
+        set((state) => {
+          const updatedLiberos = state.matchSetup[team].liberos.map((libero) =>
+            libero.id === playerID
+              ? {
+                  ...libero,
+                  ...value,
+                }
+              : libero,
+          );
+
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              [team]: { ...state.matchSetup[team], liberos: updatedLiberos },
+            },
+          };
+        }),
+      removeEmptyLiberos: (team) =>
+        set((state) => {
+          const liberos = state.matchSetup[team].liberos;
+          const nonEmpty = liberos.filter(
+            (libero) => libero.name.trim() !== "" || libero.number !== null,
+          );
+
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              [team]: { ...state.matchSetup[team], liberos: nonEmpty },
+            },
+          };
+        }),
+      sortSquadByNumber: (team) =>
+        set((state) => {
+          const byNumber = (a: Player, b: Player) =>
+            (a.number ?? 0) - (b.number ?? 0);
+
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              [team]: {
+                ...state.matchSetup[team],
+                players: [...state.matchSetup[team].players].sort(byNumber),
+                liberos: [...state.matchSetup[team].liberos].sort(byNumber),
+              },
+            },
+          };
+        }),
+      setStartingLineups: (startingLineups) =>
+        set((state) => {
+          const { home, away } = startingLineups;
+
+          return {
+            matchSetup: {
+                ...state.matchSetup,
+              home: { ...state.matchSetup.home, lineup: home },
+              away: { ...state.matchSetup.away, lineup: away },
+            },
+          };
+        }),
+      assignPlayerToStartingLineup: (team, position, playerId) =>
+        set((state) => {
+          const newTeamLineup = [...state.matchSetup[team].lineup].map((p) => {
+            if (p.position === position)
+              return { position: position, playerId: playerId };
+            else return p;
+          });
+
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              [team]: {
+                ...state.matchSetup[team],
+                lineup: newTeamLineup,
+              },
+            },
+          };
+        }),
+      removePlayerFromStartingLineup: (team, position) =>
+        set((state) => {
+          return {
+            matchSetup: {
+              ...state.matchSetup,
+              [team]: {
+                ...state.matchSetup[team],
+                lineup: state.matchSetup[team].lineup.map((slot) =>
+                  slot.position === position
+                    ? { ...slot, playerId: null }
+                    : slot,
+                ),
+              },
+            },
+          };
+        }),
+
       swapSides: () => {
         set((state) => ({
           teamSwappedSides: !state.teamSwappedSides,
@@ -27,43 +254,71 @@ export const useGameStore = create<MatchStore>()(
         set((state) => ({
           match: {
             ...state.match,
-            homeTeamName: teamNames.homeTeamName,
-            awayTeamName: teamNames.awayTeamName,
+            home: { ...state.match.home, name: teamNames.homeTeamName },
+            away: { ...state.match.away, name: teamNames.awayTeamName },
           },
         }));
       },
+
       startNewGame: (teamNames?: TeamNames) => {
+        const base = createInitialGame();
         const newGame = teamNames
-          ? { ...createInitialGame(), ...teamNames }
-          : createInitialGame();
+          ? {
+              ...base,
+              home: { ...base.home, name: teamNames.homeTeamName },
+              away: { ...base.away, name: teamNames.awayTeamName },
+            }
+          : base;
 
         set(() => ({
           match: newGame,
           currentSet: 1,
+          teamSwappedSides: false,
         }));
       },
-      increaseTeamScore: (
-        teamKey: "awayTeam" | "homeTeam",
-        currentSet: number,
-      ) => {
+      initialiseMatchSetup: () => {
+        set(() => ({
+          matchSetup: createInitialMatchSetup(),
+        }));
+      },
+      startMatch: () =>
         set((state) => {
-          const currentSetData = state.match.sets[currentSet].score || {
-            homeTeam: 0,
-            awayTeam: 0,
+          // Copy the completed setup into a fresh match. The starting lineup
+          // (matchSetup.home.lineup) isn't carried yet — it moves into per-set
+          // SetData when the rotation/lineup display is built.
+          const newMatch = {
+            ...createInitialGame(),
+            mode: "advanced" as const,
+            home: {
+              name: state.matchSetup.home.name,
+              players: state.matchSetup.home.players,
+              liberos: state.matchSetup.home.liberos,
+              setsWon: 0,
+            },
+            away: {
+              name: state.matchSetup.away.name,
+              players: state.matchSetup.away.players,
+              liberos: state.matchSetup.away.liberos,
+              setsWon: 0,
+            },
           };
+
+          return {
+            match: newMatch,
+            matchSetup: createInitialMatchSetup(),
+            currentSet: 1,
+            teamSwappedSides: false,
+          };
+        }),
+      increaseTeamScore: (teamKey: Side, currentSet: number) => {
+        set((state) => {
+          const setData = state.match.sets[currentSet];
+          const homeScore = setData.home.score + (teamKey === "home" ? 1 : 0);
+          const awayScore = setData.away.score + (teamKey === "away" ? 1 : 0);
           const newAction = {
             type: "score" as const,
             team: teamKey,
-            overallScore: {
-              homeTeam:
-                teamKey === "homeTeam"
-                  ? (currentSetData.homeTeam || 0) + 1
-                  : currentSetData.homeTeam || 0,
-              awayTeam:
-                teamKey === "awayTeam"
-                  ? (currentSetData.awayTeam || 0) + 1
-                  : currentSetData.awayTeam || 0,
-            },
+            overallScore: { home: homeScore, away: awayScore },
             timestamp: new Date().toISOString(),
           };
 
@@ -74,12 +329,12 @@ export const useGameStore = create<MatchStore>()(
               sets: {
                 ...state.match.sets,
                 [currentSet]: {
-                  ...state.match.sets[currentSet],
-                  score: {
-                    ...state.match.sets[currentSet].score,
-                    [teamKey]: state.match.sets[currentSet].score[teamKey] + 1,
+                  ...setData,
+                  [teamKey]: {
+                    ...setData[teamKey],
+                    score: setData[teamKey].score + 1,
                   },
-                  actions: [...state.match.sets[currentSet].actions, newAction],
+                  actions: [...setData.actions, newAction],
                 },
               },
             },
@@ -111,15 +366,19 @@ export const useGameStore = create<MatchStore>()(
         }
       },
       resetMatchData: () => {
-        set((state) => ({
-          match: {
-            ...createInitialGame(),
-            homeTeamName: state.match.homeTeamName,
-            awayTeamName: state.match.awayTeamName,
-          },
-          teamSwappedSides: false,
-          currentSet: 1,
-        }));
+        set((state) => {
+          const fresh = createInitialGame();
+          return {
+            match: {
+              ...fresh,
+              mode: state.match.mode,
+              home: { ...state.match.home, setsWon: 0 },
+              away: { ...state.match.away, setsWon: 0 },
+            },
+            teamSwappedSides: false,
+            currentSet: 1,
+          };
+        });
       },
       undoAction: (action: GameAction) => {
         const currentState = get();
@@ -134,22 +393,24 @@ export const useGameStore = create<MatchStore>()(
             actions: updatedActions,
           };
 
-          if (action.type === "timeout") {
-            setUpdates.timeouts = {
-              ...state.match.sets[currentSet].timeouts,
-              [action.team]:
-                state.match.sets[currentSet].timeouts[action.team] - 1,
+          if (action.type === "timeout" && action.team) {
+            setUpdates[action.team] = {
+              ...state.match.sets[currentSet][action.team],
+              timeouts: state.match.sets[currentSet][action.team].timeouts - 1,
             };
           }
 
-          if (action.type === "score") {
-            setUpdates.score = {
-              ...state.match.sets[currentSet].score,
-              [action.team]:
-                state.match.sets[currentSet].score[action.team] - 1,
+          if (action.type === "score" && action.team) {
+            setUpdates[action.team] = {
+              ...state.match.sets[currentSet][action.team],
+              score: state.match.sets[currentSet][action.team].score - 1,
             };
             updatedServingTeam =
               updatedActions.findLast((a) => a.type === "score")?.team ?? null;
+
+            // Undoing the match point reopens the set, so the winner it was
+            // given when the game completed has to come off with it.
+            if (state.match.gameComplete) setUpdates.winner = null;
           }
 
           const updatedMatch = {
@@ -163,14 +424,37 @@ export const useGameStore = create<MatchStore>()(
           };
 
           if (action.type === "score" && state.match.gameComplete) {
-            if (action.team === "homeTeam") updatedMatch.homeTeamSetsWon -= 1;
-            else updatedMatch.awayTeamSetsWon -= 1;
+            if (action.team === "home")
+              updatedMatch.home = {
+                ...updatedMatch.home,
+                setsWon: updatedMatch.home.setsWon - 1,
+              };
+            else
+              updatedMatch.away = {
+                ...updatedMatch.away,
+                setsWon: updatedMatch.away.setsWon - 1,
+              };
           }
           return {
             ...state,
             match: updatedMatch,
           };
         });
+
+        // Undoing the point that triggered the fifth set switch has to put
+        // the sides back. Without this the next point reaches 8 again, the
+        // "first time" check passes a second time, and the teams end up
+        // swapped for the rest of the match.
+        if (currentSet === 5 && reachedEighthPoint(action)) {
+          let anotherStillReaches = false;
+          for (const remaining of updatedActions) {
+            if (reachedEighthPoint(remaining)) {
+              anotherStillReaches = true;
+              break;
+            }
+          }
+          if (!anotherStillReaches) get().swapSides();
+        }
       },
       undoSetPoint: () => {
         const currentState = get();
@@ -186,14 +470,14 @@ export const useGameStore = create<MatchStore>()(
           ].actions.slice(0, -1);
 
           //who won last set and -1 from their set wins
-          if (winner === "homeTeam") {
-            updatedMatch.homeTeamSetsWon = updatedMatch.homeTeamSetsWon - 1;
-            updatedMatch.sets[state.currentSet - 1].score.homeTeam =
-              updatedMatch.sets[state.currentSet - 1].score.homeTeam - 1;
+          if (winner === "home") {
+            updatedMatch.home.setsWon = updatedMatch.home.setsWon - 1;
+            updatedMatch.sets[state.currentSet - 1].home.score =
+              updatedMatch.sets[state.currentSet - 1].home.score - 1;
           } else {
-            updatedMatch.awayTeamSetsWon = updatedMatch.awayTeamSetsWon - 1;
-            updatedMatch.sets[state.currentSet - 1].score.awayTeam =
-              updatedMatch.sets[state.currentSet - 1].score.awayTeam - 1;
+            updatedMatch.away.setsWon = updatedMatch.away.setsWon - 1;
+            updatedMatch.sets[state.currentSet - 1].away.score =
+              updatedMatch.sets[state.currentSet - 1].away.score - 1;
           }
 
           //set winner to null
@@ -227,20 +511,20 @@ export const useGameStore = create<MatchStore>()(
         const updatedMatch = { ...match };
         const newSetNumber = currentSet + 1;
 
-        if (setResult === "homeTeam") {
-          updatedMatch.sets[currentSet].winner = "homeTeam";
-          updatedMatch.homeTeamSetsWon += 1;
+        if (setResult === "home") {
+          updatedMatch.sets[currentSet].winner = "home";
+          updatedMatch.home.setsWon += 1;
         }
-        if (setResult === "awayTeam") {
-          updatedMatch.sets[currentSet].winner = "awayTeam";
-          updatedMatch.awayTeamSetsWon += 1;
+        if (setResult === "away") {
+          updatedMatch.sets[currentSet].winner = "away";
+          updatedMatch.away.setsWon += 1;
         }
 
         updatedMatch.servingTeam = null;
 
         get().swapSides();
 
-        set((state) => {
+        set(() => {
           return {
             match: {
               ...updatedMatch,
@@ -261,14 +545,17 @@ export const useGameStore = create<MatchStore>()(
       },
       handleGameComplete: (setResults: TeamOptions) => {
         // set game is complete, update the team sets won but do not update current set otherwise data will be removed.
-        const { match } = get();
+        const { match, currentSet } = get();
         const updatedMatch = { ...match };
         //game complete
         updatedMatch.gameComplete = true;
+        // The deciding set ends here rather than through handleSetCompletion,
+        // so record its winner too or it stays null for the rest of the match.
+        updatedMatch.sets[currentSet].winner = setResults;
         // update sets won
-        if (setResults === "homeTeam")
-          updatedMatch.homeTeamSetsWon = updatedMatch.homeTeamSetsWon + 1;
-        else updatedMatch.awayTeamSetsWon = updatedMatch.awayTeamSetsWon + 1;
+        if (setResults === "home")
+          updatedMatch.home.setsWon = updatedMatch.home.setsWon + 1;
+        else updatedMatch.away.setsWon = updatedMatch.away.setsWon + 1;
 
         set((state) => ({
           ...state,
@@ -276,21 +563,23 @@ export const useGameStore = create<MatchStore>()(
         }));
       },
       handleTeamTimeout: (team: TeamOptions) => {
-        const currentState = get();
         set((state) => {
+          if (!team) return state;
           const updatedMatch = { ...state.match };
-          if (updatedMatch.sets[state.currentSet].timeouts[team] >= 2) {
-            throw new Error("Team has had their two timeouts.");
-          }
+          const setData = updatedMatch.sets[state.currentSet];
+          // The button is already disabled at two, so this is only a guard.
+          // Throwing from a store setter would take the page down over a
+          // rule the UI has enforced anyway.
+          if (setData[team].timeouts >= 2) return state;
           //add time out to team.
-          updatedMatch.sets[state.currentSet].timeouts[team] =
-            updatedMatch.sets[state.currentSet].timeouts[team] + 1;
+          setData[team].timeouts = setData[team].timeouts + 1;
           //add action for timeout
-          updatedMatch.sets[state.currentSet].actions.push({
+          setData.actions.push({
             type: "timeout" as const,
             team: team,
             overallScore: {
-              ...state.match.sets[state.currentSet].score,
+              home: setData.home.score,
+              away: setData.away.score,
             },
             timestamp: new Date().toISOString(),
           });
@@ -326,6 +615,25 @@ export const useGameStore = create<MatchStore>()(
     {
       name: "Volleyscore-MatchData",
       storage: createJSONStorage(() => localStorage),
+      version: 2,
+      migrate: (persistedState: any, version: number) => {
+        // The match + setup shapes changed incompatibly (flat home*/away* fields
+        // → home/away objects). Old persisted data can't be salvaged, so start
+        // clean on any pre-v2 state to avoid crashes on rehydrate.
+        if (version < 2) {
+          return {
+            ...persistedState,
+            match: createInitialGame(),
+            matchSetup: createInitialMatchSetup(),
+            // The spread carries these across, and a fresh match only has
+            // set 1. Left alone, a saved currentSet of 3 points at a set
+            // that does not exist and scoring throws on the first tap.
+            currentSet: 1,
+            teamSwappedSides: false,
+          };
+        }
+        return persistedState;
+      },
     },
   ),
 );
