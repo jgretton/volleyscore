@@ -1,6 +1,0 @@
-Notes:
-
-    Match Page:
-        ☐ Timeout button: once pressed and counting down, swap the icon to an X so the user can cancel a mis-tap.
-            - Cancelling must undo the previous action (restore score/timeout count via undoAction), not just stop the visual countdown.
-            - Must also stop/cancel the buzzer sound if it's queued.
