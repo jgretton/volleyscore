@@ -4,6 +4,7 @@ import MatchControlBar from "@/components/game/layout/MatchControlBar";
 import MatchDeskBar from "@/components/game/layout/MatchDeskBar";
 import MatchDeskHeader from "@/components/game/layout/MatchDeskHeader";
 import MatchRail from "@/components/game/layout/MatchRail";
+import PreSetDialog from "@/components/game/preset/PreSetDialog";
 import TeamPanel from "@/components/game/scoring/TeamPanel";
 import ModalManager from "@/components/modal/ModalManager";
 import { useIsDesktop } from "@/lib/useIsDesktop";
@@ -13,6 +14,17 @@ import { useEffect, useState } from "react";
 
 const Page = () => {
   const teamSwapped = useGameStore((state) => state.teamSwappedSides);
+  // An advanced set has to be started before it can be scored: the toss and
+  // the lineup come first. setStartTime is stamped by startSet, so its absence
+  // is what raises the lineup dialog. Basic matches stamp it up front and
+  // never see it. The result of the set that just finished gets the screen to
+  // itself first, so the lineup waits until that modal is dismissed.
+  const awaitingStart = useGameStore(
+    (state) =>
+      state.match.mode === "advanced" &&
+      !state.match.sets[state.currentSet].setStartTime &&
+      !state.modal.isOpen,
+  );
   const [isClient, setIsClient] = useState<boolean>(false);
   const [historyOpen, setHistoryOpen] = useState<boolean>(false);
   const isDesktop = useIsDesktop();
@@ -61,6 +73,7 @@ const Page = () => {
 
       <MatchHistoryDialog open={historyOpen} onOpenChange={setHistoryOpen} />
       <ModalManager />
+      {awaitingStart && <PreSetDialog />}
     </div>
   );
 };

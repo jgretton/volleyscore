@@ -24,6 +24,13 @@ const ModalManager = () => {
   // next one, so this is what says how much of the match to show.
   const finishedSet = modalData.currentSet;
   const isMatchComplete = modal.modalType === "MATCH_COMPLETE";
+  // An advanced match needs its lineup before it can be scored, so the button
+  // says where it actually goes.
+  const nextSet = finishedSet + 1;
+  const continueLabel =
+    match.mode === "advanced"
+      ? `Lineups for set ${nextSet}`
+      : `Start set ${nextSet}`;
 
   const actions = match.sets[finishedSet]?.actions ?? [];
   const lastAction = actions[actions.length - 1];
@@ -83,7 +90,7 @@ const ModalManager = () => {
             </>
           ) : (
             <>
-              <Button onClick={closeModal}>Start set {finishedSet + 1}</Button>
+              <Button onClick={closeModal}>{continueLabel}</Button>
               <Button
                 variant="outline"
                 onClick={() => {
@@ -93,6 +100,14 @@ const ModalManager = () => {
               >
                 Undo set point
               </Button>
+              {/* Deliberately not a button: leaving is a way out, not one of
+                  the choices. The match is saved either way. */}
+              <Link
+                href="/"
+                className="mt-1 text-center text-[13px] text-slate-500 underline underline-offset-[3px] transition hover:text-slate-900 dark:text-white/45 dark:hover:text-white"
+              >
+                Leave match
+              </Link>
             </>
           )}
         </div>
