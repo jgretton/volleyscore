@@ -26,11 +26,20 @@ export interface SetTeamState {
   timeouts: number;
 }
 export interface SetData {
+  // Stamped by startSet. Absent means the set has not been started yet.
   setStartTime?: string;
   home: SetTeamState;
   away: SetTeamState;
   actions: GameAction[];
   winner: TeamOptions;
+  // Teams hand in a new sheet every set, so the lineup belongs here.
+  lineup: SetLineup;
+  firstServer: TeamOptions;
+}
+
+export interface SetLineup {
+  home: LineupSlot[];
+  away: LineupSlot[];
 }
 export interface Sets {
   [setNumber: number]: SetData;
@@ -72,7 +81,6 @@ export interface MatchStore {
 
   // Setup actions (ported from volleyrotation)
   setCurrentStep: (step: number) => void;
-  setTeamName: (team: "home" | "away", teamName: string) => void;
   setTeamNames: (home: string, away: string) => void;
   removeAdditionalPlayer: (team: "home" | "away", playerID: string) => void;
   addAdditionalPlayer: (team: "home" | "away") => void;
@@ -91,10 +99,6 @@ export interface MatchStore {
   ) => void;
   removeEmptyLiberos: (team: "home" | "away") => void;
   sortSquadByNumber: (team: "home" | "away") => void;
-  setStartingLineups: (startingLineups: {
-    home: Team["lineup"];
-    away: Team["lineup"];
-  }) => void;
   assignPlayerToStartingLineup: (
     team: "home" | "away",
     position: number,
@@ -104,8 +108,11 @@ export interface MatchStore {
     team: "home" | "away",
     position: number,
   ) => void;
+  setFirstServer: (team: Side) => void;
 
   startMatch: () => void;
+  startSet: () => void;
+  returnToSetup: () => void;
 
   swapSides: () => void;
   updateTeamName: (teamNames: TeamNames) => void;
@@ -137,7 +144,6 @@ export interface Team {
   name: string;
   players: Player[];
   liberos: Player[];
-  lineup: LineupSlot[];
 }
 export type LineupSlot = { position: number; playerId: string | null };
 
@@ -177,21 +183,3 @@ export type Errors = {
   home: TeamResult;
   away: TeamResult;
 };
-
-export interface SquadData {
-  homeTeam: Team;
-  awayTeam: Team;
-}
-
-export interface SquadErrors {
-  homeErrors: SquadError[];
-  awayErrors: SquadError[];
-}
-
-export interface SquadError {
-  type: "error" | "warning";
-  section?: "player" | "libero";
-  message: string;
-  id?: string;
-  field?: "name" | "number" | "both";
-}

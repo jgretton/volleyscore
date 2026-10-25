@@ -2,7 +2,7 @@ export const TIMEOUT_DURATION = 30;
 const END_SET_DURATION = 180;
 const POINTS_PER_SET = 25;
 const POINTS_FOR_FIFTH_SET = 15;
-import { GameAction, Match, TeamOptions } from "@/store/types";
+import { GameAction, Match, Side, TeamOptions } from "@/store/types";
 type isSetCompleteReturn = {
   setWinner: TeamOptions;
   shouldSwapSides: boolean;
@@ -17,6 +17,9 @@ export const reachedEighthPoint = (action: GameAction): boolean => {
   if (action.type !== "score") return false;
   return action.overallScore.home === 8 || action.overallScore.away === 8;
 };
+
+export const oppositeTeam = (team: Side): Side =>
+  team === "home" ? "away" : "home";
 
 export const isSetComplete = (
   match: Match,

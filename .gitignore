@@ -40,3 +40,8 @@ certificates
 AGENTS.md
 CLAUDE.md
 .claude/
+
+# design mockups, not part of the app
+*-mockup.html
+court-variations.html
+plan.todo

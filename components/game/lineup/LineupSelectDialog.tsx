@@ -1,12 +1,12 @@
 import { Player } from "@/store/types";
-import { Button } from "./ui/button";
+import { Button } from "../../ui/button";
 import {
 	Dialog,
 	DialogContent,
 	DialogDescription,
 	DialogHeader,
 	DialogTitle,
-} from "./ui/dialog";
+} from "../../ui/dialog";
 
 type LineupSelectDialogProps = {
 	open: boolean;

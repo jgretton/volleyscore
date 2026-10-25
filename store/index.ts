@@ -1,12 +1,18 @@
-import { MAX_LIBEROS, MAX_PLAYERS, MIN_PLAYERS } from "@/lib/constants";
+import {
+  MAX_LIBEROS,
+  MAX_PLAYERS,
+  MIN_PLAYERS,
+  TOTAL_STEPS,
+} from "@/lib/constants";
 import {
     createInitialGame,
     createInitialMatchSetup,
     createInitialSetData,
+    makeLineup,
     makePlayer,
     makeTeam
 } from "@/lib/data";
-import { isSetComplete, reachedEighthPoint } from "@/utils";
+import { isSetComplete, oppositeTeam, reachedEighthPoint } from "@/utils";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
@@ -19,6 +25,14 @@ import {
     TeamOptions
 } from "./types";
 
+// Starting a match has to close whatever result modal the last one left
+// open, or it reopens over a match it no longer describes.
+const closedModal = (): MatchStore["modal"] => ({
+  isOpen: false,
+  modalType: null,
+  modalData: null,
+});
+
 export const useGameStore = create<MatchStore>()(
   persist(
     (set, get) => ({
@@ -30,8 +44,7 @@ export const useGameStore = create<MatchStore>()(
       },
       teamSwappedSides: false,
       currentSet: 1,
-      servingTeam: null,
-      modal: { isOpen: false, modalType: null, modalData: null },
+      modal: closedModal(),
 
       setCurrentStep: (step: number) =>
         set((state) => {
@@ -43,13 +56,6 @@ export const useGameStore = create<MatchStore>()(
           };
         }),
 
-      setTeamName: (team, teamName) =>
-        set((state) => ({
-          matchSetup: {
-            ...state.matchSetup,
-            [team]: { ...state.matchSetup[team], name: teamName.trim() },
-          },
-        })),
       setTeamNames: (home, away) =>
         set((state) => ({
           matchSetup: {
@@ -198,48 +204,62 @@ export const useGameStore = create<MatchStore>()(
             },
           };
         }),
-      setStartingLineups: (startingLineups) =>
-        set((state) => {
-          const { home, away } = startingLineups;
-
-          return {
-            matchSetup: {
-                ...state.matchSetup,
-              home: { ...state.matchSetup.home, lineup: home },
-              away: { ...state.matchSetup.away, lineup: away },
-            },
-          };
-        }),
+      // The lineup lives on the current set now, so these write into
+      // match.sets[currentSet] rather than matchSetup.
       assignPlayerToStartingLineup: (team, position, playerId) =>
         set((state) => {
-          const newTeamLineup = [...state.matchSetup[team].lineup].map((p) => {
-            if (p.position === position)
-              return { position: position, playerId: playerId };
-            else return p;
-          });
+          const { currentSet } = state;
+          const setData = state.match.sets[currentSet];
+          const updatedLineup = setData.lineup[team].map((slot) =>
+            slot.position === position ? { position, playerId } : slot,
+          );
 
           return {
-            matchSetup: {
-              ...state.matchSetup,
-              [team]: {
-                ...state.matchSetup[team],
-                lineup: newTeamLineup,
+            match: {
+              ...state.match,
+              sets: {
+                ...state.match.sets,
+                [currentSet]: {
+                  ...setData,
+                  lineup: { ...setData.lineup, [team]: updatedLineup },
+                },
               },
             },
           };
         }),
       removePlayerFromStartingLineup: (team, position) =>
         set((state) => {
+          const { currentSet } = state;
+          const setData = state.match.sets[currentSet];
+          const updatedLineup = setData.lineup[team].map((slot) =>
+            slot.position === position ? { ...slot, playerId: null } : slot,
+          );
+
           return {
-            matchSetup: {
-              ...state.matchSetup,
-              [team]: {
-                ...state.matchSetup[team],
-                lineup: state.matchSetup[team].lineup.map((slot) =>
-                  slot.position === position
-                    ? { ...slot, playerId: null }
-                    : slot,
-                ),
+            match: {
+              ...state.match,
+              sets: {
+                ...state.match.sets,
+                [currentSet]: {
+                  ...setData,
+                  lineup: { ...setData.lineup, [team]: updatedLineup },
+                },
+              },
+            },
+          };
+        }),
+      setFirstServer: (team) =>
+        set((state) => {
+          const { currentSet } = state;
+          return {
+            match: {
+              ...state.match,
+              sets: {
+                ...state.match.sets,
+                [currentSet]: {
+                  ...state.match.sets[currentSet],
+                  firstServer: team,
+                },
               },
             },
           };
@@ -270,10 +290,13 @@ export const useGameStore = create<MatchStore>()(
             }
           : base;
 
+        newGame.sets[1].setStartTime = new Date().toISOString();
+
         set(() => ({
           match: newGame,
           currentSet: 1,
           teamSwappedSides: false,
+          modal: closedModal(),
         }));
       },
       initialiseMatchSetup: () => {
@@ -283,9 +306,9 @@ export const useGameStore = create<MatchStore>()(
       },
       startMatch: () =>
         set((state) => {
-          // Copy the completed setup into a fresh match. The starting lineup
-          // (matchSetup.home.lineup) isn't carried yet — it moves into per-set
-          // SetData when the rotation/lineup display is built.
+          // Copy the completed setup into a fresh match. Set 1 is deliberately
+          // left unstarted: the pre-set screen collects the first server and
+          // the lineup before any scoring happens.
           const newMatch = {
             ...createInitialGame(),
             mode: "advanced" as const,
@@ -308,6 +331,46 @@ export const useGameStore = create<MatchStore>()(
             matchSetup: createInitialMatchSetup(),
             currentSet: 1,
             teamSwappedSides: false,
+            modal: closedModal(),
+          };
+        }),
+      // Going back from set 1's lineup means changing the squad, so setup is
+      // rebuilt from the match it produced rather than kept hanging around.
+      // Finishing setup again replaces the match, and set 1 never started.
+      returnToSetup: () =>
+        set((state) => ({
+          matchSetup: {
+            home: {
+              name: state.match.home.name,
+              players: state.match.home.players,
+              liberos: state.match.home.liberos,
+            },
+            away: {
+              name: state.match.away.name,
+              players: state.match.away.players,
+              liberos: state.match.away.liberos,
+            },
+            currentStep: TOTAL_STEPS,
+          },
+        })),
+      // Leaves the pre-set screen and opens the scoreboard. The first server
+      // is known by now, so servingTeam is right from 0-0 rather than being
+      // guessed from whoever happens to win the first rally.
+      startSet: () =>
+        set((state) => {
+          const { currentSet } = state;
+          return {
+            match: {
+              ...state.match,
+              servingTeam: state.match.sets[currentSet].firstServer,
+              sets: {
+                ...state.match.sets,
+                [currentSet]: {
+                  ...state.match.sets[currentSet],
+                  setStartTime: new Date().toISOString(),
+                },
+              },
+            },
           };
         }),
       increaseTeamScore: (teamKey: Side, currentSet: number) => {
@@ -368,6 +431,7 @@ export const useGameStore = create<MatchStore>()(
       resetMatchData: () => {
         set((state) => {
           const fresh = createInitialGame();
+          fresh.sets[1].setStartTime = new Date().toISOString();
           return {
             match: {
               ...fresh,
@@ -377,6 +441,7 @@ export const useGameStore = create<MatchStore>()(
             },
             teamSwappedSides: false,
             currentSet: 1,
+            modal: closedModal(),
           };
         });
       },
@@ -503,7 +568,13 @@ export const useGameStore = create<MatchStore>()(
             match: updatedMatch,
           };
         });
-        get().swapSides();
+
+        // Mirrors handleSetCompletion: no swap happened on the way into an
+        // advanced decider, so there is none to reverse on the way out.
+        const skippedSwap =
+          currentState.match.mode === "advanced" &&
+          currentState.currentSet === 5;
+        if (!skippedSwap) get().swapSides();
       },
       handleSetCompletion: (setResult: TeamOptions) => {
         const currentState = get();
@@ -522,13 +593,30 @@ export const useGameStore = create<MatchStore>()(
 
         updatedMatch.servingTeam = null;
 
-        get().swapSides();
+        // An advanced decider gets a fresh toss, and that toss settles the ends
+        // too, so the usual swap is skipped rather than fought over afterwards.
+        // Basic has no toss, so it keeps alternating as always.
+        const tossDecidesEnds =
+          updatedMatch.mode === "advanced" && newSetNumber === 5;
+        if (!tossDecidesEnds) get().swapSides();
+
+        const nextSet = createInitialSetData();
+
+        if (updatedMatch.mode === "basic") {
+          // Basic never shows the pre-set screen, so the set starts right away.
+          nextSet.setStartTime = new Date().toISOString();
+        } else if (newSetNumber < 5) {
+          // Whoever did not serve first in this set serves first in the next.
+          // The deciding set gets a fresh toss, so it stays null.
+          const servedFirst = updatedMatch.sets[currentSet].firstServer;
+          if (servedFirst) nextSet.firstServer = oppositeTeam(servedFirst);
+        }
 
         set(() => {
           return {
             match: {
               ...updatedMatch,
-              sets: { ...updatedMatch.sets, [newSetNumber]: createInitialSetData() },
+              sets: { ...updatedMatch.sets, [newSetNumber]: nextSet },
             },
             currentSet: newSetNumber,
           };
@@ -615,7 +703,7 @@ export const useGameStore = create<MatchStore>()(
     {
       name: "Volleyscore-MatchData",
       storage: createJSONStorage(() => localStorage),
-      version: 2,
+      version: 3,
       migrate: (persistedState: any, version: number) => {
         // The match + setup shapes changed incompatibly (flat home*/away* fields
         // → home/away objects). Old persisted data can't be salvaged, so start
@@ -632,6 +720,30 @@ export const useGameStore = create<MatchStore>()(
             teamSwappedSides: false,
           };
         }
+
+        // v3 moved the lineup onto each set, added firstServer, and made
+        // setStartTime mean "this set has started". Fill the new fields in
+        // rather than resetting: an existing set already has a start time, so
+        // a match in progress stays on the scoreboard instead of being thrown
+        // back to the pre-set screen.
+        if (version < 3) {
+          const sets = persistedState?.match?.sets ?? {};
+          for (const setNumber of Object.keys(sets)) {
+            const setData = sets[setNumber];
+            if (!setData.lineup) {
+              setData.lineup = { home: makeLineup(), away: makeLineup() };
+            }
+            if (setData.firstServer === undefined) setData.firstServer = null;
+            if (!setData.setStartTime) {
+              setData.setStartTime = new Date().toISOString();
+            }
+          }
+          return {
+            ...persistedState,
+            matchSetup: createInitialMatchSetup(),
+          };
+        }
+
         return persistedState;
       },
     },

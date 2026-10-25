@@ -14,9 +14,9 @@ import RosterWarningDialog from "../RosterWarningDialog";
 import TeamColumn from "../TeamColumn";
 
 export default function PlayerDetailsStep({
-	nextStep,
+	completeSetup,
 }: {
-	nextStep: () => void;
+	completeSetup: () => void;
 }) {
 	const {
 		matchSetup: { home, away },
@@ -42,7 +42,7 @@ export default function PlayerDetailsStep({
 		// tidy the rosters into shirt-number order before moving on
 		sortSquadByNumber("away");
 		sortSquadByNumber("home");
-		nextStep();
+		completeSetup();
 	};
 
 	// TODO: remove — test helper to skip manual data entry

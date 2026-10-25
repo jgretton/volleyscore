@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import HydrationZustand from "../HydrationZustand";
 import StepProgress from "./StepProgress";
 import PlayerDetailsStep from "./steps/PlayerDetailsStep";
-import StartingLineupStep from "./steps/StartingLineupStep";
 import TeamNameStep from "./steps/TeamNameStep";
 
 export default function SetupWizard() {
@@ -29,7 +28,8 @@ export default function SetupWizard() {
   };
 
   // startMatch clears matchSetup, which would drop the wizard back to step 1
-  // while the navigation is still in flight, so stop rendering steps first
+  // while the navigation is still in flight, so stop rendering steps first.
+  // The match opens on the pre-set screen for the toss and the lineup.
   const completeSetup = () => {
     setIsStarting(true);
     startMatch();
@@ -45,7 +45,7 @@ export default function SetupWizard() {
   if (isStarting) {
     return (
       <div className="flex size-full flex-1 items-center justify-center gap-2">
-        Starting match <Loader2 className="animate-spin" />
+        Opening match <Loader2 className="animate-spin" />
       </div>
     );
   }
@@ -56,9 +56,8 @@ export default function SetupWizard() {
         <StepProgress step={currentStep} previousStep={previousStep} />
         <div className="mt-5 flex w-full flex-1 flex-col">
           {currentStep === 1 && <TeamNameStep nextStep={nextStep} />}
-          {currentStep === 2 && <PlayerDetailsStep nextStep={nextStep} />}
-          {currentStep === 3 && (
-            <StartingLineupStep completeSetup={completeSetup} />
+          {currentStep === 2 && (
+            <PlayerDetailsStep completeSetup={completeSetup} />
           )}
         </div>
       </div>
