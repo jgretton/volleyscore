@@ -1,5 +1,5 @@
 import { COURT_POSITIONS } from "@/lib/constants";
-import { GameAction, LineupSlot, SetData, Side, TeamOptions } from "@/store/types";
+import { GameAction, Player, SetData, Side, TeamOptions } from "@/store/types";
 
 // Nothing here is stored. Rotation is a view of the action log, which means
 // undo rolls it back on its own and there is no second copy to drift.
@@ -51,17 +51,82 @@ export const rotationsOf = (
 
 // Players move clockwise: 2 into 1, 1 into 6, 6 into 5, and so on. So the
 // starting slot standing in a zone is that zone shifted by the rotation count.
+export const SLOTS = [1, 2, 3, 4, 5, 6];
+
 export const slotInZone = (zone: number, rotations: number): number =>
   ((zone - 1 + rotations) % 6) + 1;
 
 // Rotation moves slots around the court. A substitution changes who fills a
-// slot. Keeping the two apart is what lets subs arrive here later without
-// touching anything above.
-export const occupantOfSlot = (
-  lineup: LineupSlot[],
+// slot. Keeping the two apart is what lets both stay this simple.
+export const subsInSlot = (
+  actions: GameAction[],
+  team: Side,
   slot: number,
-): string | null =>
-  lineup.find((position) => position.position === slot)?.playerId ?? null;
+): GameAction[] =>
+  actions.filter(
+    (action) =>
+      action.type === "sub" && action.team === team && action.slot === slot,
+  );
+
+export const subsUsedBy = (actions: GameAction[], team: Side): number =>
+  actions.filter((action) => action.type === "sub" && action.team === team)
+    .length;
+
+// Who is standing in a slot now: the starter, then every change made to that
+// slot replayed in order.
+export const occupantOfSlot = (
+  setData: SetData,
+  team: Side,
+  slot: number,
+): string | null => {
+  let playerId =
+    setData.lineup[team].find((position) => position.position === slot)
+      ?.playerId ?? null;
+
+  for (const action of subsInSlot(setData.actions, team, slot)) {
+    playerId = action.playerIn ?? null;
+  }
+
+  return playerId;
+};
+
+// The rules are enforced by what this offers rather than by an error. A slot
+// takes at most two changes: the starter out, then only that starter back.
+// Anyone who has already been on or off this set cannot appear elsewhere.
+export const eligibleFor = (
+  setData: SetData,
+  team: Side,
+  slot: number,
+  squad: Player[],
+): Player[] => {
+  const changes = subsInSlot(setData.actions, team, slot);
+  if (changes.length >= 2) return [];
+
+  const starter =
+    setData.lineup[team].find((position) => position.position === slot)
+      ?.playerId ?? null;
+
+  if (changes.length === 1) {
+    return squad.filter((player) => player.id === starter);
+  }
+
+  const onCourt: (string | null)[] = [];
+  for (const position of SLOTS) {
+    onCourt.push(occupantOfSlot(setData, team, position));
+  }
+
+  const alreadyInvolved: string[] = [];
+  for (const action of setData.actions) {
+    if (action.type !== "sub" || action.team !== team) continue;
+    if (action.playerIn) alreadyInvolved.push(action.playerIn);
+    if (action.playerOut) alreadyInvolved.push(action.playerOut);
+  }
+
+  return squad.filter(
+    (player) =>
+      !onCourt.includes(player.id) && !alreadyInvolved.includes(player.id),
+  );
+};
 
 export type ZoneOccupant = {
   zone: number;
@@ -81,7 +146,7 @@ export const courtFor = (setData: SetData, team: Side): ZoneOccupant[] => {
 
   return COURT_POSITIONS.map((zone) => ({
     zone,
-    playerId: occupantOfSlot(setData.lineup[team], slotInZone(zone, rotations)),
+    playerId: occupantOfSlot(setData, team, slotInZone(zone, rotations)),
     // Only zone 1 serves, and only for the team holding the serve.
     serving: serving && zone === 1,
   }));

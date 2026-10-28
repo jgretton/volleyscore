@@ -3,6 +3,7 @@ import { useGameStore } from "@/store";
 import { Side } from "@/store/types";
 import RotationCourt from "./RotationCourt";
 import ScoreButton from "./ScoreButton";
+import SubstituteControl from "./SubstituteControl";
 import TeamHeader from "./TeamHeader";
 import TeamTimeoutControl from "./TeamTimeoutControl";
 
@@ -45,6 +46,7 @@ const TeamPanel = ({
         increaseTeamScore={() => increaseTeamScore(team, currentSet)}
       />
       {showCourt && <RotationCourt team={team} />}
+      {showCourt && <SubstituteControl team={team} />}
       {showDetails && <TeamTimeoutControl team={team} />}
     </div>
   );

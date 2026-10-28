@@ -13,6 +13,7 @@ import {
     makeTeam
 } from "@/lib/data";
 import { isSetComplete, oppositeTeam, reachedEighthPoint } from "@/utils";
+import { occupantOfSlot } from "@/utils/rotation";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
@@ -650,6 +651,39 @@ export const useGameStore = create<MatchStore>()(
           match: updatedMatch,
         }));
       },
+      // A substitution is a third kind of entry in the set's log, so who is
+      // on court stays derived and undo rolls a change back on its own.
+      substitutePlayer: (team, slot, playerIn) =>
+        set((state) => {
+          const { currentSet } = state;
+          const setData = state.match.sets[currentSet];
+
+          const change = {
+            type: "sub" as const,
+            team,
+            slot,
+            playerOut: occupantOfSlot(setData, team, slot),
+            playerIn,
+            overallScore: {
+              home: setData.home.score,
+              away: setData.away.score,
+            },
+            timestamp: new Date().toISOString(),
+          };
+
+          return {
+            match: {
+              ...state.match,
+              sets: {
+                ...state.match.sets,
+                [currentSet]: {
+                  ...setData,
+                  actions: [...setData.actions, change],
+                },
+              },
+            },
+          };
+        }),
       handleTeamTimeout: (team: TeamOptions) => {
         set((state) => {
           if (!team) return state;

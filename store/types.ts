@@ -45,10 +45,14 @@ export interface Sets {
   [setNumber: number]: SetData;
 }
 export interface GameAction {
-  type: "score" | "timeout";
+  type: "score" | "timeout" | "sub";
   team: TeamOptions;
   overallScore: { home: number; away: number };
   timestamp: string;
+  // subs only: which lineup slot changed hands, and between whom
+  slot?: number;
+  playerOut?: string | null;
+  playerIn?: string | null;
 }
 export interface TeamNames {
   homeTeamName: string;
@@ -127,6 +131,7 @@ export interface MatchStore {
   handleGameComplete: (setResult: TeamOptions) => void;
 
   handleTeamTimeout: (team: TeamOptions) => void;
+  substitutePlayer: (team: Side, slot: number, playerIn: string) => void;
 
   resetMatchData: () => void;
 
