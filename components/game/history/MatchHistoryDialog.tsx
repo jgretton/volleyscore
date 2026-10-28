@@ -34,6 +34,8 @@ const MatchHistoryDialog = ({
     return squads.find((player) => player.id === playerId)?.number ?? undefined;
   };
 
+  const newestFirst = [...actions].reverse();
+
   // Everything before the live set has finished, so its score is final.
   const finishedSets = [];
   for (let setNumber = 1; setNumber < currentSet; setNumber++) {
@@ -65,16 +67,17 @@ const MatchHistoryDialog = ({
             No points yet this set
           </p>
         ) : (
-          // flex-col-reverse puts the newest row at the top and justify-end
-          // pins it there, so new points push the list down and nothing has
-          // to be scrolled into place.
-          <div className="flex max-h-80 flex-col-reverse justify-end overflow-y-auto">
-            {actions.map((item: GameAction, index: number) => (
+          // Reversed here rather than with flex-col-reverse. Reversing in CSS
+          // and pinning with justify-end pushed the overflow out of the top of
+          // the box, where the browser does not count it as scrollable, so the
+          // oldest rows were clipped with no way to reach them.
+          <div className="flex max-h-80 flex-col overflow-y-auto">
+            {newestFirst.map((item: GameAction, index: number) => (
               <HistoryRow
-                key={index}
+                key={actions.length - 1 - index}
                 item={item}
                 leftTeam={leftTeam}
-                isLatest={index === actions.length - 1}
+                isLatest={index === 0}
                 shirtOf={shirtOf}
               />
             ))}
