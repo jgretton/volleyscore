@@ -23,9 +23,6 @@ export default function PlayerDetailsStep({
 		removeEmptyPlayers,
 		removeEmptyLiberos,
 		sortSquadByNumber,
-		updatePlayer,
-		addLibero,
-		updateLibero,
 	} = useGameStore();
 
 	const [errors, setErrors] = useState<Errors>({
@@ -43,49 +40,6 @@ export default function PlayerDetailsStep({
 		sortSquadByNumber("away");
 		sortSquadByNumber("home");
 		completeSetup();
-	};
-
-	// TODO: remove — test helper to skip manual data entry
-	const fillTestData = () => {
-		const testNames: Record<"home" | "away", string[]> = {
-			home: ["Alex Reed", "Sam Doyle", "Chris Nolan", "Pat Vale", "Drew Bailey", "Jo Frost"],
-			away: ["Robin Hale", "Casey Poole", "Morgan Shaw", "Jamie Quinn", "Taylor Lane", "Riley Cross"],
-		};
-
-		const testLiberos: Record<"home" | "away", { name: string; number: number }[]> = {
-			home: [
-				{ name: "Kit Marlow", number: 7 },
-				{ name: "Noa Vance", number: 8 },
-			],
-			away: [
-				{ name: "Sky Ford", number: 7 },
-				{ name: "Rowan Ash", number: 8 },
-			],
-		};
-
-		(["home", "away"] as const).forEach((team) => {
-			const players = team === "home" ? home.players : away.players;
-			players.slice(0, 6).forEach((player, index) => {
-				updatePlayer(team, player.id, {
-					name: testNames[team][index],
-					number: index + 1,
-				});
-			});
-
-			// liberos start empty — add the rows, then fill them (getState reads the
-			// fresh ids since zustand updates synchronously)
-			const targets = testLiberos[team];
-			while (
-				useGameStore.getState().matchSetup[team].liberos.length < targets.length
-			) {
-				addLibero(team);
-			}
-			useGameStore
-				.getState()
-				.matchSetup[team].liberos.forEach((libero, index) => {
-					if (targets[index]) updateLibero(team, libero.id, targets[index]);
-				});
-		});
 	};
 
 	const handleTeamRosterSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -144,16 +98,6 @@ export default function PlayerDetailsStep({
 						nameWarningIds={awayNameWarningIds}
 						numberWarningIds={awayNumberWarningIds}
 					/>
-
-					{/* TODO: remove — test helper */}
-					<Button
-						type="button"
-						variant="outline"
-						className="md:col-start-1 md:row-start-3"
-						onClick={fillTestData}
-					>
-						Fill test data
-					</Button>
 
 					<Button type="submit" className="md:col-start-2">
 						Continue
