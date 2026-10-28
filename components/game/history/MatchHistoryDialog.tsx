@@ -26,6 +26,14 @@ const MatchHistoryDialog = ({
   const rightTeam = teamSwapped ? "home" : "away";
   const actions: GameAction[] = match.sets[currentSet]?.actions ?? [];
 
+  // Subs record who, the timeline shows shirt numbers, and both squads are
+  // here, so the lookup lives at this level rather than in every row.
+  const shirtOf = (playerId: string | null | undefined) => {
+    if (!playerId) return undefined;
+    const squads = [...match.home.players, ...match.away.players];
+    return squads.find((player) => player.id === playerId)?.number ?? undefined;
+  };
+
   // Everything before the live set has finished, so its score is final.
   const finishedSets = [];
   for (let setNumber = 1; setNumber < currentSet; setNumber++) {
@@ -67,6 +75,7 @@ const MatchHistoryDialog = ({
                 item={item}
                 leftTeam={leftTeam}
                 isLatest={index === actions.length - 1}
+                shirtOf={shirtOf}
               />
             ))}
           </div>
